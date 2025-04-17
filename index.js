@@ -5,7 +5,9 @@ import pg from 'pg';
 import sharp from 'sharp';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env', // Memastikan pemilihan file .env yang benar
+});
 
 const app = express();
 const port = process.env.PORT;
