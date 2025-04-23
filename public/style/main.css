@@ -13,7 +13,11 @@ body {
 }
 
 main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   padding: 50px 0px;
+  flex: 1;
 }
 
 .books {
@@ -22,15 +26,28 @@ main {
   gap: 2rem;
   padding: 20px 50px;
   justify-items: center;
-  flex: 1;
 }
 
 header,
 footer {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #eeeeee;
+}
+
+header {
+  background-image: url('/assets/books-picture.jpg'); /* Ganti dengan path gambarmu */
+  background-size: cover; /* Menyesuaikan gambar agar menutupi seluruh div */
+  background-position: center; /* Posisi gambar di tengah */
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 50vh;
+}
+
+footer {
   padding: 20px;
   background-color: #393e46;
-  color: #eeeeee;
 }
 
 p,
@@ -49,21 +66,97 @@ h3 {
   letter-spacing: 1px;
 }
 
+button {
+  cursor: pointer;
+  transition: all 0.3s;
+  color: white;
+  border: none;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* HEADER */
+.navbar {
+  position: fixed;
+  display: grid;
+  grid-template: 1fr / 4fr 1fr;
+  background-color: #393e46;
+  width: 100%;
+  z-index: 1;
+}
+
+.navigation {
+  display: flex;
+  padding: 0;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.nav-item {
+  list-style: none;
+  padding: 0px 1rem;
+}
+
+.search-book {
+  display: flex;
+  align-items: center;
+}
+
+.search-btn {
+  background-color: transparent;
+}
+
+.hero {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #4046527c;
+  backdrop-filter: blur(6px);
+}
+
+.site-title {
+  flex-basis: 50%;
+  flex-shrink: 0;
+  align-content: end;
+  font-size: 2rem;
+  letter-spacing: 1.5px;
+}
+
+.description {
+  text-align: center;
+  padding: 2rem;
+  width: 60%;
+  flex-basis: 50%;
+  flex-shrink: 1;
+  font-size: 1rem;
+  letter-spacing: 0.6px;
+  line-height: 1.5;
+}
+
 /* ADD BOOK FORM */
 .book-form {
-  max-width: 640px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  transform: translate(-50%, -50%);
+  max-width: 800px;
   margin: 1rem auto;
   padding: 1rem;
   background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .form-title {
   text-align: center;
   margin-bottom: 0.8rem;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .form-grid {
@@ -77,6 +170,10 @@ h3 {
   flex-direction: column;
 }
 
+.full-width {
+  margin-top: 0.5rem;
+}
+
 label {
   margin-bottom: 0.1rem;
   font-weight: 500;
@@ -87,35 +184,44 @@ textarea {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
-  font-size: 0.8rem;
-  line-height: 1.2;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 textarea {
   resize: vertical;
-  min-height: 50px;
+  min-height: 100px;
 }
 
-.full-width {
-  margin-top: 0.5rem;
-  grid-column: 1 / -1;
-}
-
-button {
+.form-submit-btn {
   width: 100%;
   padding: 0.4rem;
   margin-top: 0.8rem;
   background-color: #4caf50;
-  color: white;
-  border: none;
   border-radius: 5px;
   font-weight: 600;
   font-size: 0.85rem;
-  cursor: pointer;
 }
 
-button:hover {
+.form-submit-btn:hover {
   background-color: #3d8d41;
+}
+
+/* OVERLAY BACKGROUND */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay {
+  backdrop-filter: blur(10px);
 }
 
 /* HIDE OR UNHIDE FORM */
@@ -124,13 +230,30 @@ button:hover {
   transition: all 0.3s ease-in-out;
 }
 
+#close-form-btn {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  padding: 0;
+  background-color: #ff3535;
+  font-weight: 400;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#close-form-btn:hover {
+  background-color: #c20000;
+}
+
 #toggle-form-btn {
-  display: block;
-  margin: 1rem auto;
+  justify-self: end;
+  margin: 1rem;
   padding: 0.5rem 1rem;
   background-color: #007bff;
   color: white;
-  max-width: 400px;
+  max-width: 100px;
   font-weight: bold;
   border: none;
   border-radius: 6px;
@@ -258,8 +381,23 @@ article p:not(.author, .genre) {
 }
 
 @media (max-width: 600px) {
+  .site-title {
+    flex-basis: 40%;
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+  }
+  .description {
+    padding: 1rem;
+    width: 60%;
+    font-size: 0.8rem;
+    letter-spacing: 0.6px;
+    line-height: 1.5;
+  }
   .form-grid {
     grid-template-columns: 1fr;
+  }
+  .form-group {
+    width: auto;
   }
 }
 

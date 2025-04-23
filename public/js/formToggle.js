@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
   const toggleBtn = document.getElementById('toggle-form-btn');
-  const form = document.getElementById('book-form');
+  const modal = document.getElementById('modal-overlay');
+  const closeForm = document.getElementById('close-form-btn');
 
   toggleBtn.addEventListener('click', () => {
-    form.classList.toggle('hidden');
-    toggleBtn.textContent = form.classList.contains('hidden')
-      ? 'Add Book'
-      : 'Hide Form';
+    modal.classList.toggle('hidden');
+    toggleBtn.classList.toggle('hidden');
+  });
+
+  closeForm.addEventListener('click', () => {
+    modal.classList.toggle('hidden');
+    toggleBtn.classList.toggle('hidden');
   });
 });

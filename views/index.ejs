@@ -17,56 +17,79 @@
 
   <body>
     <header>
-      <h1>Books Review</h1>
+      <nav class="navbar">
+        <ul class="navigation">
+          <li class="nav-item">BR</li>
+          <li class="nav-item">
+            <form action="search-book" method="GET" class="search-book">
+              <input type="text" name="search" id="search" placeholder="Search book by title"/>
+              <button type="submit" class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" fill-rule="evenodd" class="">
+                  <g>
+                    <path d="m13.691 15.105 6.102 6.102a.999.999 0 1 0 1.414-1.414l-6.101-6.102A6.972 6.972 0 0 0 16.5 9.499c0-3.863-3.136-7-7-7-3.863 0-7 3.137-7 7 0 3.864 3.137 7 7 7a6.965 6.965 0 0 0 4.191-1.394zM9.5 4.499c2.76 0 5 2.241 5 5 0 2.76-2.24 5-5 5-2.759 0-5-2.24-5-5 0-2.759 2.241-5 5-5z" fill="#ffffff" opacity="1" data-original="#000000" class="">
+                    </path>
+                  </g>
+                </svg>
+              </button>
+            </form>
+          </li>
+          <li class="nav-item">Filter</li>
+        </ul>
+        <button id="toggle-form-btn">Add Book</button>
+      </nav>
+      <div class="hero">
+        <h1 class="site-title">Books Review</h1>
+        <p class="description">This book review site lets you easily share and discover book reviews from fellow readers. Just add a book, drop your thoughts, and browse through different genres to find your next favorite read. Simple, clean, and made for book lovers.</p>
+      </div>
     </header>
 
     <main>
-      <button id="toggle-form-btn">Add Book</button>
-
-      <form action="add-book" method="POST" id="book-form" class="book-form hidden">
-        <h2 class="form-title">Add Book</h2>
-      
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="title">Book title</label>
-            <input type="text" id="title" name="title" required />
+      <div id="modal-overlay" class="modal-overlay hidden">
+        <form action="add-book" method="POST" id="book-form" class="book-form">
+          <button id="close-form-btn">x</button>
+          <h2 class="form-title">Add Book</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="title">Book title</label>
+              <input type="text" id="title" name="title" required />
+            </div>
+            <div class="form-group">
+              <label for="author">Author</label>
+              <input type="text" id="author" name="author" required />
+            </div>
+        
+            <div class="form-group">
+              <label for="isbn">ISBN</label>
+              <input type="text" id="isbn" name="isbn" required/>
+            </div>
+            <div class="form-group">
+              <label for="genre">Genre</label>
+              <input type="text" id="genre" name="genre" required/>
+            </div>
+        
+            <div class="form-group">
+              <label for="setting">Setting</label>
+              <input type="text" id="setting" name="setting" required/>
+            </div>
+            <div class="form-group">
+              <label for="readability">Readability</label>
+              <input type="text" id="readability" name="readability" required />
+            </div>
+        
+            <div class="form-group">
+              <label for="words">Key Words</label>
+              <input type="text" id="words" name="words" required/>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="author">Author</label>
-            <input type="text" id="author" name="author" required />
+        
+          <div class="form-group full-width">
+            <label for="summary">Summary</label>
+            <textarea id="summary" name="summary" required></textarea>
           </div>
-      
-          <div class="form-group">
-            <label for="isbn">ISBN</label>
-            <input type="text" id="isbn" name="isbn" required/>
-          </div>
-          <div class="form-group">
-            <label for="genre">Genre</label>
-            <input type="text" id="genre" name="genre" required/>
-          </div>
-      
-          <div class="form-group">
-            <label for="setting">Setting</label>
-            <input type="text" id="setting" name="setting" required/>
-          </div>
-          <div class="form-group">
-            <label for="readability">Readability</label>
-            <input type="text" id="readability" name="readability" required />
-          </div>
-      
-          <div class="form-group">
-            <label for="words">Key Words</label>
-            <input type="text" id="words" name="words" required/>
-          </div>
-        </div>
-      
-        <div class="form-group full-width">
-          <label for="summary">Summary</label>
-          <textarea id="summary" name="summary" required></textarea>
-        </div>
-      
-        <button type="submit">Add</button>
-      </form>
+        
+          <button class="form-submit-btn" type="submit">Add</button>
+        </form>
+      </div>
 
       <div class="books">
         <% booksData.map( bookData=> { %>

@@ -109,17 +109,33 @@ async function getFinalRedirectUrl(url) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// First Load
+// Pertama kali memuat website
 app.get('/', async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM books ORDER BY id DESC');
-    res.render('index.ejs', { booksData: result.rows }); // ← pakai result.rows langsung
+    res.render('index.ejs', { booksData: result.rows });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');
   }
 });
 
+// Mendapatkan data buku berdasarkan judul melalui fitur search
+app.get('/search-book', async (req, res) => {
+  const search = req.query.search;
+  try {
+    const result = await db.query(
+      'SELECT * FROM books WHERE title ILIKE $1 ORDER BY id DESC',
+      [`%${search}%`]
+    );
+    res.render('index.ejs', { booksData: result.rows });
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Menambahkan buku ke database melalui fitur add book
 app.post('/add-book', async (req, res) => {
   const { title, author, isbn, genre, setting, readability, words, summary } =
     req.body;
