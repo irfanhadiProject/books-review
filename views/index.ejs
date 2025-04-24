@@ -33,9 +33,94 @@
               </button>
             </form>
           </li>
-          <li class="nav-item">Filter</li>
+          <li class="nav-item filter-by genre-button">
+            <span class="filter-label">Genre</span>
+            <form action="filter-by" method="GET" class="genre-categories">
+              <ul class="all-genre">
+                <li>
+                  <button type="submit" name="genre" value="Adventure" class="genre-item">
+                    Adventure
+                  </button>
+                </li>
+                <li>
+                  <button type="submit" name="genre" value="Crime" class="genre-item">
+                    Crime
+                  </button>
+                </li>
+                <li>
+                  <button type="submit" name="genre" value="Fantasy" class="genre-item">
+                    Fantasy
+                  </button>
+                </li>
+                <li>
+                  <button type="submit" name="genre" value="Fiction" class="genre-item">
+                    Fiction
+                  </button>
+                </li>
+                <li>
+                  <button type="submit" name="genre" value="Mythology" class="genre-item">
+                    Mythology
+                  </button>
+                </li>
+                <li>
+                  <button type="submit" name="genre" value="Self Improvement" class="genre-item">
+                    Self Improvement
+                  </button>
+                </li>
+              </ul>
+            </form>
+          </li>
         </ul>
-        <button id="toggle-form-btn">Add Book</button>
+
+        <div class="add-book-button">
+          <button id="toggle-form-btn">Add Book</button>
+        </div>
+
+        <div class="dropdown-menu">
+          <button id="menu-toggle">☰ Menu</button>
+          <ul class="dropdown-content">
+            <li>
+              <button id="toggle-form-btn-mobile">Add Book</button>
+            </li>
+            <li class="filter-by-mobile">
+              <span class="filter-label-mobile">Genre</span>
+              <form action="filter-by" method="GET" class="genre-categories-mobile">
+                <ul class="all-genre">
+                  <li>
+                    <button type="submit" name="genre" value="Adventure" class="genre-item">
+                      Adventure
+                    </button>
+                  </li>
+                  <li>
+                    <button type="submit" name="genre" value="Crime" class="genre-item">
+                      Crime
+                    </button>
+                  </li>
+                  <li>
+                    <button type="submit" name="genre" value="Fantasy" class="genre-item">
+                      Fantasy
+                    </button>
+                  </li>
+                  <li>
+                    <button type="submit" name="genre" value="Fiction" class="genre-item">
+                      Fiction
+                    </button>
+                  </li>
+                  <li>
+                    <button type="submit" name="genre" value="Mythology" class="genre-item">
+                      Mythology
+                    </button>
+                  </li>
+                  <li>
+                    <button type="submit" name="genre" value="Self Improvement" class="genre-item">
+                      Self Improvement
+                    </button>
+                  </li>
+                </ul>
+              </form>
+            </li>
+          </ul>
+        </div>
       </nav>
       <div class="hero">
         <h1 class="site-title">Books Review</h1>
@@ -91,43 +176,49 @@
         </form>
       </div>
 
-      <div class="books">
-        <% booksData.map( bookData=> { %>
-        <article>
-          <h2 class="book-title"><%=bookData.title%></h2>
-          <p class="genre"><%=bookData.genre%></p>
-          <p class="author"><%=bookData.author%></p>
-          <img src=<%=bookData.cover%> alt="book cover" class="book-cover" />
-  
-          <div class="filler1"></div>
-  
-          <div class="setting">
-            <h3>Setting</h3>
-            <p><%=bookData.setting%></p>
-          </div>
-  
-          <div class="filler2"></div>
-  
-          <div class="readability">
-            <h3>Readability</h3>
-            <p><%=bookData.readability%></p>
-          </div>
-  
-          <div class="few-words">
-            <h3>In a few words</h3>
-            <p><%=bookData.words%></p>
-          </div>
-  
-          <div class="summary">
-            <h3>Summary</h3>
-            <div>
+      <% if (booksData && booksData.length > 0) { %>
+        <div class="books">
+          <% booksData.map( bookData=> { %>
+          <article>
+            <h2 class="book-title"><%=bookData.title%></h2>
+            <p class="genre"><%=bookData.genre%></p>
+            <p class="author"><%=bookData.author%></p>
+            <img src=<%=bookData.cover%> alt="book cover" class="book-cover" />
+    
+            <div class="filler1"></div>
+    
+            <div class="setting">
+              <h3>Setting</h3>
+              <p><%=bookData.setting%></p>
+            </div>
+    
+            <div class="filler2"></div>
+    
+            <div class="readability">
+              <h3>Readability</h3>
+              <p><%=bookData.readability%></p>
+            </div>
+    
+            <div class="few-words">
+              <h3>In a few words</h3>
+              <p><%=bookData.words%></p>
+            </div>
+    
+            <div class="summary">
+              <h3>Summary</h3>
               <p>
                 <%=bookData.summary%>
               </p>
+            </div>
+          </article>
+          <% }) %>
+        </div>
+        <% } else { %>
+          <div class="no-books">
+            <p>Oops... no books found</p>
           </div>
-        </article>
-        <% }) %>
-      </div>
+        <% } %> 
+    
     </main>
     <footer>
       <p>© Irfan Hadi 2025</p>

@@ -135,6 +135,21 @@ app.get('/search-book', async (req, res) => {
   }
 });
 
+// Mendapatkan data buku berdasarkan genre melalui fitur filter genre
+app.get('/filter-by', async (req, res) => {
+  const genre = req.query.genre;
+  try {
+    const result = await db.query(
+      'SELECT * FROM books WHERE genre ILIKE $1 ORDER BY id DESC',
+      [`%${genre}%`]
+    );
+    res.render('index.ejs', { booksData: result.rows });
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 // Menambahkan buku ke database melalui fitur add book
 app.post('/add-book', async (req, res) => {
   const { title, author, isbn, genre, setting, readability, words, summary } =

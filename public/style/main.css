@@ -66,6 +66,10 @@ h3 {
   letter-spacing: 1px;
 }
 
+li {
+  list-style: none;
+}
+
 button {
   cursor: pointer;
   transition: all 0.3s;
@@ -95,8 +99,47 @@ button:hover {
 }
 
 .nav-item {
-  list-style: none;
   padding: 0px 1rem;
+}
+
+.filter-label {
+  transition: all 0.2s ease;
+}
+
+.filter-by:hover .genre-categories {
+  display: block;
+}
+
+.filter-by:hover .filter-label {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.genre-categories {
+  display: none;
+  position: absolute;
+  top: 70%;
+  background-color: #222831e8;
+  backdrop-filter: blur(2px);
+  padding: 10px;
+  border: 1px solid white;
+  z-index: 2;
+}
+
+.all-genre {
+  display: grid;
+  grid-template: 1fr / 1fr 1fr;
+  padding: 0;
+  gap: 10px;
+}
+
+.genre-item {
+  background-color: transparent;
+  font-size: 1rem;
+}
+
+.genre-item:hover {
+  transform: scale(1.05);
 }
 
 .search-book {
@@ -106,6 +149,74 @@ button:hover {
 
 .search-btn {
   background-color: transparent;
+}
+
+/* HIDE DROPDOWN MENU BY DEFAULT */
+.dropdown-menu {
+  display: none;
+  position: relative;
+  justify-self: end;
+  align-content: center;
+  padding: 20px;
+}
+
+#menu-toggle {
+  background-color: transparent;
+}
+
+.dropdown-content {
+  width: 80%;
+  background-color: #222831e8;
+  backdrop-filter: blur(2px);
+  border: 1px solid white;
+  display: none;
+  position: absolute;
+  top: 60%;
+  right: 5%;
+  padding: 0.8rem;
+  z-index: 99;
+}
+
+.dropdown-content button {
+  background-color: transparent;
+}
+
+.filter-label-mobile {
+  font-size: 1rem;
+}
+
+#toggle-form-btn-mobile {
+  padding: 0.2rem 0.5rem;
+  background-color: #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#toggle-form-btn-mobile:hover {
+  background-color: #0056b3;
+}
+
+.dropdown-menu:hover .dropdown-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.genre-categories-mobile {
+  display: none;
+  position: absolute;
+  right: 70%;
+  top: 50%;
+  background-color: #222831e8;
+  backdrop-filter: blur(2px);
+  padding: 10px;
+  border: 1px solid white;
+  z-index: 2;
+}
+
+.filter-by-mobile:hover .genre-categories-mobile{
+  display: block;
 }
 
 .hero {
@@ -218,6 +329,7 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 }
 
 .modal-overlay {
@@ -247,8 +359,11 @@ textarea {
   background-color: #c20000;
 }
 
-#toggle-form-btn {
+.add-book-button {
   justify-self: end;
+}
+
+#toggle-form-btn {
   margin: 1rem;
   padding: 0.5rem 1rem;
   background-color: #007bff;
@@ -355,6 +470,16 @@ article p:not(.author, .genre) {
   grid-row: 6;
 }
 
+.no-books {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  height: 20vh;
+}
+
 /* RESPONSIVE DISPLAY */
 @media (min-width: 2000px) {
   .books {
@@ -392,6 +517,14 @@ article p:not(.author, .genre) {
     font-size: 0.8rem;
     letter-spacing: 0.6px;
     line-height: 1.5;
+  }
+  .genre-button,
+  .add-book-button {
+    display: none;
+  }
+
+  .dropdown-menu {
+    display: block;
   }
   .form-grid {
     grid-template-columns: 1fr;
