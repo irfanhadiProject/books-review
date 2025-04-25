@@ -37,9 +37,9 @@ footer {
 }
 
 header {
-  background-image: url('/assets/books-picture.jpg'); /* Ganti dengan path gambarmu */
-  background-size: cover; /* Menyesuaikan gambar agar menutupi seluruh div */
-  background-position: center; /* Posisi gambar di tengah */
+  background-image: url('/assets/books-picture.jpg');  
+  background-size: cover; 
+  background-position: center;
   background-repeat: no-repeat;
   width: 100%;
   min-height: 50vh;
@@ -85,10 +85,14 @@ button:hover {
 .navbar {
   position: fixed;
   display: grid;
-  grid-template: 1fr / 4fr 1fr;
+  grid-template: 1fr / 3fr 1fr;
   background-color: #393e46;
   width: 100%;
   z-index: 1;
+}
+
+.website-logo {
+  width: 36px;
 }
 
 .navigation {
@@ -145,6 +149,10 @@ button:hover {
 .search-book {
   display: flex;
   align-items: center;
+}
+
+.search-book > input {
+  width: 100%;
 }
 
 .search-btn {
@@ -361,6 +369,7 @@ textarea {
 
 .add-book-button {
   justify-self: end;
+  align-self: center;
 }
 
 #toggle-form-btn {
@@ -506,6 +515,7 @@ article p:not(.author, .genre) {
 }
 
 @media (max-width: 600px) {
+  
   .site-title {
     flex-basis: 40%;
     font-size: 1.5rem;
@@ -535,6 +545,11 @@ article p:not(.author, .genre) {
 }
 
 @media (max-width: 500px) {
+  .dropdown-menu {
+    padding: 0;
+    padding-right: 20px;
+  }
+
   .books {
     padding: 0px;
   }
