@@ -25,7 +25,7 @@ A simple web-based book review site that allows users to add and view book revie
 
 ---
 
-## 🚀 Installation
+## 🚀 Run Locally
 
 1. **Clone repo:**
    ```bash
