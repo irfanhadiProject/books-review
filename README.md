@@ -1,6 +1,6 @@
-# 📚 Book Reviews
+# 📚 Books Review
 
-A simple web-based book review site that allows users to add and view book reviews. Created as a personal project to learn full-stack web development.
+A simple web-based books review site that allows users to add and view books review. Created as a personal project to learn full-stack web development.
 
 🔗 **Live Demo**: [https://book-review-production-4e3d.up.railway.app/](https://book-review-production-4e3d.up.railway.app/)
 
@@ -29,7 +29,7 @@ A simple web-based book review site that allows users to add and view book revie
 
 1. **Clone repo:**
    ```bash
-   git clone https://github.com/username/book-reviews.git
+   git clone https://github.com/irfanhadiProject/books-review.git
    cd book-reviews
    
 2. **Install dependencies:**
