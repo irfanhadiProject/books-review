@@ -52,3 +52,12 @@ A simple web-based books review site that allows users to add and view books rev
 6. **Open in browser**
    ```bash
    http://localhost:3000
+
+7. **Folder structure:**
+      - books-review/
+      - ├── public/            # Static files accessible by the client (served directly)
+      - │   ├── assets/        # Static assets like book covers, logos, etc.
+      - │   ├── js/            # Client-side JavaScript files
+      - │   └── style/         # CSS stylesheets for styling the frontend
+      - ├── views/             # EJS templates or HTML views rendered by the server
+      - └── index.js           # Main server entry point (Express.js application)
