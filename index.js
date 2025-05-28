@@ -1,4 +1,5 @@
 import express from 'express';
+import session from 'express-session';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import pg from 'pg';
@@ -12,9 +13,7 @@ dotenv.config({
 const app = express();
 const port = process.env.PORT;
 const apiURL = process.env.API_URL;
-
 const { Client } = pg;
-
 let db;
 
 if (process.env.DATABASE_URL) {
@@ -31,14 +30,33 @@ if (process.env.DATABASE_URL) {
     port: process.env.DB_PORT,
   });
 }
-
 db.connect();
+
+app.set('view engine', 'ejs');
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use(
+  session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+function requireLogin(req, res, next) {
+  if (req.session && req.session.loggedIn) {
+    next(); // lanjut ke route berikutnya
+  } else {
+    res.redirect('/login');
+  }
+}
 
 async function isValidImage(url) {
   try {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
 
-    // Periksa apakah gambar berukuran 1x1px atau tidak valid
+    // Periksa apakah konten berupa gambar
     const contentType = response.headers['content-type'];
     if (!contentType || !contentType.startsWith('image')) {
       return false; // Bukan gambar
@@ -105,19 +123,40 @@ async function getFinalRedirectUrl(url) {
   }
 }
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
 // Pertama kali memuat website
-app.get('/', async (req, res) => {
+app.get('/', requireLogin, async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM books ORDER BY id DESC');
-    res.render('index.ejs', { booksData: result.rows });
+    res.render('index', { booksData: result.rows });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');
   }
+});
+
+// Tampilkan halaman login
+app.get('/login', (req, res) => {
+  res.render('login', { error: null });
+});
+
+// Route proses login
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Cek username dan password
+  if (username === 'admin' && password === '12345') {
+    req.session.loggedIn = true;
+    req.session.username = username;
+    res.redirect('/');
+  } else {
+    res.render('login', { error: 'Username atau password salah!' });
+  }
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
 });
 
 // Mendapatkan data buku berdasarkan judul melalui fitur search
@@ -128,7 +167,7 @@ app.get('/search-book', async (req, res) => {
       'SELECT * FROM books WHERE title ILIKE $1 ORDER BY id DESC',
       [`%${search}%`]
     );
-    res.render('index.ejs', { booksData: result.rows });
+    res.render('index', { booksData: result.rows });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');
@@ -143,7 +182,7 @@ app.get('/filter-by', async (req, res) => {
       'SELECT * FROM books WHERE genre ILIKE $1 ORDER BY id DESC',
       [`%${genre}%`]
     );
-    res.render('index.ejs', { booksData: result.rows });
+    res.render('index', { booksData: result.rows });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');

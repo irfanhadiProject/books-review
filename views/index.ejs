@@ -19,115 +19,77 @@
   <body>
     <header>
       <nav class="navbar">
-        <ul class="navigation">
-          <li class="nav-item">
-            <img src="assets/books_review_icon.png" class="website-logo"/>
-          </li>
-          <li class="nav-item">
+        <div class="search-box">
+          <div class="nav-item website-logo">
+            <img src="assets/books_review_icon.png" />
+          </div>
+
+          <div class="nav-item">
             <form action="search-book" method="GET" class="search-book">
-              <input type="text" name="search" id="search" placeholder="Search book by title"/>
+              <input
+                type="text"
+                name="search"
+                id="search"
+                placeholder="Search book by title"
+              />
               <button type="submit" class="search-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" fill-rule="evenodd" class="">
-                  <g>
-                    <path d="m13.691 15.105 6.102 6.102a.999.999 0 1 0 1.414-1.414l-6.101-6.102A6.972 6.972 0 0 0 16.5 9.499c0-3.863-3.136-7-7-7-3.863 0-7 3.137-7 7 0 3.864 3.137 7 7 7a6.965 6.965 0 0 0 4.191-1.394zM9.5 4.499c2.76 0 5 2.241 5 5 0 2.76-2.24 5-5 5-2.759 0-5-2.24-5-5 0-2.759 2.241-5 5-5z" fill="#ffffff" opacity="1" data-original="#000000" class="">
-                    </path>
-                  </g>
-                </svg>
+                <img src="assets/search-button.svg" />
               </button>
             </form>
-          </li>
+          </div>
+        </div>
+
+        <ul class="navigation">
           <li class="nav-item filter-by genre-button">
             <span class="filter-label">Genre</span>
             <form action="filter-by" method="GET" class="genre-categories">
-              <ul class="all-genre">
-                <li>
-                  <button type="submit" name="genre" value="Adventure" class="genre-item">
-                    Adventure
-                  </button>
-                </li>
-                <li>
-                  <button type="submit" name="genre" value="Crime" class="genre-item">
-                    Crime
-                  </button>
-                </li>
-                <li>
-                  <button type="submit" name="genre" value="Fantasy" class="genre-item">
-                    Fantasy
-                  </button>
-                </li>
-                <li>
-                  <button type="submit" name="genre" value="Fiction" class="genre-item">
-                    Fiction
-                  </button>
-                </li>
-                <li>
-                  <button type="submit" name="genre" value="Mythology" class="genre-item">
-                    Mythology
-                  </button>
-                </li>
-                <li>
-                  <button type="submit" name="genre" value="Self Improvement" class="genre-item">
-                    Self Improvement
-                  </button>
-                </li>
-              </ul>
+              <%- include('partials/genre') %>
             </form>
           </li>
+
+          <li class="nav-item">
+            <div class="add-book-button">
+              <button id="toggle-form-btn">Add Book</button>
+            </div>
+          </li>
+
+          <li class="nav-item">
+            <form action="logout">
+              <button type="submit">Logout</button>
+            </form>
+          </li>
+
+          <li class="nav-item">
+            <div class="dropdown-menu">
+              <button id="menu-toggle">☰ Menu</button>
+              <ul class="dropdown-content">
+                <li>
+                  <button id="toggle-form-btn-mobile">Add Book</button>
+                </li>
+                <li class="filter-by-mobile">
+                  <span class="filter-label-mobile">Genre</span>
+                  <form
+                    action="filter-by"
+                    method="GET"
+                    class="genre-categories-mobile"
+                  >
+                    <%- include('partials/genre') %>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          </li>
         </ul>
-
-        <div class="add-book-button">
-          <button id="toggle-form-btn">Add Book</button>
-        </div>
-
-        <div class="dropdown-menu">
-          <button id="menu-toggle">☰ Menu</button>
-          <ul class="dropdown-content">
-            <li>
-              <button id="toggle-form-btn-mobile">Add Book</button>
-            </li>
-            <li class="filter-by-mobile">
-              <span class="filter-label-mobile">Genre</span>
-              <form action="filter-by" method="GET" class="genre-categories-mobile">
-                <ul class="all-genre">
-                  <li>
-                    <button type="submit" name="genre" value="Adventure" class="genre-item">
-                      Adventure
-                    </button>
-                  </li>
-                  <li>
-                    <button type="submit" name="genre" value="Crime" class="genre-item">
-                      Crime
-                    </button>
-                  </li>
-                  <li>
-                    <button type="submit" name="genre" value="Fantasy" class="genre-item">
-                      Fantasy
-                    </button>
-                  </li>
-                  <li>
-                    <button type="submit" name="genre" value="Fiction" class="genre-item">
-                      Fiction
-                    </button>
-                  </li>
-                  <li>
-                    <button type="submit" name="genre" value="Mythology" class="genre-item">
-                      Mythology
-                    </button>
-                  </li>
-                  <li>
-                    <button type="submit" name="genre" value="Self Improvement" class="genre-item">
-                      Self Improvement
-                    </button>
-                  </li>
-                </ul>
-              </form>
-            </li>
-          </ul>
-        </div>
       </nav>
+
       <div class="hero">
         <h1 class="site-title">Books Review</h1>
-        <p class="description">This book review site lets you easily share and discover book reviews from fellow readers. Just add a book, drop your thoughts, and browse through different genres to find your next favorite read. Simple, clean, and made for book lovers.</p>
+        <p class="description">
+          This book review site lets you easily share and discover book reviews
+          from fellow readers. Just add a book, drop your thoughts, and browse
+          through different genres to find your next favorite read. Simple,
+          clean, and made for book lovers.
+        </p>
       </div>
     </header>
 
@@ -145,88 +107,89 @@
               <label for="author">Author</label>
               <input type="text" id="author" name="author" required />
             </div>
-        
+
             <div class="form-group">
               <label for="isbn">ISBN</label>
-              <input type="text" id="isbn" name="isbn" required/>
+              <input type="text" id="isbn" name="isbn" required />
             </div>
             <div class="form-group">
               <label for="genre">Genre</label>
-              <input type="text" id="genre" name="genre" required/>
+              <input type="text" id="genre" name="genre" required />
             </div>
-        
+
             <div class="form-group">
               <label for="setting">Setting</label>
-              <input type="text" id="setting" name="setting" required/>
+              <input type="text" id="setting" name="setting" required />
             </div>
             <div class="form-group">
               <label for="readability">Readability</label>
               <input type="text" id="readability" name="readability" required />
             </div>
-        
+
             <div class="form-group">
               <label for="words">Key Words</label>
-              <input type="text" id="words" name="words" required/>
+              <input type="text" id="words" name="words" required />
             </div>
           </div>
-        
+
           <div class="form-group full-width">
             <label for="summary">Summary</label>
             <textarea id="summary" name="summary" required></textarea>
           </div>
-        
+
           <button class="form-submit-btn" type="submit">Add</button>
         </form>
       </div>
 
       <% if (booksData && booksData.length > 0) { %>
-        <div class="books">
-          <% booksData.map( bookData=> { %>
-          <article>
-            <h2 class="book-title"><%=bookData.title%></h2>
-            <p class="genre"><%=bookData.genre%></p>
-            <p class="author"><%=bookData.author%></p>
-            <img src=<%=bookData.cover%> alt="book cover" class="book-cover" />
-    
-            <div class="filler1"></div>
-    
-            <div class="setting">
-              <h3>Setting</h3>
-              <p><%=bookData.setting%></p>
-            </div>
-    
-            <div class="filler2"></div>
-    
-            <div class="readability">
-              <h3>Readability</h3>
-              <p><%=bookData.readability%></p>
-            </div>
-    
-            <div class="few-words">
-              <h3>In a few words</h3>
-              <p><%=bookData.words%></p>
-            </div>
-    
-            <div class="summary">
-              <h3>Summary</h3>
-              <p>
-                <%=bookData.summary%>
-              </p>
-            </div>
-          </article>
-          <% }) %>
-        </div>
-        <% } else { %>
-          <div class="no-books">
-            <p>Oops... no books found</p>
+      <div class="books">
+        <% booksData.map( bookData=> { %>
+        <article>
+          <h2 class="book-title"><%= bookData.title %></h2>
+          <p class="genre"><%= bookData.genre %></p>
+          <p class="author"><%= bookData.author %></p>
+          <img
+            alt="book cover"
+            class="book-cover"
+            src="<%= bookData.cover %>"
+          />
+
+          <div class="filler1"></div>
+
+          <div class="setting">
+            <h3>Setting</h3>
+            <p><%= bookData.setting %></p>
           </div>
-        <% } %> 
-    
+
+          <div class="filler2"></div>
+
+          <div class="readability">
+            <h3>Readability</h3>
+            <p><%= bookData.readability %></p>
+          </div>
+
+          <div class="few-words">
+            <h3>In a few words</h3>
+            <p><%= bookData.words %></p>
+          </div>
+
+          <div class="summary">
+            <h3>Summary</h3>
+            <p><%= bookData.summary %></p>
+          </div>
+        </article>
+        <% }) %>
+      </div>
+      <% } else { %>
+      <div class="no-books">
+        <p>Oops... no books found</p>
+      </div>
+      <% } %>
     </main>
     <footer>
       <p>© Irfan Hadi 2025</p>
     </footer>
 
-    <script src="/js/formToggle.js"></script> 
+    <script src="/js/formToggle.js"></script>
   </body>
 </html>
