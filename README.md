@@ -20,7 +20,6 @@ A simple web-based books review site that allows users to add and view books rev
 - View list of books and reviews
 - Add new reviews
 - View review details
-- Update and delete reviews
 - Simple and responsive design
 
 ---
@@ -38,12 +37,18 @@ A simple web-based books review site that allows users to add and view books rev
    
 3. **Set up PostgreSQL database & environment:**
    - Create a new database
-   - Set up the .env file (see below)
+   - Set up the .env file
   
 4. **Example .env file**
    ```bash
-   DATABASE_URL=postgres://user:password@localhost:5432/dbname
    PORT=3000
+   API_URL=https://covers.openlibrary.org/b/isbn
+   
+   DB_USER=your_db_user
+   DB_HOST=localhost
+   DB_NAME=bookreview
+   DB_PASSWORD=your_password
+   DB_PORT=5432
 
 5. **Start the server**
    ```bash
