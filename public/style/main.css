@@ -491,6 +491,27 @@ article p:not(.author, .genre) {
   height: 20vh;
 }
 
+/* LOGIN PAGE */
+.login,
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login {
+  height: 50vh;
+  justify-content: space-evenly;
+}
+
+.login-form label {
+  display: inline-block;
+  width: 100px;
+  margin-bottom: 1rem;
+}
+
 /* RESPONSIVE DISPLAY */
 @media (min-width: 2000px) {
   .books {

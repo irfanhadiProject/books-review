@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import ejsLayouts from 'express-ejs-layouts';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import pg from 'pg';
@@ -36,6 +37,7 @@ app.set('view engine', 'ejs');
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(ejsLayouts);
 app.use(
   session({
     secret: 'secret-key',
@@ -127,7 +129,13 @@ async function getFinalRedirectUrl(url) {
 app.get('/', requireLogin, async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM books ORDER BY id DESC');
-    res.render('index', { booksData: result.rows });
+    res.render('pages/home', {
+      layout: 'layout',
+      title: 'Books Review',
+      showHeader: true,
+      showFooter: true,
+      booksData: result.rows,
+    });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');
@@ -136,7 +144,13 @@ app.get('/', requireLogin, async (req, res) => {
 
 // Tampilkan halaman login
 app.get('/login', (req, res) => {
-  res.render('login', { error: null });
+  res.render('pages/login', {
+    layout: 'layout',
+    title: 'Login',
+    showHeader: false,
+    showFooter: false,
+    error: null,
+  });
 });
 
 // Route proses login
@@ -149,7 +163,13 @@ app.post('/login', (req, res) => {
     req.session.username = username;
     res.redirect('/');
   } else {
-    res.render('login', { error: 'Username atau password salah!' });
+    res.render('pages/login', {
+      layout: 'layout',
+      title: 'Login',
+      showHeader: false,
+      showFooter: false,
+      error: 'Username atau password salah!',
+    });
   }
 });
 

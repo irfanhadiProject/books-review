@@ -1,0 +1,75 @@
+<header>
+  <nav class="navbar">
+    <div class="search-box">
+      <div class="nav-item website-logo">
+        <img src="assets/books_review_icon.png" />
+      </div>
+
+      <div class="nav-item">
+        <form action="search-book" method="GET" class="search-book">
+          <input
+            type="text"
+            name="search"
+            id="search"
+            placeholder="Search book by title"
+          />
+          <button type="submit" class="search-btn">
+            <img src="assets/search-button.svg" />
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <ul class="navigation">
+      <li class="nav-item filter-by genre-button">
+        <span class="filter-label">Genre</span>
+        <form action="filter-by" method="GET" class="genre-categories">
+          <%- include('genre') %>
+        </form>
+      </li>
+
+      <li class="nav-item">
+        <div class="add-book-button">
+          <button id="toggle-form-btn">Add Book</button>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <form action="logout">
+          <button type="submit">Logout</button>
+        </form>
+      </li>
+
+      <li class="nav-item">
+        <div class="dropdown-menu">
+          <button id="menu-toggle">☰ Menu</button>
+          <ul class="dropdown-content">
+            <li>
+              <button id="toggle-form-btn-mobile">Add Book</button>
+            </li>
+            <li class="filter-by-mobile">
+              <span class="filter-label-mobile">Genre</span>
+              <form
+                action="filter-by"
+                method="GET"
+                class="genre-categories-mobile"
+              >
+                <%- include('genre') %>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <h1 class="site-title">Books Review</h1>
+    <p class="description">
+      This book review site lets you easily share and discover book reviews from
+      fellow readers. Just add a book, drop your thoughts, and browse through
+      different genres to find your next favorite read. Simple, clean, and made
+      for book lovers.
+    </p>
+  </div>
+</header>
