@@ -1,79 +1,84 @@
-<div id="modal-overlay" class="modal-overlay hidden">
+<div id="modal-overlay" class="modal hidden">
   <form action="add-book" method="POST" id="book-form" class="book-form">
-    <button id="close-form-btn">x</button>
-    <h2 class="form-title">Add Book</h2>
-    <div class="form-grid">
-      <div class="form-group">
+    <button id="close-form-btn" class="book-form__close-btn">x</button>
+    <h2 class="book-form__title">Add Book</h2>
+
+    <div class="book-form__grid">
+      <div class="book-form__group">
         <label for="title">Book title</label>
         <input type="text" id="title" name="title" required />
       </div>
-      <div class="form-group">
+      <div class="book-form__group">
         <label for="author">Author</label>
         <input type="text" id="author" name="author" required />
       </div>
 
-      <div class="form-group">
+      <div class="book-form__group">
         <label for="isbn">ISBN</label>
         <input type="text" id="isbn" name="isbn" required />
       </div>
-      <div class="form-group">
+      <div class="book-form__group">
         <label for="genre">Genre</label>
         <input type="text" id="genre" name="genre" required />
       </div>
 
-      <div class="form-group">
+      <div class="book-form__group">
         <label for="setting">Setting</label>
         <input type="text" id="setting" name="setting" required />
       </div>
-      <div class="form-group">
+      <div class="book-form__group">
         <label for="readability">Readability</label>
         <input type="text" id="readability" name="readability" required />
       </div>
 
-      <div class="form-group">
+      <div class="book-form__group">
         <label for="words">Key Words</label>
         <input type="text" id="words" name="words" required />
       </div>
     </div>
 
-    <div class="form-group full-width">
+    <div class="book-form__group book-form__group--full">
       <label for="summary">Summary</label>
       <textarea id="summary" name="summary" required></textarea>
     </div>
 
-    <button class="form-submit-btn" type="submit">Add</button>
+    <button class="book-form__submit-btn" type="submit">Add</button>
   </form>
 </div>
 
 <% if (booksData && booksData.length > 0) { %>
-<div class="books">
+<div class="book-list">
   <% booksData.map( bookData=> { %>
-  <article>
-    <h2 class="book-title"><%= bookData.title %></h2>
-    <p class="genre"><%= bookData.genre %></p>
-    <p class="author"><%= bookData.author %></p>
-    <img alt="book cover" class="book-cover" src="<%= bookData.cover %>" />
+  <article class="book-card">
+    <h2 class="book-card__title"><%= bookData.title %></h2>
+    <p class="book-card__genre"><%= bookData.genre %></p>
+    <p class="book-card__author"><%= bookData.author %></p>
+    <img
+      alt="book cover"
+      class="book-card__cover"
+      src="<%= bookData.cover %>"
+    />
 
-    <div class="filler1"></div>
+    <div class="book-card__gap-right"></div>
 
-    <div class="setting">
+    <div class="book-card__setting">
       <h3>Setting</h3>
       <p><%= bookData.setting %></p>
     </div>
 
-    <div class="filler2"></div>
+    <div class="book-card__spacer-side"></div>
 
-    <div class="readability">
+    <div class="book-card__readability">
       <h3>Readability</h3>
       <p><%= bookData.readability %></p>
     </div>
 
-    <div class="few-words">
+    <div class="book-card__keywords">
       <h3>In a few words</h3>
       <p><%= bookData.words %></p>
     </div>
 
-    <div class="summary">
+    <div class="book-card__summary">
       <h3>Summary</h3>
       <p><%= bookData.summary %></p>
     </div>
@@ -81,7 +86,7 @@
   <% }) %>
 </div>
 <% } else { %>
-<div class="no-books">
+<div class="book-list--empty">
   <p>Oops... no books found</p>
 </div>
 <% } %>

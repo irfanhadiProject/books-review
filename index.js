@@ -187,7 +187,13 @@ app.get('/search-book', async (req, res) => {
       'SELECT * FROM books WHERE title ILIKE $1 ORDER BY id DESC',
       [`%${search}%`]
     );
-    res.render('index', { booksData: result.rows });
+    res.render('pages/home', {
+      layout: 'layout',
+      title: 'Books Review',
+      showHeader: true,
+      showFooter: true,
+      booksData: result.rows,
+    });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');
@@ -202,7 +208,13 @@ app.get('/filter-by', async (req, res) => {
       'SELECT * FROM books WHERE genre ILIKE $1 ORDER BY id DESC',
       [`%${genre}%`]
     );
-    res.render('index', { booksData: result.rows });
+    res.render('pages/home', {
+      layout: 'layout',
+      title: 'Books Review',
+      showHeader: true,
+      showFooter: true,
+      booksData: result.rows,
+    });
   } catch (err) {
     console.error('Error executing query', err.stack);
     res.status(500).send('Internal Server Error');
