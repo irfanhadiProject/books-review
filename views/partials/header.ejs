@@ -1,81 +1,29 @@
 <header>
-  <nav class="header__navbar">
-    <div class="header__search-box">
-      <div class="navbar__item navbar__item--logo">
-        <img src="assets/books_review_icon.png" alt="Website logo" />
+  <nav class="navbar__wrapper">
+    <div class="navbar__container">
+      <div class="navbar__logo">
+        <img
+          src="assets/books_review_icon.png"
+          alt="Website logo"
+          class="navbar__logo-img"
+        />
       </div>
 
-      <div class="navbar__item navbar__item--search">
-        <form action="search-book" method="GET" class="search-form">
-          <input
-            type="text"
-            name="search"
-            id="search"
-            class="search-form__input"
-            placeholder="Search book by title"
-          />
-          <button type="submit" class="search-form__btn">
-            <img src="assets/search-button.svg" alt="Search" />
-          </button>
-        </form>
-      </div>
+      <ul class="navbar__menu">
+        <li class="navbar__menu-item">
+          <a href="/" class="navbar__menu-link">Home</a>
+        </li>
+
+        <li class="navbar__menu-item">
+          <a href="/books" class="navbar__menu-link">Books</a>
+        </li>
+
+        <li class="navbar__menu-item">
+          <form action="logout" class="navbar__logout-form">
+            <button type="submit" class="navbar__logout-btn">Logout</button>
+          </form>
+        </li>
+      </ul>
     </div>
-
-    <ul class="navbar__menu">
-      <li class="navbar__item navbar__item--genre">
-        <span class="genre__label">Genre</span>
-        <form action="filter-by" method="GET" class="genre__form">
-          <%- include('genre') %>
-        </form>
-      </li>
-
-      <li class="navbar__item navbar__item--add-book">
-        <div class="add-book">
-          <button id="toggle-form-btn" class="add-book_btn">Add Book</button>
-        </div>
-      </li>
-
-      <li class="navbar__item navbar__item--logout">
-        <form action="logout" class="logout-form">
-          <button type="submit" class="logout-form__btn">Logout</button>
-        </form>
-      </li>
-
-      <li class="navbar__item navbar__item--dropdown">
-        <div class="dropdown">
-          <button id="menu-toggle" class="dropdown__toggle-btn">☰ Menu</button>
-          <ul class="dropdown__content">
-            <li>
-              <button
-                id="toggle-form-btn-mobile"
-                class="dropdown__add-book-btn"
-              >
-                Add Book
-              </button>
-            </li>
-            <li class="dropdown__genre">
-              <span class="dropdown__genre-label">Genre</span>
-              <form
-                action="filter-by"
-                method="GET"
-                class="dropdown__genre-form"
-              >
-                <%- include('genre') %>
-              </form>
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
   </nav>
-
-  <div class="header__hero">
-    <h1 class="hero__title">Books Review</h1>
-    <p class="hero__description">
-      This book review site lets you easily share and discover book reviews from
-      fellow readers. Just add a book, drop your thoughts, and browse through
-      different genres to find your next favorite read. Simple, clean, and made
-      for book lovers.
-    </p>
-  </div>
 </header>

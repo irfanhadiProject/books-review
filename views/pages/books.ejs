@@ -1,0 +1,78 @@
+<%- include('../partials/modal') %>
+
+<div class="books-toolbar">
+  <div class="books-toolbar__genre">
+    <span class="books-toolbar__genre-label">Genre</span>
+    <form action="filter-by" method="GET" class="books-toolbar__genre-form">
+      <%- include('../partials/genre') %>
+    </form>
+  </div>
+
+  <div class="books-toolbar__add">
+    <div class="add-book">
+      <button id="toggle-form-btn" class="books-toolbar__add-btn">
+        Add Book
+      </button>
+    </div>
+  </div>
+
+  <div class="books-toolbar__search">
+    <form action="search-book" method="GET" class="books-toolbar__search-form">
+      <input
+        type="text"
+        name="search"
+        id="search"
+        class="books-toolbar__search-input"
+        placeholder="Search book by title"
+      />
+      <button type="submit" class="books-toolbar__search-btn">
+        <img src="assets/search-button.svg" alt="Search" />
+      </button>
+    </form>
+  </div>
+</div>
+
+<% if (booksData && booksData.length > 0) { %>
+<div class="book-list">
+  <% booksData.map( bookData=> { %>
+  <article class="book-card">
+    <h2 class="book-card__title"><%= bookData.title %></h2>
+    <p class="book-card__genre"><%= bookData.genre %></p>
+    <p class="book-card__author"><%= bookData.author %></p>
+    <img
+      alt="book cover"
+      class="book-card__cover"
+      src="<%= bookData.cover %>"
+    />
+
+    <div class="book-card__gap-right"></div>
+
+    <div class="book-card__setting">
+      <h3>Setting</h3>
+      <p><%= bookData.setting %></p>
+    </div>
+
+    <div class="book-card__spacer-side"></div>
+
+    <div class="book-card__readability">
+      <h3>Readability</h3>
+      <p><%= bookData.readability %></p>
+    </div>
+
+    <div class="book-card__keywords">
+      <h3>In a few words</h3>
+      <p><%= bookData.words %></p>
+    </div>
+
+    <div class="book-card__summary">
+      <h3>Summary</h3>
+      <p><%= bookData.summary %></p>
+    </div>
+  </article>
+  <% }) %>
+</div>
+<% } else { %>
+<div class="book-list--empty">
+  <p>Oops... no books found</p>
+</div>
+<% } %>

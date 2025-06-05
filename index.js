@@ -126,10 +126,20 @@ async function getFinalRedirectUrl(url) {
 }
 
 // Pertama kali memuat website
-app.get('/', requireLogin, async (req, res) => {
+app.get('/', requireLogin, (req, res) => {
+  res.render('pages/home', {
+    layout: 'layout',
+    title: 'Homepage',
+    showHeader: true,
+    showFooter: false,
+    error: null,
+  });
+});
+
+app.get('/books', async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM books ORDER BY id DESC');
-    res.render('pages/home', {
+    res.render('pages/books', {
       layout: 'layout',
       title: 'Books Review',
       showHeader: true,
@@ -187,7 +197,7 @@ app.get('/search-book', async (req, res) => {
       'SELECT * FROM books WHERE title ILIKE $1 ORDER BY id DESC',
       [`%${search}%`]
     );
-    res.render('pages/home', {
+    res.render('pages/books', {
       layout: 'layout',
       title: 'Books Review',
       showHeader: true,
@@ -208,7 +218,7 @@ app.get('/filter-by', async (req, res) => {
       'SELECT * FROM books WHERE genre ILIKE $1 ORDER BY id DESC',
       [`%${genre}%`]
     );
-    res.render('pages/home', {
+    res.render('pages/books', {
       layout: 'layout',
       title: 'Books Review',
       showHeader: true,

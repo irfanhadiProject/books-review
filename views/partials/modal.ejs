@@ -1,0 +1,94 @@
+<div id="modal-overlay" class="modal hidden">
+  <form action="add-book" method="POST" id="book-form" class="book-form">
+    <button id="close-form-btn" class="book-form__close-btn">x</button>
+    <h2 class="book-form__title">Add Book</h2>
+
+    <div class="book-form__grid">
+      <div class="book-form__group">
+        <label class="book-form__label" for="title">Book title</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="title"
+          name="title"
+          required
+        />
+      </div>
+      <div class="book-form__group">
+        <label class="book-form__label" for="author">Author</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="author"
+          name="author"
+          required
+        />
+      </div>
+
+      <div class="book-form__group">
+        <label class="book-form__label" for="isbn">ISBN</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="isbn"
+          name="isbn"
+          required
+        />
+      </div>
+      <div class="book-form__group">
+        <label class="book-form__label" for="genre">Genre</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="genre"
+          name="genre"
+          required
+        />
+      </div>
+
+      <div class="book-form__group">
+        <label class="book-form__label" for="setting">Setting</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="setting"
+          name="setting"
+          required
+        />
+      </div>
+      <div class="book-form__group">
+        <label class="book-form__label" for="readability">Readability</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="readability"
+          name="readability"
+          required
+        />
+      </div>
+
+      <div class="book-form__group">
+        <label class="book-form__label" for="words">Key Words</label>
+        <input
+          class="book-form__input"
+          type="text"
+          id="words"
+          name="words"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="book-form__group book-form__group--full">
+      <label class="book-form__label" for="summary">Summary</label>
+      <textarea
+        class="book-form__textarea"
+        for="summary"
+        name="summary"
+        required
+      ></textarea>
+    </div>
+
+    <button class="book-form__submit-btn" type="submit">Add</button>
+  </form>
+</div>

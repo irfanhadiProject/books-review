@@ -1,26 +1,37 @@
 <div class="login">
-  <h1>Login</h1>
-  <form action="/login" method="POST" class="login-form">
-    <div>
-      <label for="username">Username:</label>
+  <h1 class="login__title">Books Review</h1>
+  <p class="login__greeting">
+    Welcome back! Log in to explore, review, and share your thoughts on your
+    favorite books. Your reading journey continues here.
+  </p>
+  <form action="/login" method="POST" class="login__form">
+    <div class="login__field">
+      <label for="username" class="login__label">Username</label>
       <input
         type="text"
         id="username"
         name="username"
         autocomplete="username"
+        class="login__input"
         required
       />
     </div>
 
-    <div>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
+    <div class="login__field">
+      <label for="password" class="login__label">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="login__input"
+        required
+      />
     </div>
 
     <% if (error) { %>
-    <p style="color: red"><%= error %></p>
+    <p class="login__error"><%= error %></p>
     <% } %>
 
-    <button type="submit">Login</button>
+    <button type="submit" class="login__btn">Login</button>
   </form>
 </div>
