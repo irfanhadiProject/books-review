@@ -25,4 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
       header?.classList.remove('navbar--sticky');
     }
   });
+
+  // Submit sort by form
+  const sortForm = document.getElementById('sort-form');
+  const sortSelect = document.getElementById('sort-select');
+
+  sortSelect.addEventListener('change', () => {
+    sortForm.submit();
+  });
 });

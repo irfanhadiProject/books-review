@@ -1,32 +1,67 @@
 <%- include('../partials/modal') %>
-
-<div class="books-toolbar">
-  <div class="books-toolbar__genre">
-    <span class="books-toolbar__genre-label">Genre</span>
-    <form action="filter-by" method="GET" class="books-toolbar__genre-form">
+<h2 class="read-books__heading"><%= user %>'s read books</h2>
+<div class="read-books__toolbar">
+  <div class="read-books__toolbar-genre">
+    <span class="read-books__toolbar-genre-label">Genre</span>
+    <form
+      action="/books/filter-by"
+      method="GET"
+      class="read-books__toolbar-genre-form"
+    >
       <%- include('../partials/genre') %>
     </form>
   </div>
 
-  <div class="books-toolbar__add">
+  <div class="read-books__toolbar-sort">
+    <form
+      action="/books/sort-by"
+      method="GET"
+      id="sort-form"
+      class="read-books__toolbar-sort-form"
+    >
+      <label for="sort-select" class="read-books__toolbar-sort-label">
+        Sort By
+      </label>
+
+      <select
+        name="sort"
+        id="sort-select"
+        class="read-books__toolbar-sort-select"
+      >
+        <option value="">--Select Sort Option--</option>
+        <option value="title-asc">Title (A-Z)</option>
+        <option value="title-desc">Title (Z-A)</option>
+        <option value="date-newest">Newest</option>
+        <option value="date-oldest">Oldest</option>
+        <option value="author-asc">Author (A-Z)</option>
+        <option value="author-desc">Author (Z-A)</option>
+      </select>
+    </form>
+  </div>
+
+  <div class="read-books__toolbar-add">
     <div class="add-book">
-      <button id="toggle-form-btn" class="books-toolbar__add-btn">
+      <button id="toggle-form-btn" class="read-books__toolbar-add-btn">
         Add Book
       </button>
     </div>
   </div>
 
-  <div class="books-toolbar__search">
-    <form action="search-book" method="GET" class="books-toolbar__search-form">
+  <div class="read-books__toolbar-search">
+    <form
+      action="/books/search-book"
+      method="GET"
+      class="read-books__toolbar-search-form"
+    >
       <input
         type="text"
         name="search"
         id="search"
-        class="books-toolbar__search-input"
+        class="read-books__toolbar-search-input"
         placeholder="Search book by title"
       />
-      <button type="submit" class="books-toolbar__search-btn">
-        <img src="assets/search-button.svg" alt="Search" />
+      <button type="submit" class="read-books__toolbar-search-btn">
+        <img src="/assets/search-button.svg" alt="Search" />
       </button>
     </form>
   </div>

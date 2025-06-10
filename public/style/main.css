@@ -131,7 +131,13 @@ button:hover {
 }
 
 /* BOOKS TOOLBAR */
-.books-toolbar {
+.read-books__heading {
+  align-self: flex-start;
+  text-transform: capitalize;
+  font-size: 1.5rem;
+}
+
+.read-books__toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -139,24 +145,24 @@ button:hover {
 }
 
 /* SEARCH */
-.books-toolbar__search-form {
+.read-books__toolbar-search-form {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.books-toolbar__search-input {
+.read-books__toolbar-search-input {
   font-size: 1rem;
   padding: 5px;
   width: 100%;
 }
 
-.books-toolbar__search-btn {
+.read-books__toolbar-search-btn {
   background-color: transparent;
 }
 
 /* GENRE */
-.books-toolbar__genre-form {
+.read-books__toolbar-genre-form {
   display: none;
   position: absolute;
   background-color: #222831e8;
@@ -166,7 +172,7 @@ button:hover {
   z-index: 2;
 }
 
-.books-toolbar__genre:hover .books-toolbar__genre-form {
+.read-books__toolbar-genre:hover .read-books__toolbar-genre-form {
   display: block;
 }
 
@@ -193,7 +199,7 @@ button:hover {
 }
 
 /* ADD FORM BUTTON */
-.books-toolbar__add-btn {
+.read-books__toolbar-add-btn {
   margin: 1rem;
   padding: 0.5rem 0.5rem;
   background-color: transparent;
@@ -205,7 +211,7 @@ button:hover {
   cursor: pointer;
 }
 
-.books-toolbar__add-btn:hover {
+.read-books__toolbar-add-btn:hover {
   background-color: #0056b3;
 }
 
@@ -224,6 +230,7 @@ button:hover {
   align-content: end;
   font-size: 2rem;
   letter-spacing: 1.5px;
+  text-transform: capitalize;
 }
 
 .hero__description {
@@ -499,6 +506,10 @@ button:hover {
   font-size: 1rem;
   font-weight: 600;
   color: white;
+}
+
+.login__error {
+  color: red;
 }
 
 /* RESPONSIVE DISPLAY */
