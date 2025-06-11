@@ -71,6 +71,13 @@
 <div class="book-list">
   <% booksData.map( bookData=> { %>
   <article class="book-card">
+    <span class="book-card__read-at">
+      <%= new Date(bookData.read_at).toDateString() %>
+    </span>
+    <div class="book-card__buttons">
+      <button class="book-card__edit-btn">Edit</button>
+      <button class="book-card__delete-btn">Delete</button>
+    </div>
     <h2 class="book-card__title"><%= bookData.title %></h2>
     <p class="book-card__genre"><%= bookData.genre %></p>
     <p class="book-card__author"><%= bookData.author %></p>

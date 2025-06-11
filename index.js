@@ -223,7 +223,7 @@ app.get('/books', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*
+      `SELECT books.*, user_books.read_at
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -260,7 +260,7 @@ app.get('/books/search-book', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*
+      `SELECT books.*, user_books.read_at
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -291,7 +291,7 @@ app.get('/books/filter-by', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*
+      `SELECT books.*, user_books.read_at
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -336,7 +336,7 @@ app.get('/books/sort-by', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*
+      `SELECT books.*, user_books.read_at
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
