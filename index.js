@@ -53,28 +53,28 @@ app.use((req, res, next) => {
   if (openPaths.includes(req.path)) return next(); // Akses route login dan logout tanpa perlu login
 
   if (req.path === '/') {
-    if (req.session && req.session.loggedIn) {
-      return next();
-    } else {
-      return res.redirect('/login');
-    }
+    return req.session && req.session.loggedIn
+      ? next()
+      : res.redirect('/login');
   }
 
+  // Akses route lain hanya bisa setelah login
   if (protectedPrefix.some((prefix) => req.path.startsWith(prefix))) {
-    if (req.session && req.session.loggedIn) {
-      return next();
-    } else {
-      // Redirect ke login page jika belum login
-      return res.redirect('/login');
-    } // Akses route lain hanya bisa setelah login
+    return req.session && req.session.loggedIn
+      ? next()
+      : res.redirect('/login'); // Redirect ke login page jika belum login
   }
 
-  res.status(404).render('pages/404', {
-    title: '404 Not Found',
-    layout: 'layout',
-    showHeader: false,
-    showFooter: false,
-  });
+  if (req.method === 'GET') {
+    res.status(404).render('pages/404', {
+      title: '404 Not Found',
+      layout: 'layout',
+      showHeader: false,
+      showFooter: false,
+    });
+  }
+
+  next();
 });
 
 async function isValidImage(url) {
@@ -175,7 +175,7 @@ app.post('/login', async (req, res) => {
         title: 'Login',
         showHeader: false,
         showFooter: false,
-        error: 'User tidak ditemukan',
+        error: 'User not found!',
       });
     }
 
@@ -189,7 +189,7 @@ app.post('/login', async (req, res) => {
         title: 'Login',
         showHeader: false,
         showFooter: false,
-        error: 'Username atau password salah!',
+        error: 'Username or password wrong!',
       });
     }
 
@@ -223,7 +223,7 @@ app.get('/books', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*, user_books.read_at
+      `SELECT books.*, user_books.read_at, user_books.id AS user_book_id
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -260,7 +260,7 @@ app.get('/books/search-book', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*, user_books.read_at
+      `SELECT books.*, user_books.read_at, user_books.id AS user_book_id
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -291,7 +291,7 @@ app.get('/books/filter-by', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*, user_books.read_at
+      `SELECT books.*, user_books.read_at, user_books.id AS user_book_id
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -336,7 +336,7 @@ app.get('/books/sort-by', async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT books.*, user_books.read_at
+      `SELECT books.*, user_books.read_at, user_books.id AS user_book_id
        FROM user_books
        JOIN books ON user_books.book_id = books.id
        WHERE user_books.user_id = $1
@@ -411,6 +411,19 @@ app.post('/books/add-book', async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+  }
+});
+
+// Menghapus buku dari database user_books
+app.delete('/books/:id', async (req, res) => {
+  const bookId = req.params.id;
+
+  try {
+    await db.query(`DELETE FROM user_books WHERE id = $1`, [bookId]);
+    res.status(200).send('Book deleted');
+  } catch (err) {
+    console.error('Error deleting book:', err.message);
+    res.status(500).send('Error deleting book');
   }
 });
 

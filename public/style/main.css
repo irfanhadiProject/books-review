@@ -118,7 +118,7 @@ button:hover {
 
 .navbar__menu-link {
   text-decoration: none;
-  color: white;
+  color: #ffffff;
 }
 
 /* LOGOUT */
@@ -134,17 +134,20 @@ button:hover {
 .read-books__heading {
   align-self: flex-start;
   text-transform: capitalize;
+  color: #393e46;
   font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .read-books__toolbar {
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
+  box-shadow: 0 4px 8px 0px #7a7a7a;
   align-items: center;
   width: 100%;
-  margin: 1rem;
-  padding: 0 1rem;
+  margin: 2rem;
+  padding: 0.5rem 1rem;
   background-color: #7a7a7a;
 }
 
@@ -167,17 +170,17 @@ button:hover {
 
 /* GENRE */
 .read-books__toolbar-genre-label {
-  color: white;
+  color: #ffffff;
   font-weight: 500;
 }
 
 .read-books__toolbar-genre-form {
   display: none;
   position: absolute;
-  background-color: #222831e8;
+  background-color: #222831;
   backdrop-filter: blur(2px);
   padding: 10px;
-  border: 1px solid white;
+  border: 1px solid #ffffff;
   z-index: 2;
 }
 
@@ -199,7 +202,7 @@ button:hover {
 
 .genre-filter__btn {
   background-color: transparent;
-  color: white;
+  color: #ffffff;
   font-size: 1rem;
 }
 
@@ -216,7 +219,7 @@ button:hover {
 }
 
 .read-books__toolbar-sort-label {
-  color: white;
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -227,14 +230,13 @@ button:hover {
 
 /* ADD FORM BUTTON */
 .read-books__toolbar-add-btn {
-  margin: 1rem;
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem 0.85rem;
   background-color: transparent;
   color: #ffffff;
   font-size: 1rem;
   font-weight: 500;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
 }
 
@@ -282,7 +284,7 @@ button:hover {
   max-width: 800px;
   margin: 1rem auto;
   padding: 1rem;
-  background-color: #fff;
+  background-color: #ffffff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   font-size: 1rem;
@@ -332,7 +334,7 @@ button:hover {
   width: 100%;
   padding: 0.4rem;
   margin-top: 0.8rem;
-  color: white;
+  color: #ffffff;
   background-color: #4caf50;
   border-radius: 5px;
   font-weight: 600;
@@ -349,7 +351,7 @@ button:hover {
   height: 20px;
   top: 10px;
   right: 10px;
-  color: white;
+  color: #ffffff;
   background-color: #ff3535;
   font-weight: 400;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -418,19 +420,31 @@ button:hover {
 .book-card__buttons {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 2rem;
-  padding-right: 0;
+  padding: 0;
   background-color: transparent;
 }
 
 .book-card__edit-btn,
 .book-card__delete-btn {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 500;
+  height: 80%;
+}
+
+.book-card__edit-btn {
+  background-color: #4caf50;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0 0.7rem;
 }
 
 .book-card__delete-btn {
-  color: red;
+  background-color: red;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0 0.6rem;
 }
 
 .book-card__genre {
@@ -556,10 +570,11 @@ button:hover {
 .login__btn {
   background-color: #4caf50;
   border: none;
-  padding: 5px 10px;
+  border-radius: 999px;
+  padding: 8px 15px;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: #ffffff;
 }
 
 .login__error {

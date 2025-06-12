@@ -33,4 +33,28 @@ document.addEventListener('DOMContentLoaded', function () {
   sortSelect.addEventListener('change', () => {
     sortForm.submit();
   });
+
+  // Delete book
+  document.querySelectorAll('.book-card__delete-btn').forEach((button) =>
+    button.addEventListener('click', async () => {
+      const bookId = button.dataset.id;
+
+      const confirmDelete = confirm(
+        'Are you sure you want to delete this book?'
+      );
+
+      if (!confirmDelete) return;
+
+      const res = await fetch(`/books/${bookId}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        alert('Book deleted!');
+        location.reload();
+      } else {
+        alert('Failed to delete book.');
+      }
+    })
+  );
 });

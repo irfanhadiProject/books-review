@@ -75,8 +75,18 @@
       <%= new Date(bookData.read_at).toDateString() %>
     </span>
     <div class="book-card__buttons">
-      <button class="book-card__edit-btn">Edit</button>
-      <button class="book-card__delete-btn">Delete</button>
+      <button
+        class="book-card__edit-btn"
+        data-id="<%= bookData.user_book_id %>"
+      >
+        Edit
+      </button>
+      <button
+        class="book-card__delete-btn"
+        data-id="<%= bookData.user_book_id %>"
+      >
+        Delete
+      </button>
     </div>
     <h2 class="book-card__title"><%= bookData.title %></h2>
     <p class="book-card__genre"><%= bookData.genre %></p>
