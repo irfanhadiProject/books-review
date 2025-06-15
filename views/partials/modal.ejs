@@ -1,7 +1,12 @@
 <div id="modal-overlay" class="modal hidden">
-  <form action="/books/add-book" method="POST" id="book-form" class="book-form">
+  <form
+    action="<%= formAction %>"
+    method="POST"
+    id="book-form"
+    class="book-form"
+  >
     <button id="close-form-btn" class="book-form__close-btn">x</button>
-    <h2 class="book-form__title">Add Book</h2>
+    <h2 class="book-form__title"><%= formTitle %></h2>
 
     <div class="book-form__grid">
       <div class="book-form__group">
@@ -11,6 +16,7 @@
           type="text"
           id="title"
           name="title"
+          value="<%= book?.title || '' %>"
           required
         />
       </div>
@@ -21,6 +27,7 @@
           type="text"
           id="author"
           name="author"
+          value="<%= book?.author || ''%>"
           required
         />
       </div>
@@ -32,6 +39,7 @@
           type="text"
           id="isbn"
           name="isbn"
+          value="<%= book?.isbn || ''%>"
           required
         />
       </div>
@@ -42,6 +50,7 @@
           type="text"
           id="genre"
           name="genre"
+          value="<%= book?.genre || ''%>"
           required
         />
       </div>
@@ -53,6 +62,7 @@
           type="text"
           id="setting"
           name="setting"
+          value="<%= book?.setting || ''%>"
           required
         />
       </div>
@@ -63,6 +73,7 @@
           type="text"
           id="readability"
           name="readability"
+          value="<%= book?.readability || ''%>"
           required
         />
       </div>
@@ -74,6 +85,7 @@
           type="text"
           id="words"
           name="words"
+          value="<%= book?.words || ''%>"
           required
         />
       </div>
@@ -83,12 +95,16 @@
       <label class="book-form__label" for="summary">Summary</label>
       <textarea
         class="book-form__textarea"
-        for="summary"
+        id="summary"
         name="summary"
         required
-      ></textarea>
+      >
+<%= book?.summary || '' %></textarea
+      >
     </div>
 
-    <button class="book-form__submit-btn" type="submit">Add</button>
+    <button class="book-form__submit-btn" type="submit">
+      <%= submitText %>
+    </button>
   </form>
 </div>

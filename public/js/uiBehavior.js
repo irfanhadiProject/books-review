@@ -5,14 +5,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeForm = document.getElementById('close-form-btn');
 
   toggleBtn.addEventListener('click', () => {
+    const form = document.getElementById('book-form');
+    form.reset();
+    form.action = '/books/add-book';
+    form.querySelector('.book-form__title').textContent = 'Add Book';
+    form.querySelector('.book-form__submit-btn').textContent = 'Add';
+
     modal.classList.toggle('hidden');
     toggleBtn.classList.toggle('hidden');
   });
 
-  closeForm.addEventListener('click', () => {
-    modal.classList.toggle('hidden');
-    toggleBtn.classList.toggle('hidden');
-  });
+  if (closeForm) {
+    closeForm.addEventListener('click', (e) => {
+      e.preventDefault(); // penting! mencegah form submit
+      modal?.classList.add('hidden');
+      toggleBtn?.classList.remove('hidden');
+    });
+  }
 
   // Sticky header on scroll
   const header = document.querySelector('.navbar__wrapper');
@@ -32,6 +41,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
   sortSelect.addEventListener('change', () => {
     sortForm.submit();
+  });
+
+  // Edit book
+  document.querySelectorAll('.book-card__edit-btn').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const bookId = button.dataset.id;
+
+      const res = await fetch(`/books/${bookId}`);
+      const book = await res.json();
+
+      document.querySelector('.book-form__title').textContent = 'Edit Book';
+      const form = document.getElementById('book-form');
+      form.action = `/books/${bookId}?_method=PATCH`;
+      form.querySelector('.book-form__submit-btn').textContent = 'Update';
+
+      form.title.value = book.title;
+      form.author.value = book.author;
+      form.isbn.value = book.isbn;
+      form.genre.value = book.genre;
+      form.setting.value = book.setting;
+      form.readability.value = book.readability;
+      form.words.value = book.words;
+      form.summary.value = book.summary;
+
+      modal.classList.remove('hidden');
+    });
   });
 
   // Delete book
