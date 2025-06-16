@@ -1,24 +1,23 @@
 export function loginGuard(req, res, next) {
-  const openPaths = ['/login', '/logout'];
+  const openPaths = ['/', '/login', '/logout'];
   const protectedPrefix = ['/books'];
 
-  if (openPaths.includes(req.path)) return next(); // Akses route login dan logout tanpa perlu login
-
-  if (req.path === '/') {
-    return req.session && req.session.loggedIn
-      ? next()
-      : res.redirect('/login');
-  }
+  if (openPaths.includes(req.path)) return next(); // Akses route tanpa perlu login
 
   // Akses route lain hanya bisa setelah login
   if (protectedPrefix.some((prefix) => req.path.startsWith(prefix))) {
     return req.session && req.session.loggedIn
       ? next()
-      : res.redirect('/login'); // Redirect ke login page jika belum login
+      : res.status(401).render('pages/restricted', {
+          title: 'Limited Access',
+          layout: 'layout',
+          showHeader: true,
+          showFooter: true,
+        }); // Redirect ke login page jika belum login
   }
 
   if (req.method === 'GET') {
-    res.status(404).render('pages/404', {
+    res.status(404).render('pages/not-found', {
       title: '404 Not Found',
       layout: 'layout',
       showHeader: false,
