@@ -1,0 +1,50 @@
+<div class="signup">
+  <h1 class="signup__title">Create an Account</h1>
+  <p class="signup__greeting">
+    Join our book-loving community! Sign up to review and share your favorite
+    reads.
+  </p>
+
+  <form action="/signup" method="POST" class="signup__form">
+    <div class="signup__field">
+      <label for="username" class="signup__label">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        autocomplete="username"
+        class="signup__input"
+        required
+      />
+    </div>
+    <div class="signup__field">
+      <label for="password" class="signup__label">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        autocomplete="new-password"
+        class="signup__input"
+        required
+      />
+    </div>
+    <div class="signup__field">
+      <label for="confirmPassword" class="signup__label"
+        >Confirm Password</label
+      >
+      <input
+        type="password"
+        id="confirmPassword"
+        name="confirmPassword"
+        class="signup__input"
+        required
+      />
+    </div>
+
+    <% if (error) {%>
+    <p class="signup__error"><%= error %></p>
+    <% } %>
+
+    <button type="submit" class="signup__btn">Sign Up</button>
+  </form>
+</div>

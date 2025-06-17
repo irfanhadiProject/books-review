@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function () {
     form.querySelector('.book-form__title').textContent = 'Add Book';
     form.querySelector('.book-form__submit-btn').textContent = 'Add';
 
+    form.title.disabled = false;
+    form.author.disabled = false;
+    form.isbn.disabled = false;
+    form.genre.disabled = false;
+
     modal.classList.toggle('hidden');
     toggleBtn.classList.toggle('hidden');
   });
@@ -64,6 +69,11 @@ document.addEventListener('DOMContentLoaded', function () {
       form.readability.value = book.readability;
       form.words.value = book.words;
       form.summary.value = book.summary;
+
+      form.title.disabled = true;
+      form.author.disabled = true;
+      form.isbn.disabled = true;
+      form.genre.disabled = true;
 
       modal.classList.remove('hidden');
     });

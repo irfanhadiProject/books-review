@@ -1,5 +1,5 @@
 export function loginGuard(req, res, next) {
-  const openPaths = ['/', '/login', '/logout'];
+  const openPaths = ['/', '/login', '/logout', '/signup'];
   const protectedPrefix = ['/books'];
 
   if (openPaths.includes(req.path)) return next(); // Akses route tanpa perlu login
