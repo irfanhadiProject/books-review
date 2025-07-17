@@ -40,6 +40,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Read books toolbar menu toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuContent = document.querySelector(
+    '.read-books__toolbar-menu-content'
+  );
+
+  menuToggle.addEventListener('click', () => {
+    menuContent.classList.toggle('show');
+  });
+
   // Submit sort by form
   const sortForm = document.getElementById('sort-form');
   const sortSelect = document.getElementById('sort-select');
