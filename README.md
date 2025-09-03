@@ -2,8 +2,6 @@
 
 A simple web-based books review site that allows users to add and view books review. Created as a personal project to learn full-stack web development.
 
-🔗 **Live Demo**: [https://books-review-production-4e3d.up.railway.app/](https://books-review-production-4e3d.up.railway.app/)
-
 ---
 
 ## 🛠 Tech Stack
@@ -11,7 +9,6 @@ A simple web-based books review site that allows users to add and view books rev
 - **Frontend**: HTML, CSS, EJS (Embedded JavaScript Templates)
 - **Backend**: Node.js, Express.js
 - **Database**: PostgreSQL
-- **Deployment**: Railway
 
 ---
 
