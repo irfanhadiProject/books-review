@@ -1,30 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
   // Toggle Form
-  const toggleBtn = document.getElementById('toggle-form-btn');
+  const toggleBtns = document.querySelectorAll('.read-books__toolbar-add-btn');
   const modal = document.getElementById('modal-overlay');
   const closeForm = document.getElementById('close-form-btn');
 
-  toggleBtn.addEventListener('click', () => {
-    const form = document.getElementById('book-form');
-    form.reset();
-    form.action = '/books/add-book';
-    form.querySelector('.book-form__title').textContent = 'Add Book';
-    form.querySelector('.book-form__submit-btn').textContent = 'Add';
+  toggleBtns.forEach((toggleBtn) => {
+    toggleBtn.addEventListener('click', () => {
+      const form = document.getElementById('book-form');
+      form.reset();
+      form.action = '/books/add-book';
+      form.querySelector('.book-form__title').textContent = 'Add Book';
+      form.querySelector('.book-form__submit-btn').textContent = 'Add';
 
-    form.title.disabled = false;
-    form.author.disabled = false;
-    form.isbn.disabled = false;
-    form.genre.disabled = false;
+      form.title.disabled = false;
+      form.author.disabled = false;
+      form.isbn.disabled = false;
+      form.genre.disabled = false;
 
-    modal.classList.toggle('hidden');
-    toggleBtn.classList.toggle('hidden');
+      modal.classList.remove('hidden');
+    });
   });
 
   if (closeForm) {
     closeForm.addEventListener('click', (e) => {
-      e.preventDefault(); // penting! mencegah form submit
+      e.preventDefault();
       modal?.classList.add('hidden');
-      toggleBtn?.classList.remove('hidden');
     });
   }
 
