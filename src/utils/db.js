@@ -1,24 +1,21 @@
 import pg from 'pg';
 import 'dotenv/config';
 
-const { Client } = pg;
+const { Pool } = pg;
 
-let db;
-
-if (process.env.DATABASE_URL) {
-  db = new Client({
+const pool = new Pool (
+  process.env.DATABASE_URL
+  ? {
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, // agar cocok dengan Railway
-  });
-} else {
-  db = new Client({
+    ssl: { rejectUnauthorized: false }
+  }
+  : {
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-  });
-}
-db.connect();
+  }
+)
 
-export default db;
+export default pool;
