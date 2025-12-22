@@ -75,24 +75,6 @@ export async function filterBooksByGenre(userId, genre) {
   );
 }
 
-export async function sortBooksByClause(userId, orderByClause) {
-  return db.query(
-    `SELECT 
-        books.*, 
-        user_books.setting,
-        user_books.readability,
-        user_books.words,
-        user_books.summary,
-        user_books.read_at, 
-        user_books.id AS user_book_id
-        FROM user_books
-        JOIN books ON user_books.book_id = books.id
-        WHERE user_books.user_id = $1
-        ${orderByClause}`,
-    [userId]
-  );
-}
-
 export async function checkUserBook(userBookId, userId) {
   return db.query(`SELECT * FROM user_books WHERE id = $1 AND user_id = $2`, [
     userBookId,
