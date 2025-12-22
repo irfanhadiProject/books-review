@@ -63,6 +63,9 @@ import {
   insertNewBook,
   insertUserBook
 } from '../models/bookModel.js'
+import { ValidationError } from '../domain/errors/ValidationError.js'
+import { UserAlreadyHasBookError } from '../domain/errors/UserAlreadyHasBookError.js'
+import { mapToDomainError } from '../utils/mapToDomainError.js'
 
 export async function addBookToUserCollection(input) {
   const {userId, title, author, isbn, summary} = input
