@@ -1,5 +1,5 @@
 export async function findBookByISBN(client, isbn) {
-  return client.query(`SELECT id FROM books WHERE isbn = $1`, [isbn]);
+  return client.query(`SELECT id FROM books WHERE isbn = $1 FOR SHARE`, [isbn]);
 }
 
 export async function insertNewBook(client, {
