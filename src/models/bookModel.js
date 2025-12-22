@@ -1,17 +1,15 @@
-import db from '../utils/db.js';
-
-export async function findBookByISBN(isbn) {
-  return db.query(`SELECT id FROM books WHERE isbn = $1`, [isbn]);
+export async function findBookByISBN(client, isbn) {
+  return client.query(`SELECT id FROM books WHERE isbn = $1`, [isbn]);
 }
 
-export async function insertNewBook({
+export async function insertNewBook(client, {
   title,
   author,
   finalCoverUrl,
   isbn,
   genre,
 }) {
-  return db.query(
+  return client.query(
     `INSERT INTO books(title, author, cover, isbn, genre)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING id`,
@@ -19,7 +17,7 @@ export async function insertNewBook({
   );
 }
 
-export async function insertUserBook({
+export async function insertUserBook(client, {
   userId,
   bookId,
   setting,
@@ -27,7 +25,7 @@ export async function insertUserBook({
   words,
   summary,
 }) {
-  return db.query(
+  return client.query(
     `INSERT INTO user_books (
       user_id, 
       book_id, 
@@ -44,14 +42,14 @@ export async function insertUserBook({
   );
 }
 
-export async function updateUserBookReview({
+export async function updateUserBookReview(client, {
   setting,
   readability,
   words,
   summary,
   userBookId,
 }) {
-  return db.query(
+  return client.query(
     `UPDATE user_books
         SET setting = $1,
             readability = $2,
@@ -62,6 +60,6 @@ export async function updateUserBookReview({
   );
 }
 
-export async function deleteUserBook(userBookId) {
-  return db.query(`DELETE FROM user_books WHERE id = $1`, [userBookId]);
+export async function deleteUserBook(client, userBookId) {
+  return client.query(`DELETE FROM user_books WHERE id = $1`, [userBookId]);
 }
