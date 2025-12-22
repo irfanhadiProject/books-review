@@ -22,7 +22,7 @@
  *    - books sukses tapi user_books gagal -> rollback
  * 5. ISBN opsional: 
  *    - jika ada, jadi identitas deduplikasi utama
- *    - jika tidak ada, deduplikasi best effort (title + author)
+ *    - jika tidak ada, buku selalu dianggap entitas baru
  * 6. Fetch cover tidak mempengaruhi keberhasilan utama
  * 
  * Input:
@@ -49,8 +49,7 @@
 /**
  * Domain decision:
  * - ISBN present -> strong identity
- * - ISBN absent -> best effort identity (title + author)
- * - Multiple matches without ISBN -> deterministically selected (e.g., lowest book_id)
+ * - Without ISBN, book identity is not guaranteed to be unique
  * 
  * Guarantees on success:
  * - user_books row exists
@@ -58,14 +57,100 @@
  * - no partial state
  * - operation is safe to retry once (may return UserAlreadyHasBookError)
 */
+import db from '../utils/db.js'
+import {
+  findBookByISBN,
+  insertNewBook,
+  insertUserBook
+} from '../models/bookModel.js'
 
 export async function addBookToUserCollection(input) {
-  // TODO:
-  // 1. validate input.title
-  // 2. begin transaction
-  // 3. find or create book
-  // 4. create user_books relation
-  // 5. commit transaction
-  // 6. trigger cover fetch (non-blocking)
-  // 7. return ids  
+  const {userId, title, author, isbn, summary} = input
+  // 1. validate input
+  if (!title || title.trim() === '') {
+    throw new ValidationError('title is required')
+  }
+
+  const client = await db.connect()
+  let committed = false
+
+  try {
+    // 2. begin transaction
+    await client.query('BEGIN')
+
+    // 3. find or create book
+    let bookId
+
+    if (isbn) {
+      const found = await findBookByISBN(client, isbn)
+
+      if (found.rowCount > 0) {
+        bookId = found.rows[0].id
+      } else {
+        try {
+          const inserted = await insertNewBook(client, {
+            title, 
+            author: author ?? null, 
+            isbn, 
+            finalCoverUrl: null,
+            genre: null
+          })
+          bookId = inserted.rows[0].id
+        } catch(err) {
+          if (isUniqueIsbnViolation(err)) {
+            const refetch = await findBookByISBN(client, isbn)
+            bookId = refetch.rows[0].id
+          } else {
+            throw err
+          }
+        }
+      }
+    } else {
+      // no ISBN (always create new book)
+      const inserted = await insertNewBook(client, {
+        title, 
+        author: author ?? null, 
+        isbn: null, 
+        finalCoverUrl: null,
+        genre: null
+      })
+      bookId = inserted.rows[0].id
+    }
+
+    // 4. create user_books relation
+    const userBookResult = await insertUserBook(client, {
+      userId, 
+      bookId,
+      setting: null,
+      readability: null,
+      words: null, 
+      summary: summary ?? null,
+    })
+
+    if (userBookResult.rowCount === 0) {
+      throw new UserAlreadyHasBookError()
+    }
+
+    // 5. commit transaction
+    await client.query('COMMIT')
+    committed = true
+
+    // 6. trigger async side effect (cover fetch, best-effort)
+    if (isbn) {
+      fetchCoverAsync({bookId, isbn})
+    }
+
+    // 7. return ids  
+    return {
+      bookId,
+      userBookId: userBookResult.rows[0].id
+    }
+  } catch (err) {
+    if (!committed) {
+      await client.query('ROLLBACK');
+    }
+    throw mapToDomainError(err)
+  } finally {
+    client.release()
+  }
 }
