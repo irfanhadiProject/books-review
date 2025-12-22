@@ -59,7 +59,7 @@
  * - operation is safe to retry once (may return UserAlreadyHasBookError)
 */
 
-async function addBookToUserCollection(input) {
+export async function addBookToUserCollection(input) {
   // TODO:
   // 1. validate input.title
   // 2. begin transaction
@@ -68,8 +68,4 @@ async function addBookToUserCollection(input) {
   // 5. commit transaction
   // 6. trigger cover fetch (non-blocking)
   // 7. return ids  
-}
-
-module.exports = { 
-  addBookToUserCollection,
 }
