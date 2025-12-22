@@ -14,7 +14,7 @@ export async function insertNewBook({
   return db.query(
     `INSERT INTO books(title, author, cover, isbn, genre)
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING id;`,
+        RETURNING id`,
     [title, author, finalCoverUrl, isbn, genre]
   );
 }
@@ -28,9 +28,18 @@ export async function insertUserBook({
   summary,
 }) {
   return db.query(
-    `INSERT INTO user_books (user_id, book_id, setting, readability, words, summary, read_at)
-        VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
-        ON CONFLICT DO NOTHING`, // Jika ada koflik (duplikat pasangan userId dan book Id) do nothing
+    `INSERT INTO user_books (
+      user_id, 
+      book_id, 
+      setting, 
+      readability, 
+      words, 
+      summary, 
+      read_at
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
+    ON CONFLICT DO NOTHING
+    RETURNING id`,
     [userId, bookId, setting, readability, words, summary]
   );
 }
