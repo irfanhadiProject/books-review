@@ -1,6 +1,8 @@
-export class UserAlreadyHasBookError extends Error {
-  constructor(message = 'User already has this book') {
-    super(message);
+import { ConflictError } from "./ConflictError.js";
+
+export class UserAlreadyHasBookError extends ConflictError {
+  constructor() {
+    super('User already has this book')
     this.name = 'UserAlreadyHasBookError'
   }
 }
