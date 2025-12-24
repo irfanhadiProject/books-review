@@ -55,7 +55,9 @@
  * - user_books row exists
  * - books row exists
  * - no partial state
- * - operation is safe to retry once (may return UserAlreadyHasBookError)
+ * - operation is safe to retry once when ISBN is provided
+ * - retrying non-ISBN input may create a new book entity
+
 */
 import db from '../utils/db.js'
 import {
@@ -67,6 +69,7 @@ import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
 import { ValidationError } from '../domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../domain/errors/UserAlreadyHasBookError.js'
 import { mapToDomainError } from '../utils/mapToDomainError.js'
+import { DatabaseError } from '../domain/errors/DatabaseError.js'
 
 export async function addBookToUserCollection(input) {
   const {userId, title, author, isbn, summary} = input
@@ -86,28 +89,24 @@ export async function addBookToUserCollection(input) {
     let bookId
 
     if (isbn) {
-      const found = await findBookByISBN(client, isbn)
-
-      if (found.rowCount > 0) {
-        bookId = found.rows[0].id
+      const inserted = await insertNewBook(client, {
+        title,
+        author: author ?? null,
+        isbn,
+        finalCoverUrl: null,
+        genre: null,
+      })
+    
+      if (inserted.rowCount > 0) {
+        bookId = inserted.rows[0].id
       } else {
-        try {
-          const inserted = await insertNewBook(client, {
-            title, 
-            author: author ?? null, 
-            isbn, 
-            finalCoverUrl: null,
-            genre: null
-          })
-          bookId = inserted.rows[0].id
-        } catch(err) {
-          if (isUniqueIsbnViolation(err)) {
-            const refetch = await findBookByISBN(client, isbn)
-            bookId = refetch.rows[0].id
-          } else {
-            throw err
-          }
+        const found = await findBookByISBN(client, isbn)
+    
+        if (found.rowCount === 0) {
+          throw new DatabaseError('Invariant broken: book exists but not visible')
         }
+    
+        bookId = found.rows[0].id
       }
     } else {
       // no ISBN (always create new book)
@@ -118,22 +117,30 @@ export async function addBookToUserCollection(input) {
         finalCoverUrl: null,
         genre: null
       })
+
+      if (inserted.rowCount === 0) {
+        throw new DatabaseError('Invariant broken: non-ISBN book not inserted')
+      }
+      
       bookId = inserted.rows[0].id
     }
 
     // 4. create user_books relation
+    let userBookId
     const userBookResult = await insertUserBook(client, {
-      userId, 
+      userId,
       bookId,
       setting: null,
       readability: null,
-      words: null, 
+      words: null,
       summary: summary ?? null,
     })
-
+    
     if (userBookResult.rowCount === 0) {
       throw new UserAlreadyHasBookError()
     }
+    
+    userBookId = userBookResult.rows[0].id
 
     // 5. commit transaction
     await client.query('COMMIT')
@@ -147,7 +154,7 @@ export async function addBookToUserCollection(input) {
     // 7. return ids  
     return {
       bookId,
-      userBookId: userBookResult.rows[0].id
+      userBookId 
     }
   } catch (err) {
     if (!committed) {

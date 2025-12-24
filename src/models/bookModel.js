@@ -11,8 +11,10 @@ export async function insertNewBook(client, {
 }) {
   return client.query(
     `INSERT INTO books(title, author, cover, isbn, genre)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id`,
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (isbn) WHERE isbn IS NOT NULL
+     DO NOTHING
+     RETURNING id`,
     [title, author, finalCoverUrl, isbn, genre]
   );
 }
@@ -36,7 +38,8 @@ export async function insertUserBook(client, {
       read_at
     )
     VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
-    ON CONFLICT DO NOTHING
+    ON CONFLICT ON CONSTRAINT unique_user_book 
+    DO NOTHING
     RETURNING id`,
     [userId, bookId, setting, readability, words, summary]
   );
