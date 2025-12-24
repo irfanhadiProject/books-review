@@ -2,20 +2,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { renderBooksPage } from '../utils/renderBooksPage.js';
-import { getFinalCoverUrl } from '../utils/imageUtils.js';
 import {
   getAllBooksByUser,
   getBookByUserBookId,
   searchBooksByTitle,
   filterBooksByGenre,
   sortBooksByClause,
-  findBookByISBN,
-  insertNewBook,
-  insertUserBook,
   checkUserBook,
   updateUserBookReview,
   deleteUserBook,
 } from '../models/bookModel.js';
+import { addBookToUserCollection } from '../services/books.service.js';
 
 // Tampilkan semua buku milik user
 export async function getBooks(req, res) {
@@ -141,48 +138,30 @@ export async function sortBooks(req, res) {
 }
 
 // Menambahkan buku ke database melalui fitur add book
-export async function addBook(req, res) {
-  const { title, author, isbn, genre, setting, readability, words, summary } =
-    req.body;
+export async function addBook(req, res, next) {
+  const { title, author, isbn, summary } = req.body;
   const userId = req.session.userId;
 
+  if(!userId) {
+    return res.status(401).end()
+  }
+
+  if(!title) {
+    return res.status(400).send('Title is required')
+  }
+
   try {
-    const finalCoverUrl = await getFinalCoverUrl(isbn, process.env.API_URL); // Mendapatkan URL gambar yang valid
-
-    if (!finalCoverUrl) {
-      return res.status(500).send('Error resolving image URL');
-    }
-
-    const existingBook = await findBookByISBN(isbn);
-
-    let bookId;
-    // Mendapatkan bookId
-    if (existingBook.rows.length > 0) {
-      bookId = existingBook.rows[0].id; // Dapatkan bookId dari database
-    } else {
-      const new_book = await insertNewBook({
-        title,
-        author,
-        finalCoverUrl,
-        isbn,
-        genre,
-      });
-      bookId = new_book.rows[0].id; // Tambahkan buku ke database dan dapatkan bookId
-    }
-
-    // Tambahkan userId dan bookId ke daftar buku yang sudah dibaca user
-    await insertUserBook({
+    await addBookToUserCollection({
       userId,
-      bookId,
-      setting,
-      readability,
-      words,
-      summary,
-    });
-    res.redirect('/books');
+      title,
+      author,
+      isbn,
+      summary
+    })
+
+    res.redirect('/books')
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    next(err)
   }
 }
 
