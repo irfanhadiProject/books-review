@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
 import homeRoutes from './routes/homeRoutes.js';
 import { loginGuard } from './middleware/authMiddleware.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env', // Memastikan pemilihan file .env yang benar
@@ -31,6 +32,7 @@ app.use(
 );
 
 app.use(loginGuard);
+app.use(errorHandler)
 
 // Routes
 app.use('/', homeRoutes);
