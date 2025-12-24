@@ -34,10 +34,11 @@
  *  summary?: string, 
  * }
  * 
- * Output (success):
+ * Output:
  * {
  *  bookId: string | number,
- *  userBookId: string | number
+ *  userBookId: string | number,
+ *  reviewState: 'EMPTY' | 'FILLED'
  * }
  * 
  * Errors (domain-level):
@@ -151,10 +152,13 @@ export async function addBookToUserCollection(input) {
       fetchCoverAsync({bookId, isbn})
     }
 
-    // 7. return ids  
+    // 7. return ids 
+    const reviewState = summary && summary.trim() ? 'FILLED' : 'EMPTY'
+
     return {
       bookId,
-      userBookId 
+      userBookId,
+      reviewState
     }
   } catch (err) {
     if (!committed) {
