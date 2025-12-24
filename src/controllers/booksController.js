@@ -3,16 +3,18 @@ dotenv.config();
 
 import { renderBooksPage } from '../utils/renderBooksPage.js';
 import {
+  updateUserBookReview,
+  deleteUserBook,
+} from '../models/bookModel.js';
+import {
   getAllBooksByUser,
   getBookByUserBookId,
   searchBooksByTitle,
   filterBooksByGenre,
-  sortBooksByClause,
   checkUserBook,
-  updateUserBookReview,
-  deleteUserBook,
-} from '../models/bookModel.js';
+} from '../queries/bookQueries.js'
 import { addBookToUserCollection } from '../services/books.service.js';
+import { AuthError } from '../domain/errors/AuthError.js';
 
 // Tampilkan semua buku milik user
 export async function getBooks(req, res) {
@@ -101,41 +103,41 @@ export async function filterByGenre(req, res) {
 }
 
 // Mengurutkan data buku
-export async function sortBooks(req, res) {
-  const sort = req.query.sort || '';
-  const userId = req.session.userId;
-  const username = req.session.username;
+// export async function sortBooks(req, res) {
+//   const sort = req.query.sort || '';
+//   const userId = req.session.userId;
+//   const username = req.session.username;
 
-  const sortOptions = {
-    'title-asc': { column: 'books.title', direction: 'ASC' },
-    'title-desc': { column: 'books.title', direction: 'DESC' },
-    'date-newest': { column: 'user_books.read_at', direction: 'DESC' },
-    'date-oldest': { column: 'user_books.read_at', direction: 'ASC' },
-    'author-asc': { column: 'books.author', direction: 'ASC' },
-    'author-desc': { column: 'books.author', direction: 'DESC' },
-  };
+//   const sortOptions = {
+//     'title-asc': { column: 'books.title', direction: 'ASC' },
+//     'title-desc': { column: 'books.title', direction: 'DESC' },
+//     'date-newest': { column: 'user_books.read_at', direction: 'DESC' },
+//     'date-oldest': { column: 'user_books.read_at', direction: 'ASC' },
+//     'author-asc': { column: 'books.author', direction: 'ASC' },
+//     'author-desc': { column: 'books.author', direction: 'DESC' },
+//   };
 
-  const selectedSort = sortOptions[sort] || {
-    column: 'books.created_at',
-    direction: 'DESC',
-  };
-  const orderByClause = `ORDER BY ${selectedSort.column} ${selectedSort.direction}`;
+//   const selectedSort = sortOptions[sort] || {
+//     column: 'books.created_at',
+//     direction: 'DESC',
+//   };
+//   const orderByClause = `ORDER BY ${selectedSort.column} ${selectedSort.direction}`;
 
-  try {
-    const result = await sortBooksByClause(userId, orderByClause);
+//   try {
+//     const result = await sortBooksByClause(userId, orderByClause);
 
-    res.render(
-      'pages/books',
-      renderBooksPage({
-        user: username,
-        booksData: result.rows,
-      })
-    );
-  } catch (err) {
-    console.error('Error executing query', err.stack);
-    res.status(500).send('Internal Server Error');
-  }
-}
+//     res.render(
+//       'pages/books',
+//       renderBooksPage({
+//         user: username,
+//         booksData: result.rows,
+//       })
+//     );
+//   } catch (err) {
+//     console.error('Error executing query', err.stack);
+//     res.status(500).send('Internal Server Error');
+//   }
+// }
 
 // Menambahkan buku ke database melalui fitur add book
 export async function addBook(req, res, next) {
@@ -143,15 +145,11 @@ export async function addBook(req, res, next) {
   const userId = req.session.userId;
 
   if(!userId) {
-    return res.status(401).end()
-  }
-
-  if(!title) {
-    return res.status(400).send('Title is required')
+    return next(new AuthError('User not authenticated'))
   }
 
   try {
-    await addBookToUserCollection({
+    const result = await addBookToUserCollection({
       userId,
       title,
       author,
@@ -159,7 +157,7 @@ export async function addBook(req, res, next) {
       summary
     })
 
-    res.redirect('/books')
+    return res.status(201).json(result)
   } catch (err) {
     next(err)
   }
