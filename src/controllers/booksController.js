@@ -144,7 +144,7 @@ export async function filterByGenre(req, res) {
 // Menambahkan buku ke database melalui fitur add book
 export async function addBook(req, res, next) {
   const { title, author, isbn, summary } = req.body;
-  const userId = req.session.userId;
+  const userId = req.session?.userId;
 
   if(!userId) {
     return handleError(next, new AuthError('User not authenticated'))
