@@ -6,6 +6,7 @@ import { errorHandler } from "../src/middleware/errorHandler";
 import * as bookService from '../src/services/books.service'
 import { ValidationError } from "../src/domain/errors/ValidationError";
 import { UserAlreadyHasBookError } from "../src/domain/errors/UserAlreadyHasBookError";
+import { DatabaseError } from "../src/domain/errors/DatabaseError";
 
 const app = express()
 app.use(express.json())
@@ -99,5 +100,20 @@ describe('addBook Controller', () => {
 
     expect(res.status).toBe(401)
     expect(res.body.error).toBe('AUTH_ERROR')
+  })
+
+  it('Database error - unexpected DB failure', async () => {
+    vi.spyOn(bookService, 'addBookToUserCollection').mockImplementation(() => {
+      throw new DatabaseError('Internal DB failure')
+    })
+
+    const res = await request(app)
+      .post('/books')
+      .send({ title: 'DB Error Book', author: 'Author', isbn:'999'})
+      .set('Cookie', ['connect.sid=sessid'])
+    
+    expect(res.status).toBe(500)
+    expect(res.body.error).toBe('DB_ERROR')
+    expect(res.body.message).toBe('Internal server error')
   })
 })
