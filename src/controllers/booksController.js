@@ -14,7 +14,9 @@ import {
   checkUserBook,
 } from '../queries/bookQueries.js'
 import { addBookToUserCollection } from '../services/books.service.js';
+import { handleEmpty, handleError, handleSuccess } from '../helpers/responseHandler.js';
 import { AuthError } from '../domain/errors/AuthError.js';
+import { ConflictError } from '../domain/errors/ConflictError.js';
 
 // Tampilkan semua buku milik user
 export async function getBooks(req, res) {
@@ -145,7 +147,7 @@ export async function addBook(req, res, next) {
   const userId = req.session.userId;
 
   if(!userId) {
-    return next(new AuthError('User not authenticated'))
+    return handleError(next, new AuthError('User not authenticated'))
   }
 
   try {
@@ -157,9 +159,17 @@ export async function addBook(req, res, next) {
       summary
     })
 
-    return res.status(201).json(result)
+    if (result.reviewState === 'EMPTY') {
+      return handleEmpty(res, 'Book added but no review yet')
+    }
+
+    return handleSuccess(res, result, 'Book added successfully')
   } catch (err) {
-    next(err)
+    if (err.name === 'UserAlreadyHasBookError') {
+      return handleError(next, new ConflictError(err.message))
+    }
+
+    return handleError(next, err)
   }
 }
 
