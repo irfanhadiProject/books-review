@@ -15,8 +15,8 @@ import {
 } from '../queries/bookQueries.js'
 import { addBookToUserCollection } from '../services/books.service.js';
 import { handleEmpty, handleError, handleSuccess } from '../helpers/responseHandler.js';
-import { AuthError } from '../domain/errors/AuthError.js';
-import { ConflictError } from '../domain/errors/ConflictError.js';
+import { AuthError } from '../http/errors/AuthError.js';
+import { ConflictError } from '../http/errors/ConflictError.js';
 
 // Tampilkan semua buku milik user
 export async function getBooks(req, res) {
