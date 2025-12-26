@@ -1,8 +1,8 @@
-import express from 'express';
-import { showHomePage } from '../controllers/homeController.js';
+import express from 'express'
+import { showHomePage } from '../controllers/homeController.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', showHomePage);
+router.get('/', showHomePage)
 
-export default router;
+export default router

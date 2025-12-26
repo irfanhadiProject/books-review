@@ -1,6 +1,6 @@
-import pg from 'pg';
+import pg from 'pg'
 
-const { Pool } = pg;
+const { Pool } = pg
 
 function createPool() {
   if (process.env.NODE_ENV === 'test') {
@@ -41,4 +41,4 @@ if (process.env.NODE_ENV === 'test') {
 const pool = createPool()
 
 
-export default pool;
+export default pool

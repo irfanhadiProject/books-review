@@ -1,11 +1,11 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config()
 
-import { renderBooksPage } from '../utils/renderBooksPage.js';
+import { renderBooksPage } from '../utils/renderBooksPage.js'
 import {
   updateUserBookReview,
   deleteUserBook,
-} from '../models/bookModel.js';
+} from '../models/bookModel.js'
 import {
   getAllBooksByUser,
   getBookByUserBookId,
@@ -13,18 +13,18 @@ import {
   filterBooksByGenre,
   checkUserBook,
 } from '../queries/bookQueries.js'
-import { addBookToUserCollection } from '../services/books.service.js';
-import { handleEmpty, handleError, handleSuccess } from '../helpers/responseHandler.js';
-import { AuthError } from '../http/errors/AuthError.js';
-import { ConflictError } from '../http/errors/ConflictError.js';
+import { addBookToUserCollection } from '../services/books.service.js'
+import { handleEmpty, handleError, handleSuccess } from '../helpers/responseHandler.js'
+import { AuthError } from '../http/errors/AuthError.js'
+import { ConflictError } from '../http/errors/ConflictError.js'
 
 // Tampilkan semua buku milik user
 export async function getBooks(req, res) {
-  const userId = req.session.userId;
-  const username = req.session.username;
+  const userId = req.session.userId
+  const username = req.session.username
 
   try {
-    const result = await getAllBooksByUser(userId);
+    const result = await getAllBooksByUser(userId)
 
     res.render(
       'pages/books',
@@ -32,42 +32,42 @@ export async function getBooks(req, res) {
         user: username,
         booksData: result.rows,
       })
-    );
+    )
   } catch (err) {
-    console.error('Error executing query', err.stack);
-    res.status(500).send('Internal Server Error');
+    console.error('Error executing query', err.stack)
+    res.status(500).send('Internal Server Error')
   }
 }
 
 // Mendapatkan data buku dengan id
 export async function getBookById(req, res) {
-  const userBookId = req.params.id;
-  const userId = req.session.userId;
+  const userBookId = req.params.id
+  const userId = req.session.userId
 
   try {
-    const result = await getBookByUserBookId(userBookId, userId);
+    const result = await getBookByUserBookId(userBookId, userId)
 
     if (result.rows.length === 0) {
       return res
         .status(404)
-        .json({ message: 'Book not found or access denied' });
+        .json({ message: 'Book not found or access denied' })
     }
 
-    res.json(result.rows[0]);
+    res.json(result.rows[0])
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
   }
 }
 
 // Mendapatkan data buku berdasarkan judul melalui fitur search
 export async function searchBooks(req, res) {
-  const title = req.query.search;
-  const userId = req.session.userId;
-  const username = req.session.username;
+  const title = req.query.search
+  const userId = req.session.userId
+  const username = req.session.username
 
   try {
-    const result = await searchBooksByTitle(userId, title);
+    const result = await searchBooksByTitle(userId, title)
 
     res.render(
       'pages/books',
@@ -75,21 +75,21 @@ export async function searchBooks(req, res) {
         user: username,
         booksData: result.rows,
       })
-    );
+    )
   } catch (err) {
-    console.error('Error executing query', err.stack);
-    res.status(500).send('Internal Server Error');
+    console.error('Error executing query', err.stack)
+    res.status(500).send('Internal Server Error')
   }
 }
 
 // Mendapatkan data buku berdasarkan genre melalui fitur filter genre
 export async function filterByGenre(req, res) {
-  const genre = req.query.genre;
-  const userId = req.session.userId;
-  const username = req.session.username;
+  const genre = req.query.genre
+  const userId = req.session.userId
+  const username = req.session.username
 
   try {
-    const result = await filterBooksByGenre(userId, genre);
+    const result = await filterBooksByGenre(userId, genre)
 
     res.render(
       'pages/books',
@@ -97,10 +97,10 @@ export async function filterByGenre(req, res) {
         user: username,
         booksData: result.rows,
       })
-    );
+    )
   } catch (err) {
-    console.error('Error executing query', err.stack);
-    res.status(500).send('Internal Server Error');
+    console.error('Error executing query', err.stack)
+    res.status(500).send('Internal Server Error')
   }
 }
 
@@ -143,8 +143,8 @@ export async function filterByGenre(req, res) {
 
 // Menambahkan buku ke database melalui fitur add book
 export async function addBook(req, res, next) {
-  const { title, author, isbn, summary } = req.body;
-  const userId = req.session?.userId;
+  const { title, author, isbn, summary } = req.body
+  const userId = req.session?.userId
 
   if(!userId) {
     return handleError(next, new AuthError('User not authenticated'))
@@ -175,18 +175,18 @@ export async function addBook(req, res, next) {
 
 // Mengubah isi review buku
 export async function updateBookReview(req, res) {
-  const userBookId = req.params.id;
-  const userId = req.session.userId;
-  const { setting, readability, words, summary } = req.body;
+  const userBookId = req.params.id
+  const userId = req.session.userId
+  const { setting, readability, words, summary } = req.body
 
   try {
     // Pastikan data buku milik user tersebut
-    const check = await checkUserBook(userBookId, userId);
+    const check = await checkUserBook(userBookId, userId)
 
     if (check.rows.length === 0) {
       return res
         .status(404)
-        .json({ message: 'Book not found or access denied' });
+        .json({ message: 'Book not found or access denied' })
     }
 
     await updateUserBookReview({
@@ -195,24 +195,24 @@ export async function updateBookReview(req, res) {
       words,
       summary,
       userBookId,
-    });
+    })
 
-    res.redirect('/books');
+    res.redirect('/books')
   } catch (err) {
-    console.error('Error updating book:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error updating book:', err.message)
+    res.status(500).json({ message: 'Server error' })
   }
 }
 
 // Menghapus buku dari database user_books
 export async function deleteBook(req, res) {
-  const userBookId = req.params.id;
+  const userBookId = req.params.id
 
   try {
-    await deleteUserBook(userBookId);
-    res.status(200).send('Book deleted');
+    await deleteUserBook(userBookId)
+    res.status(200).send('Book deleted')
   } catch (err) {
-    console.error('Error deleting book:', err.message);
-    res.status(500).send('Error deleting book');
+    console.error('Error deleting book:', err.message)
+    res.status(500).send('Error deleting book')
   }
 }

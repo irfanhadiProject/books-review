@@ -162,7 +162,7 @@ export async function addBookToUserCollection(input) {
     }
   } catch (err) {
     if (!committed) {
-      await client.query('ROLLBACK');
+      await client.query('ROLLBACK')
     }
     throw mapToDomainError(err)
   } finally {

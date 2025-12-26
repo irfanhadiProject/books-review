@@ -1,4 +1,4 @@
-import express from 'express';
+import express from 'express'
 import {
   getBooks,
   getBookById,
@@ -8,17 +8,17 @@ import {
   addBook,
   updateBookReview,
   deleteBook,
-} from '../controllers/booksController.js';
+} from '../controllers/booksController.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', getBooks);
-router.get('/search-book', searchBooks);
-router.get('/filter-by', filterByGenre);
+router.get('/', getBooks)
+router.get('/search-book', searchBooks)
+router.get('/filter-by', filterByGenre)
 // router.get('/sort-by', sortBooks);
-router.post('/add-book', addBook);
-router.get('/:id', getBookById);
-router.patch('/:id', updateBookReview);
-router.delete('/:id', deleteBook);
+router.post('/add-book', addBook)
+router.get('/:id', getBookById)
+router.patch('/:id', updateBookReview)
+router.delete('/:id', deleteBook)
 
-export default router;
+export default router

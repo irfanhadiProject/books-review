@@ -10,5 +10,5 @@ export function renderBooksPage(options = {}) {
     showFooter: true,
     user: options.user,
     booksData: options.booksData || [],
-  };
+  }
 }

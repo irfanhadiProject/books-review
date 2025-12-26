@@ -116,7 +116,7 @@ describe('addBookToUserCollection', () => {
 
   it('rolls back book insert if user_books fails', async () => {
     const book = await db.query(
-      `INSERT INTO books(title, isbn) VALUES ('Temp', '123') RETURNING id`
+      'INSERT INTO books(title, isbn) VALUES (\'Temp\', \'123\') RETURNING id'
     )
 
     await db.query(
@@ -133,7 +133,7 @@ describe('addBookToUserCollection', () => {
       })
     ).rejects.toThrow(UserAlreadyHasBookError)
 
-    const books = await db.query(`SELECT * FROM books WHERE isbn='123'`)
+    const books = await db.query('SELECT * FROM books WHERE isbn=\'123\'')
     expect(books.rowCount).toBe(1)
   })
 
@@ -163,7 +163,7 @@ describe('addBookToUserCollection', () => {
     expect(result[0].status).toBe('fulfilled')
     expect(result[1].status).toBe('fulfilled')
 
-    const books = await db.query(`SELECT * FROM books WHERE isbn='999'`)
+    const books = await db.query('SELECT * FROM books WHERE isbn=\'999\'')
     const userBooks = await db.query('SELECT * FROM user_books')
 
     expect(books.rowCount).toBe(1)
@@ -189,8 +189,8 @@ describe('addBookToUserCollection', () => {
     expect(rejected.length).toBe(1)
     expect(rejected[0].reason).toBeInstanceOf(UserAlreadyHasBookError)
 
-    const books = await db.query(`SELECT * FROM books WHERE isbn='888'`)
-    const userBooks = await db.query(`SELECT * FROM user_books`)
+    const books = await db.query('SELECT * FROM books WHERE isbn=\'888\'')
+    const userBooks = await db.query('SELECT * FROM user_books')
 
     expect(books.rowCount).toBe(1)
     expect(userBooks.rowCount).toBe(1)

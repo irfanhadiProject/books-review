@@ -1,12 +1,12 @@
 import db from '../../src/utils/db.js'
 import bcrypt from 'bcrypt'
-import { beforeEach, describe, it, expect } from "vitest";
-import { resetDb } from "../helpers/db.js";
-import { loginUser } from '../../src/services/auth.service.js';
-import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError';
-import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError';
-import { UserInactiveError } from '../../src/domain/errors/UserInactiveError';
-import { ValidationError } from '../../src/domain/errors/ValidationError';
+import { beforeEach, describe, it, expect } from 'vitest'
+import { resetDb } from '../helpers/db.js'
+import { loginUser } from '../../src/services/auth.service.js'
+import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError'
+import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError'
+import { UserInactiveError } from '../../src/domain/errors/UserInactiveError'
+import { ValidationError } from '../../src/domain/errors/ValidationError'
 
 describe('loginUser', () => {
   let activeUser
@@ -100,7 +100,7 @@ describe('loginUser', () => {
       })
     ).rejects.toBeInstanceOf(InvalidPasswordError)
 
-    const users = await db.query(`SELECT * FROM users`)
+    const users = await db.query('SELECT * FROM users')
     expect(users.rowCount).toBe(2)
   })
 

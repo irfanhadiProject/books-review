@@ -1,4 +1,4 @@
-import db from '../utils/db.js';
+import db from '../utils/db.js'
 
 export async function getAllBooksByUser(userId) {
   return db.query(
@@ -15,7 +15,7 @@ export async function getAllBooksByUser(userId) {
         WHERE user_books.user_id = $1
         ORDER BY user_books.read_at DESC`,
     [userId]
-  );
+  )
 }
 
 export async function getBookByUserBookId(userBookId, userId) {
@@ -34,7 +34,7 @@ export async function getBookByUserBookId(userBookId, userId) {
         JOIN books ON user_books.book_id = books.id
         WHERE user_books.id = $1 AND user_books.user_id = $2`,
     [userBookId, userId]
-  );
+  )
 }
 
 export async function searchBooksByTitle(userId, title) {
@@ -53,7 +53,7 @@ export async function searchBooksByTitle(userId, title) {
         AND books.title ILIKE $2
         ORDER BY user_books.read_at DESC`,
     [userId, `%${title}%`]
-  );
+  )
 }
 
 export async function filterBooksByGenre(userId, genre) {
@@ -72,12 +72,12 @@ export async function filterBooksByGenre(userId, genre) {
            AND books.genre ILIKE $2
            ORDER BY user_books.read_at DESC`,
     [userId, `%${genre}%`]
-  );
+  )
 }
 
 export async function checkUserBook(userBookId, userId) {
-  return db.query(`SELECT * FROM user_books WHERE id = $1 AND user_id = $2`, [
+  return db.query('SELECT * FROM user_books WHERE id = $1 AND user_id = $2', [
     userBookId,
     userId,
-  ]);
+  ])
 }
