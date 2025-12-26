@@ -1,10 +1,10 @@
-import bcrypt from 'bcrypt';
-import db from '../utils/db.js';
-
-export async function findUser(username) {
-  return db.query('SELECT id, password_hash FROM users WHERE username =$1', [
-    username,
-  ]);
+export async function findUserByUsername(client, username) {
+  return client.query(
+    `SELECT id, password_hash, is_active, role 
+     FROM users 
+     WHERE username =$1`, 
+     [username]
+  );
 }
 
 export async function createUser(username, password) {
