@@ -103,4 +103,14 @@ describe('loginUser', () => {
     const users = await db.query(`SELECT * FROM users`)
     expect(users.rowCount).toBe(2)
   })
+
+  it('does not expose password hash in output', async () => {
+    const result = await loginUser({
+      username: 'active_user',
+      password
+    })
+
+    expect(result.password_hash).toBeUndefined()
+    expect(Object.values(result)).not.toContain(expect.stringContaining('$2b$'))
+  })
 })
