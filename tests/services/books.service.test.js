@@ -1,9 +1,9 @@
-import db from '../src/utils/db.js'
+import db from '../../src/utils/db.js'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { resetDb } from './helpers/db.js'
-import { addBookToUserCollection } from '../src/services/books.service.js'
-import { UserAlreadyHasBookError } from '../src/domain/errors/UserAlreadyHasBookError.js'
-import { ValidationError } from '../src/domain/errors/ValidationError.js'
+import { resetDb } from '../helpers/db.js'
+import { addBookToUserCollection } from '../../src/services/books.service.js'
+import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'
+import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 
 
 describe('addBookToUserCollection', () => {
