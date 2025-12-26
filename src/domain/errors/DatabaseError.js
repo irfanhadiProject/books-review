@@ -1,6 +1,7 @@
-export class DatabaseError extends Error {
+import { DomainError } from "./DomainError.js"
+
+export class DatabaseError extends DomainError {
   constructor(message = 'Database error') {
     super(message)
-    this.name = 'DatabaseError'
   }
 }
