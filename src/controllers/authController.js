@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt';
-import { findUser, createUser } from '../models/authModel.js';
+import { loginUser } from '../services/auth.service.js'
+import { handleError, handleSuccess } from '../helpers/responseHandler.js';
 
 // Tampilkan halaman login
 export function showLoginPage(req, res) {
@@ -12,45 +12,27 @@ export function showLoginPage(req, res) {
   });
 }
 
-// Tangani proses login
-export async function handleLogin(req, res) {
+// POST /auth/login
+export async function login(req, res, next) {
   const { username, password } = req.body;
+
   try {
-    const result = await findUser(username);
+    const user = await loginUser({ username, password })
 
-    // Cek username dan password
-    if (result.rows.length === 0) {
-      return res.status(401).render('pages/login', {
-        layout: 'layout',
-        title: 'Login',
-        showHeader: false,
-        showFooter: false,
-        error: 'User not found!',
-      });
-    }
+    req.session.userId = user.userId;
+    req.session.role = user.role
 
-    const user = result.rows[0];
-
-    const match = await bcrypt.compare(password, user.password_hash);
-
-    if (!match) {
-      return res.status(401).render('pages/login', {
-        layout: 'layout',
-        title: 'Login',
-        showHeader: false,
-        showFooter: false,
-        error: 'Incorrect username or password',
-      });
-    }
-
-    req.session.loggedIn = true;
-    req.session.username = username;
-    req.session.userId = user.id;
-
-    res.redirect('/books');
+    return handleSuccess(
+      res,
+      {
+        userId: user.userId,
+        username: user.username,
+        role: user.role
+      },
+      'Login successful'
+    )
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Internal server error');
+    return handleError(next, err)
   }
 }
 

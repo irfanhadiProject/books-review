@@ -67,9 +67,10 @@ export async function loginUser(input) {
     throw new ValidationError('username and password are required')
   }
 
-  const client = await db.connect()
+  let client
 
   try {
+    client = await db.connect()
     // 1. fetch user by username
     const result = await findUserByUsername(client, username)
     
@@ -102,6 +103,6 @@ export async function loginUser(input) {
   } catch (err) {
     throw mapToDomainError(err)
   } finally {
-    client.release()
+    if (client) client.release()
   }
 }
