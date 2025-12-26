@@ -1,15 +1,13 @@
-import { ValidationError } from '../domain/errors/ValidationError.js'
-import { UserAlreadyHasBookError } from '../domain/errors/UserAlreadyHasBookError.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
 
 export function mapToDomainError(err) {
-  if (err instanceof ValidationError || err instanceof UserAlreadyHasBookError) {
+  if (err?.isDomainError) {
     return err
   }
 
-  if (err.code === '23505') {
-    return new UserAlreadyHasBookError()
+  if (err.code || err.name === 'DatabaseError') {
+    return new DatabaseError()
   }
 
-  return new DatabaseError(err.message)
+  throw err
 }
