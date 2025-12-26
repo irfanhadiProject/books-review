@@ -69,8 +69,8 @@ import {
 import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
 import { ValidationError } from '../domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../domain/errors/UserAlreadyHasBookError.js'
-import { mapToDomainError } from '../utils/mapToDomainError.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
+import { mapToDomainError } from '../utils/mapToDomainError.js'
 
 export async function addBookToUserCollection(input) {
   const {userId, title, author, isbn, summary} = input
