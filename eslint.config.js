@@ -42,6 +42,7 @@ export default [
         it: 'readonly',
         expect: 'readonly',
         beforeEach: 'readonly',
+        process: 'readonly'
       },
     },
   },
