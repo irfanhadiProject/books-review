@@ -1,5 +1,5 @@
-export function handleSuccess(res, data, message = 'Operation successful') {
-  return res.status(201).json({
+export function handleSuccess(res, data, message = 'Operation successful', statusCode = 200) {
+  return res.status(statusCode).json({
     status: 'success',
     data,
     message

@@ -3,10 +3,10 @@ import bcrypt from 'bcrypt'
 import { beforeEach, describe, it, expect } from 'vitest'
 import { resetDb } from '../helpers/db.js'
 import { loginUser } from '../../src/services/auth.service.js'
-import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError'
-import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError'
-import { UserInactiveError } from '../../src/domain/errors/UserInactiveError'
-import { ValidationError } from '../../src/domain/errors/ValidationError'
+import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
+import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError.js'
+import { UserInactiveError } from '../../src/domain/errors/UserInactiveError.js'
+import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 
 describe('loginUser', () => {
   let activeUser

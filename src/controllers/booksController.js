@@ -16,7 +16,7 @@ import {
 import { addBookToUserCollection } from '../services/books.service.js'
 import { handleEmpty, handleError, handleSuccess } from '../helpers/responseHandler.js'
 import { AuthError } from '../http/errors/AuthError.js'
-import { ConflictError } from '../http/errors/ConflictError.js'
+import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'
 
 // Tampilkan semua buku milik user
 export async function getBooks(req, res) {
@@ -163,13 +163,9 @@ export async function addBook(req, res, next) {
       return handleEmpty(res, 'Book added but no review yet')
     }
 
-    return handleSuccess(res, result, 'Book added successfully')
+    return handleSuccess(res, result, 'Book added successfully', 201)
   } catch (err) {
-    if (err.name === 'UserAlreadyHasBookError') {
-      return handleError(next, new ConflictError(err.message))
-    }
-
-    return handleError(next, err)
+    return handleError(next, mapDomainErrorToHttpError(err))
   }
 }
 

@@ -1,8 +1,8 @@
 import { AuthError } from '../http/errors/AuthError.js'
 import { ConflictError } from '../http/errors/ConflictError.js'
 import { NotFoundError } from '../http/errors/NotFoundError.js'
-import { DatabaseError } from '../domain/errors/DatabaseError.js'
-import { ValidationError } from '../domain/errors/ValidationError.js'
+import { DatabaseError } from '../http/errors/DatabaseError.js'
+import { ValidationError } from '../http/errors/ValidationError.js'
 
 export function errorHandler(err, req, res, next) {
   if (err instanceof AuthError) {
@@ -39,6 +39,8 @@ export function errorHandler(err, req, res, next) {
       message: 'Internal server error'
     })
   }
+
+  console.error('[UNHANDLED ERROR]', err)
 
   return res.status(500).json({
     error: 'UNKNOWN_ERROR',

@@ -1,12 +1,14 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
 import request from 'supertest'
 import express from 'express'
-import { addBook } from '../../src/controllers/booksController'
-import { errorHandler } from '../../src/middleware/errorHandler'
-import * as bookService from '../../src/services/books.service'
-import { ValidationError } from '../../src/domain/errors/ValidationError'
-import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError'
-import { DatabaseError } from '../../src/domain/errors/DatabaseError'
+
+import { addBook } from '../../src/controllers/booksController.js'
+import { errorHandler } from '../../src/middleware/errorHandler.js'
+import * as bookService from '../../src/services/books.service.js'
+
+import { ValidationError } from '../../src/domain/errors/ValidationError.js'
+import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'
+import { DatabaseError } from '../../src/domain/errors/DatabaseError.js'
 
 const app = express()
 app.use(express.json())
