@@ -1,5 +1,6 @@
 import { loginUser } from '../services/auth.service.js'
 import { handleError, handleSuccess } from '../helpers/responseHandler.js'
+import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'
 
 // Tampilkan halaman login
 export function showLoginPage(req, res) {
@@ -32,7 +33,7 @@ export async function login(req, res, next) {
       'Login successful'
     )
   } catch (err) {
-    return handleError(next, err)
+    return handleError(next, mapDomainErrorToHttpError(err))
   }
 }
 
