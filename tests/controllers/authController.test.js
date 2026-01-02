@@ -7,6 +7,7 @@ import { login } from '../../src/controllers/authController.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
 import * as authService from '../../src/services/auth.service.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
+import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
 
 const app = express()
 
@@ -61,5 +62,18 @@ describe('POST /auth/login - authController', () => {
     expect(res.status).toBe(422)
     expect(res.body.error).toBe('VALIDATION_ERROR')
     expect(res.body.message).toBe('username and password are required')
+  })
+
+  it('auth error - user not found', async () => {
+    vi.spyOn(authService, 'loginUser').mockImplementation(() => {
+      throw new UserNotFoundError()
+    })
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ username: 'unknown', password: 'password'})
+
+    expect(res.status).toBe(401)
+    expect(res.body.error).toBe('AUTH_ERROR')
   })
 })
