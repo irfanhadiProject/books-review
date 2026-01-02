@@ -12,8 +12,8 @@ describe('addBookToUserCollection', () => {
   beforeEach(async () => {
     await resetDb()
     const res = await db.query(
-      `INSERT INTO users(username, password_hash)
-       VALUES ('test', 'hash') RETURNING id`
+      `INSERT INTO users(username, password_hash, is_active, role)
+       VALUES ('test', 'hash', true, 'user') RETURNING id`
     )
     userId = res.rows[0].id
   })
@@ -45,8 +45,8 @@ describe('addBookToUserCollection', () => {
     })
 
     const secondUser = await db.query(
-      `INSERT INTO users(username, password_hash)
-       VALUES ('test2', 'hash') RETURNING id`
+      `INSERT INTO users(username, password_hash, is_active, role)
+       VALUES ('test2', 'hash', true, 'user') RETURNING id`
     )
 
     const second = await addBookToUserCollection({
