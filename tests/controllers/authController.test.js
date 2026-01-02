@@ -6,6 +6,7 @@ import session from 'express-session'
 import { login } from '../../src/controllers/authController.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
 import * as authService from '../../src/services/auth.service.js'
+import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 
 const app = express()
 
@@ -46,5 +47,19 @@ describe('POST /auth/login - authController', () => {
     })
     expect(res.body.message).toBe('Login successful')
     expect(res.headers['set-cookie']).toBeDefined()
+  })
+
+  it('validation error - missing username or password', async () => {
+    vi.spyOn(authService, 'loginUser').mockImplementation(() => {
+      throw new ValidationError('username and password are required')
+    })
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ username: '', password: ''})
+
+    expect(res.status).toBe(422)
+    expect(res.body.error).toBe('VALIDATION_ERROR')
+    expect(res.body.message).toBe('username and password are required')
   })
 })
