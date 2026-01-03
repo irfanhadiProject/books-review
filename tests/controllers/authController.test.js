@@ -10,6 +10,7 @@ import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
 import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError.js'
 import { UserInactiveError } from '../../src/domain/errors/UserInactiveError.js'
+import { DatabaseError } from '../../src/domain/errors/DatabaseError.js'
 
 const app = express()
 
@@ -103,5 +104,19 @@ describe('POST /auth/login - authController', () => {
 
     expect(res.status).toBe(401)
     expect(res.body.error).toBe('AUTH_ERROR')
+  })
+
+  it('database error - unexpected DB failure', async () => {
+    vi.spyOn(authService, 'loginUser').mockImplementation(() => {
+      throw new DatabaseError('DB failure')
+    })
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ username: 'testuser', password: 'password'})
+    
+    expect(res.status).toBe(500)
+    expect(res.body.error).toBe('DB_ERROR')
+    expect(res.body.message).toBe('Internal server error')
   })
 })
