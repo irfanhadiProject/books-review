@@ -38,8 +38,6 @@ export async function insertUserBook(client, {
       read_at
     )
     VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
-    ON CONFLICT ON CONSTRAINT unique_user_book 
-    DO NOTHING
     RETURNING id`,
     [userId, bookId, setting, readability, words, summary]
   )

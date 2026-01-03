@@ -68,7 +68,6 @@ import {
 } from '../models/bookModel.js'
 import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
 import { ValidationError } from '../domain/errors/ValidationError.js'
-import { UserAlreadyHasBookError } from '../domain/errors/UserAlreadyHasBookError.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
 import { mapToDomainError } from '../utils/mapToDomainError.js'
 
@@ -136,10 +135,6 @@ export async function addBookToUserCollection(input) {
       words: null,
       summary: summary ?? null,
     })
-    
-    if (userBookResult.rowCount === 0) {
-      throw new UserAlreadyHasBookError()
-    }
     
     userBookId = userBookResult.rows[0].id
 
