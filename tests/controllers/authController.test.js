@@ -8,6 +8,7 @@ import { errorHandler } from '../../src/middleware/errorHandler.js'
 import * as authService from '../../src/services/auth.service.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
+import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError.js'
 
 const app = express()
 
@@ -73,6 +74,19 @@ describe('POST /auth/login - authController', () => {
       .post('/auth/login')
       .send({ username: 'unknown', password: 'password'})
 
+    expect(res.status).toBe(401)
+    expect(res.body.error).toBe('AUTH_ERROR')
+  })
+
+  it('auth error - invalid password', async () => {
+    vi.spyOn(authService, 'loginUser').mockImplementation(() => {
+      throw new InvalidPasswordError()
+    })
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ username: 'testuser', password:'wrong'})
+    
     expect(res.status).toBe(401)
     expect(res.body.error).toBe('AUTH_ERROR')
   })
