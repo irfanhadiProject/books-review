@@ -7,6 +7,7 @@ import { ValidationError } from '../http/errors/ValidationError.js'
 import { ConflictError } from '../http/errors/ConflictError.js'
 import { DatabaseError } from '../http/errors/DatabaseError.js'
 import { AuthError } from '../http/errors/AuthError.js'
+import { InvalidPasswordError } from '../domain/errors/InvalidPasswordError.js'
 
 export function mapDomainErrorToHttpError(err) {
   if (err instanceof DomainValidationError) {
@@ -17,7 +18,7 @@ export function mapDomainErrorToHttpError(err) {
     return new ConflictError(err.message)
   }
 
-  if (err instanceof UserNotFoundError) {
+  if (err instanceof UserNotFoundError || err instanceof InvalidPasswordError) {
     return new AuthError('Invalid username or password')
   }
 
