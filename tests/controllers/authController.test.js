@@ -9,6 +9,7 @@ import * as authService from '../../src/services/auth.service.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
 import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError.js'
+import { UserInactiveError } from '../../src/domain/errors/UserInactiveError.js'
 
 const app = express()
 
@@ -87,6 +88,19 @@ describe('POST /auth/login - authController', () => {
       .post('/auth/login')
       .send({ username: 'testuser', password:'wrong'})
     
+    expect(res.status).toBe(401)
+    expect(res.body.error).toBe('AUTH_ERROR')
+  })
+
+  it('auth error - user inactive', async () => {
+    vi.spyOn(authService, 'loginUser').mockImplementation(() => {
+      throw new UserInactiveError()
+    })
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ username: 'inactive', password: 'password'})
+
     expect(res.status).toBe(401)
     expect(res.body.error).toBe('AUTH_ERROR')
   })
