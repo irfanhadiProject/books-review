@@ -70,6 +70,7 @@ import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
 import { ValidationError } from '../domain/errors/ValidationError.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
 import { mapToDomainError } from '../utils/mapToDomainError.js'
+import { getAllBooksByUser } from '../queries/bookQueries.js'
 
 export async function addBookToUserCollection(input) {
   const {userId, title, author, isbn, summary} = input
@@ -163,4 +164,9 @@ export async function addBookToUserCollection(input) {
   } finally {
     client.release()
   }
+}
+
+export async function getUserBooks(userId) {
+  const result = await getAllBooksByUser(userId)
+  return result.rows
 }
