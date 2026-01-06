@@ -175,7 +175,8 @@ export async function addBookToUserCollection(input) {
  *  - no cross-user data leakage is allowed
  * 3. the function is read-only. It mustn't create, update, or delete any state
  * 4. ordering is deterministic:
- *  - results are ordered by user_books.read_at DESC
+ *  - primary: user_books.read_at DESC
+ *  - secondary: user_books.id DESC
  *  - null read_at values are allowed and follow database ordering rules
  * 5. empty state is valid:
  *  - a user with no book must return an empty array
