@@ -16,7 +16,7 @@ export async function getAllBooksByUser(userId) {
      FROM user_books ub
      JOIN books b ON ub.book_id = b.id
      WHERE ub.user_id = $1
-     ORDER BY ub.read_at DESC`,
+     ORDER BY ub.read_at DESC, ub.id DESC`,
     [userId]
   )
 }
