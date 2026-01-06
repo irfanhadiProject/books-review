@@ -1,29 +1,29 @@
 /**
  * Domain Service: Book Collection
  * 
- * Tanggung jawab:
- * - Menjaga invariant relasi user <-> book
- * - Menyediakan operasi atomik (transactional)
+ * Responsibilities
+ * - Enforce invariants of the user book relationship
+ * - Provide atomic (transactional) operations
  * 
- * Service ini Tidak:
- * - Tahu HTTP
- * - Tahu session
- * - Tahu view / redirect
+ * This service does NOT:
+ * - Know about HTTP
+ * - Know about sessions
+ * - Know about views or redirects
  */
 
 /**
  * addBookToUserCollection
  * 
  * Invariants:
- * 1. userId refer ke user yang ada (eksistensi dijamin oleh caller atau dipaksa dengan persistance layer)
- * 2. title tidak boleh kosong
- * 3. satu user hanya boleh punya satu relasi ke satu buku
- * 4. tidak boleh ada state setengah jadi:
- *    - books sukses tapi user_books gagal -> rollback
- * 5. ISBN opsional: 
- *    - jika ada, jadi identitas deduplikasi utama
- *    - jika tidak ada, buku selalu dianggap entitas baru
- * 6. Fetch cover tidak mempengaruhi keberhasilan utama
+ * 1. userId must reference an existing user (existence is guaranteed by the caller or enforced at the persistence layer)
+ * 2. title must not be empty
+ * 3. a user can have only one relationship with a given book
+ * 4. no partial state is allowed:
+ *    - books succeeds but user_books fails -> rollback
+ * 5. ISBN is optional:
+ *    - when present, it is the primary deduplication identity
+ *    - when absent, the book is always treated as a new entity
+ * 6. cover fetching must not affect the main operation outcome
  * 
  * Input:
  * {
