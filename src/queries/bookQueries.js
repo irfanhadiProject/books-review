@@ -3,17 +3,20 @@ import db from '../utils/db.js'
 export async function getAllBooksByUser(userId) {
   return db.query(
     `SELECT 
-        books.*, 
-        user_books.setting,
-        user_books.readability,
-        user_books.words,
-        user_books.summary,
-        user_books.read_at, 
-        user_books.id AS user_book_id
-        FROM user_books
-        JOIN books ON user_books.book_id = books.id
-        WHERE user_books.user_id = $1
-        ORDER BY user_books.read_at DESC`,
+      b.id,
+      b.title,
+      b.author,
+      b.cover, 
+      ub.setting,
+      ub.readability,
+      ub.words,
+      ub.summary,
+      ub.read_at, 
+      ub.id AS user_book_id
+     FROM user_books ub
+     JOIN books b ON ub.book_id = b.id
+     WHERE ub.user_id = $1
+     ORDER BY ub.read_at DESC`,
     [userId]
   )
 }
