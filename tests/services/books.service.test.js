@@ -1,7 +1,7 @@
 import db from '../../src/utils/db.js'
 import { describe, it, expect, beforeEach } from 'vitest'
 import { resetDb } from '../helpers/db.js'
-import { addBookToUserCollection } from '../../src/services/books.service.js'
+import { addBookToUserCollection, getUserBooks } from '../../src/services/books.service.js'
 import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 
@@ -197,4 +197,89 @@ describe('addBookToUserCollection', () => {
   })
 })
 
+describe('getUserBooks', () => {
+  beforeEach(async () => {
+    await resetDb()
+  })
+
+  async function seedUser(username = 'user1') {
+    const result = await db.query(
+      `INSERT INTO users (username, password_hash, is_active, role)
+       VALUES ($1, 'hash', true, 'user')
+       RETURNING id`,
+       [username]
+    )
+    return result.rows[0].id
+  }
+
+  async function seedBookForUser({ userId, title = 'Book A', isbn = '111'}) {
+    const book = await db.query(
+      `INSERT INTO books (title, isbn)
+       VALUES ($1, $2)
+       RETURNING id`,
+      [title, isbn]
+    )
+
+    await db.query(
+      `INSERT INTO user_books (user_id, book_id, summary)
+       VALUES ($1, $2, 'summary')`,
+      [userId, book.rows[0].id]
+    )
+  }
+
+  it('returns list of books for user', async () => {
+    const userId = await seedUser()
+    await seedBookForUser({ userId })
+
+    const books = await getUserBooks(userId)
+
+    expect(Array.isArray(books)).toBe(true)
+    expect(books.length).toBe(1)
+
+    const book = books[0]
+    expect(book).toHaveProperty('id')
+    expect(book).toHaveProperty('title')
+    expect(book).toHaveProperty('user_book_id')
+    expect(book).toHaveProperty('summary')
+  })
+
+  it('returns emty array if user has no books', async () => {
+    const userId = await seedUser()
+    const books = await getUserBooks(userId)
+
+    expect(books).toEqual([])
+  })
+
+  it('returns books ordered by read_at desc', async () => {
+    const userId = await seedUser()
+
+    const book1 = await db.query(
+      `INSERT INTO books (title, isbn)
+       VALUES ('Old Book', '1')
+       RETURNING id`
+    )
+
+    await db.query(
+      `INSERT INTO user_books (user_id, book_id, read_at)
+       VALUES ($1, $2, NOW() - INTERVAL '1 day')`,
+      [userId, book1.rows[0].id]
+    )
+
+    const book2 = await db.query(
+      `INSERT INTO books (title, isbn)
+       VALUES ('New Book', '2') RETURNING id`
+    )
+
+    await db.query(
+      `INSERT INTO user_books (user_id, book_id, read_at)
+       VALUES ($1, $2, NOW())`,
+      [userId, book2.rows[0].id]
+    )
+
+    const books = await getUserBooks(userId)
+
+    expect(books[0].title).toBe('New Book')
+    expect(books[1].title).toBe('Old Book')
+  })
+})
 
