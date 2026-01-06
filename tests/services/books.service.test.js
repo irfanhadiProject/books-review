@@ -212,7 +212,12 @@ describe('getUserBooks', () => {
     return result.rows[0].id
   }
 
-  async function seedBookForUser({ userId, title = 'Book A', isbn = '111'}) {
+  async function seedBookForUser({ 
+    userId, 
+    title = 'Book A', 
+    isbn = '111',
+    readAt = null,
+  }) {
     const book = await db.query(
       `INSERT INTO books (title, isbn)
        VALUES ($1, $2)
@@ -221,9 +226,9 @@ describe('getUserBooks', () => {
     )
 
     await db.query(
-      `INSERT INTO user_books (user_id, book_id, summary)
-       VALUES ($1, $2, 'summary')`,
-      [userId, book.rows[0].id]
+      `INSERT INTO user_books (user_id, book_id, summary, read_at)
+       VALUES ($1, $2, 'summary', $3)`,
+      [userId, book.rows[0].id, readAt]
     )
   }
 
@@ -243,7 +248,7 @@ describe('getUserBooks', () => {
     expect(book).toHaveProperty('summary')
   })
 
-  it('returns emty array if user has no books', async () => {
+  it('returns empty array if user has no books', async () => {
     const userId = await seedUser()
     const books = await getUserBooks(userId)
 
@@ -252,34 +257,53 @@ describe('getUserBooks', () => {
 
   it('returns books ordered by read_at desc', async () => {
     const userId = await seedUser()
+    const oldDate = new Date('2024-01-01T00:00:00Z')
+    const newDate = new Date('2024-01-02T00:00:00Z')
 
-    const book1 = await db.query(
-      `INSERT INTO books (title, isbn)
-       VALUES ('Old Book', '1')
-       RETURNING id`
-    )
 
-    await db.query(
-      `INSERT INTO user_books (user_id, book_id, read_at)
-       VALUES ($1, $2, NOW() - INTERVAL '1 day')`,
-      [userId, book1.rows[0].id]
-    )
+    await seedBookForUser({
+      userId,
+      title: 'Old Book',
+      isbn: '1',
+      readAt: oldDate
+    })
 
-    const book2 = await db.query(
-      `INSERT INTO books (title, isbn)
-       VALUES ('New Book', '2') RETURNING id`
-    )
-
-    await db.query(
-      `INSERT INTO user_books (user_id, book_id, read_at)
-       VALUES ($1, $2, NOW())`,
-      [userId, book2.rows[0].id]
-    )
+    await seedBookForUser({
+      userId,
+      title: 'New Book',
+      isbn: '2',
+      readAt: newDate
+    })
 
     const books = await getUserBooks(userId)
 
-    expect(books[0].title).toBe('New Book')
-    expect(books[1].title).toBe('Old Book')
+    expect(books.map(b => b.title)).toEqual(['New Book', 'Old Book'])
+  })
+
+  it('orders books deterministically when read_at is equal', async () => {
+    const userId = await seedUser()
+    const sameDate = new Date('2024-01-01T10:00:00Z')
+
+    await seedBookForUser({ userId, title: 'Book 1', isbn:'1', readAt: sameDate})
+    await seedBookForUser({ userId, title: 'Book 2', isbn:'2', readAt: sameDate})
+
+    const books = await getUserBooks(userId)
+
+    expect(books.map(b => b.title)).toEqual(['Book 2', 'Book 1'])
+  })
+
+  it('does not leak books from other users', async () => {
+    const userA = await seedUser('userA')
+    const userB = await seedUser('userB')
+
+    await seedBookForUser({ userId: userA, title: 'Book A', isbn:'123'})
+    await seedBookForUser({ userId: userB, title: 'Book B', isbn:'456'})
+
+    const books = await getUserBooks(userA)
+    
+    expect(books).toHaveLength(1)
+    expect(books[0].title).toBe('Book A')
+    expect(books.map(b => b.title)).not.toContain('Book B')
   })
 })
 
