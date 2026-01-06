@@ -11,6 +11,18 @@
  * - Know about views or redirects
  */
 
+import db from '../utils/db.js'
+import {
+  findBookByISBN,
+  insertNewBook,
+  insertUserBook
+} from '../models/bookModel.js'
+import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
+import { ValidationError } from '../domain/errors/ValidationError.js'
+import { DatabaseError } from '../domain/errors/DatabaseError.js'
+import { mapToDomainError } from '../utils/mapToDomainError.js'
+import { getAllBooksByUser } from '../queries/bookQueries.js'
+
 /**
  * addBookToUserCollection
  * 
@@ -45,9 +57,7 @@
  * - ValidationError
  * - UserAlreadyHasBookError
  * - DatabaseError
- */
-
-/**
+ * 
  * Domain decision:
  * - ISBN present -> strong identity
  * - Without ISBN, book identity is not guaranteed to be unique
@@ -58,19 +68,7 @@
  * - no partial state
  * - operation is safe to retry once when ISBN is provided
  * - retrying non-ISBN input may create a new book entity
-
-*/
-import db from '../utils/db.js'
-import {
-  findBookByISBN,
-  insertNewBook,
-  insertUserBook
-} from '../models/bookModel.js'
-import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
-import { ValidationError } from '../domain/errors/ValidationError.js'
-import { DatabaseError } from '../domain/errors/DatabaseError.js'
-import { mapToDomainError } from '../utils/mapToDomainError.js'
-import { getAllBooksByUser } from '../queries/bookQueries.js'
+ */
 
 export async function addBookToUserCollection(input) {
   const {userId, title, author, isbn, summary} = input
@@ -166,6 +164,46 @@ export async function addBookToUserCollection(input) {
   }
 }
 
+/**
+ * getUserBooks
+ * 
+ * Invariants:
+ * 1. userId is treated as an opaque identifier:
+ *  - this function does NOT validate user existence
+ *  - non-existing userId results in an empty list
+ * 2. only books explicitly related to the given user are returned
+ *  - no cross-user data leakage is allowed
+ * 3. the function is read-only. It mustn't create, update, or delete any state
+ * 4. ordering is deterministic:
+ *  - results are ordered by user_books.read_at DESC
+ *  - null read_at values are allowed and follow database ordering rules
+ * 5. empty state is valid:
+ *  - a user with no book must return an empty array
+ * 
+ * Input: 
+ *  userId: sting | number
+ * 
+ * Output:
+ *  Array<{
+ *    id: string | number,
+ *    title: string,
+ *    author?: string | null,
+ *    cover?: string | null,
+ *    setting?: any | null,
+ *    readability?: number | null,
+ *    words?: number | null,
+ *    summary?: string | null,
+ *    read_at?: Date | null,
+ *    user_book_id: string | number
+ *  }>
+ * 
+ * Errors (domain-level):
+ * - DatabaseError
+ * 
+ * Notes:
+ * - This function is safe to call multiple times
+ * - It does not distinguish between "user has no books" and "user does not exist"
+ */
 export async function getUserBooks(userId) {
   const result = await getAllBooksByUser(userId)
   return result.rows
