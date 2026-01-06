@@ -1,7 +1,7 @@
 import express from 'express'
 import {
   showLoginPage,
-  handleLogin,
+  login,
   showSignUpPage,
   handleLogout,
   handleSignUp,
@@ -10,7 +10,7 @@ import {
 const router = express.Router()
 
 router.get('/login', showLoginPage)
-router.post('/login', handleLogin)
+router.post('/login', login)
 router.get('/signup', showSignUpPage)
 router.post('/signup', handleSignUp)
 router.get('/logout', handleLogout)
