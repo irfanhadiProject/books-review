@@ -7,35 +7,29 @@ import {
   deleteUserBook,
 } from '../models/bookModel.js'
 import {
-  getAllBooksByUser,
   getBookByUserBookId,
   searchBooksByTitle,
   filterBooksByGenre,
   checkUserBook,
 } from '../queries/bookQueries.js'
-import { addBookToUserCollection } from '../services/books.service.js'
-import { handleEmpty, handleError, handleSuccess } from '../helpers/responseHandler.js'
+import { addBookToUserCollection, getUserBooks } from '../services/books.service.js'
+import { handleError, handleSuccess } from '../helpers/responseHandler.js'
 import { AuthError } from '../http/errors/AuthError.js'
 import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'
 
-// Tampilkan semua buku milik user
-export async function getBooks(req, res) {
-  const userId = req.session.userId
-  const username = req.session.username
+// List all user's books
+export async function getBooks(req, res, next) {
+  const userId = req.session?.userId
+
+  if(!userId) {
+    return handleError(next, new AuthError('User not authenticated'))
+  }
 
   try {
-    const result = await getAllBooksByUser(userId)
-
-    res.render(
-      'pages/books',
-      renderBooksPage({
-        user: username,
-        booksData: result.rows,
-      })
-    )
+    const results = await getUserBooks(userId)
+    handleSuccess(res, results)
   } catch (err) {
-    console.error('Error executing query', err.stack)
-    res.status(500).send('Internal Server Error')
+    handleError(next, mapDomainErrorToHttpError(err))
   }
 }
 
@@ -104,44 +98,7 @@ export async function filterByGenre(req, res) {
   }
 }
 
-// Mengurutkan data buku
-// export async function sortBooks(req, res) {
-//   const sort = req.query.sort || '';
-//   const userId = req.session.userId;
-//   const username = req.session.username;
-
-//   const sortOptions = {
-//     'title-asc': { column: 'books.title', direction: 'ASC' },
-//     'title-desc': { column: 'books.title', direction: 'DESC' },
-//     'date-newest': { column: 'user_books.read_at', direction: 'DESC' },
-//     'date-oldest': { column: 'user_books.read_at', direction: 'ASC' },
-//     'author-asc': { column: 'books.author', direction: 'ASC' },
-//     'author-desc': { column: 'books.author', direction: 'DESC' },
-//   };
-
-//   const selectedSort = sortOptions[sort] || {
-//     column: 'books.created_at',
-//     direction: 'DESC',
-//   };
-//   const orderByClause = `ORDER BY ${selectedSort.column} ${selectedSort.direction}`;
-
-//   try {
-//     const result = await sortBooksByClause(userId, orderByClause);
-
-//     res.render(
-//       'pages/books',
-//       renderBooksPage({
-//         user: username,
-//         booksData: result.rows,
-//       })
-//     );
-//   } catch (err) {
-//     console.error('Error executing query', err.stack);
-//     res.status(500).send('Internal Server Error');
-//   }
-// }
-
-// Menambahkan buku ke database melalui fitur add book
+// Add book to database
 export async function addBook(req, res, next) {
   const { title, author, isbn, summary } = req.body
   const userId = req.session?.userId
@@ -159,11 +116,14 @@ export async function addBook(req, res, next) {
       summary
     })
 
-    if (result.reviewState === 'EMPTY') {
-      return handleEmpty(res, 'Book added but no review yet')
-    }
-
-    return handleSuccess(res, result, 'Book added successfully', 201)
+    return handleSuccess(
+      res, 
+      result, 
+      result.reviewState === 'EMPTY'
+        ? 'Book added, but no review yet'
+        : 'Book added successfully', 
+      201
+    )
   } catch (err) {
     return handleError(next, mapDomainErrorToHttpError(err))
   }
@@ -212,3 +172,40 @@ export async function deleteBook(req, res) {
     res.status(500).send('Error deleting book')
   }
 }
+
+// Mengurutkan data buku
+// export async function sortBooks(req, res) {
+//   const sort = req.query.sort || '';
+//   const userId = req.session.userId;
+//   const username = req.session.username;
+
+//   const sortOptions = {
+//     'title-asc': { column: 'books.title', direction: 'ASC' },
+//     'title-desc': { column: 'books.title', direction: 'DESC' },
+//     'date-newest': { column: 'user_books.read_at', direction: 'DESC' },
+//     'date-oldest': { column: 'user_books.read_at', direction: 'ASC' },
+//     'author-asc': { column: 'books.author', direction: 'ASC' },
+//     'author-desc': { column: 'books.author', direction: 'DESC' },
+//   };
+
+//   const selectedSort = sortOptions[sort] || {
+//     column: 'books.created_at',
+//     direction: 'DESC',
+//   };
+//   const orderByClause = `ORDER BY ${selectedSort.column} ${selectedSort.direction}`;
+
+//   try {
+//     const result = await sortBooksByClause(userId, orderByClause);
+
+//     res.render(
+//       'pages/books',
+//       renderBooksPage({
+//         user: username,
+//         booksData: result.rows,
+//       })
+//     );
+//   } catch (err) {
+//     console.error('Error executing query', err.stack);
+//     res.status(500).send('Internal Server Error');
+//   }
+// }
