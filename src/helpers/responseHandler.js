@@ -6,14 +6,6 @@ export function handleSuccess(res, data, message = 'Operation successful', statu
   })
 }
 
-export function handleEmpty(res, message = 'No data found') {
-  return res.status(200).json({
-    status: 'empty',
-    data: [],
-    message
-  })
-}
-
 export function handleError(next, err) {
   next(err)
 }
