@@ -12,7 +12,8 @@ import {
   filterBooksByGenre,
   checkUserBook,
 } from '../queries/bookQueries.js'
-import { addBookToUserCollection, getUserBooks } from '../services/bookCollection.service.js'
+import { addBookToUserCollection } from '../services/bookCollection.service.js'
+import { getUserBooks } from '../services/bookRead.service.js'
 import { handleError, handleSuccess } from '../helpers/responseHandler.js'
 import { AuthError } from '../http/errors/AuthError.js'
 import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'

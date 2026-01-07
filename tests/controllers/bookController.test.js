@@ -4,7 +4,8 @@ import express from 'express'
 
 import { addBook, getBooks } from '../../src/controllers/booksController.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
-import * as bookService from '../../src/services/bookCollection.service.js'
+import * as bookCollectionService from '../../src/services/bookCollection.service.js'
+import * as bookReadService from '../../src/services/bookRead.service.js'
 
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'
@@ -34,7 +35,7 @@ describe('addBook Controller', () => {
   })
 
   it('success - book added with filled review', async () => {
-    vi.spyOn(bookService, 'addBookToUserCollection').mockResolvedValue({
+    vi.spyOn(bookCollectionService, 'addBookToUserCollection').mockResolvedValue({
       bookId: 1,
       userBookId: 1,
       reviewState: 'FILLED'
@@ -51,7 +52,7 @@ describe('addBook Controller', () => {
   })
 
   it('success - book added with empty review', async () => {
-    vi.spyOn(bookService, 'addBookToUserCollection').mockResolvedValue({
+    vi.spyOn(bookCollectionService, 'addBookToUserCollection').mockResolvedValue({
       bookId: 2,
       userBookId: 2, 
       reviewState: 'EMPTY'
@@ -68,7 +69,7 @@ describe('addBook Controller', () => {
   })
 
   it('Validation error - title missing', async () => {
-    vi.spyOn(bookService, 'addBookToUserCollection').mockImplementation(() => {
+    vi.spyOn(bookCollectionService, 'addBookToUserCollection').mockImplementation(() => {
       throw new ValidationError('title is required')
     })
 
@@ -82,7 +83,7 @@ describe('addBook Controller', () => {
   })
 
   it('Conflict error - user already has book', async () => {
-    vi.spyOn(bookService, 'addBookToUserCollection').mockImplementation(() => {
+    vi.spyOn(bookCollectionService, 'addBookToUserCollection').mockImplementation(() => {
       throw new UserAlreadyHasBookError('User already has this book')
     })
 
@@ -105,7 +106,7 @@ describe('addBook Controller', () => {
   })
 
   it('Database error - unexpected DB failure', async () => {
-    vi.spyOn(bookService, 'addBookToUserCollection').mockImplementation(() => {
+    vi.spyOn(bookCollectionService, 'addBookToUserCollection').mockImplementation(() => {
       throw new DatabaseError('Internal DB failure')
     })
 
@@ -125,7 +126,7 @@ describe('getBooks controller', () => {
   })
 
   it('success - returns list of user books', async () => {
-    vi.spyOn(bookService, 'getUserBooks').mockResolvedValue([
+    vi.spyOn(bookReadService, 'getUserBooks').mockResolvedValue([
       {
         id: 1,
         title: 'Book A',
@@ -150,7 +151,7 @@ describe('getBooks controller', () => {
   })
 
   it('success - returns empty array when user has no books', async () => {
-    vi.spyOn(bookService, 'getUserBooks').mockResolvedValue([])
+    vi.spyOn(bookReadService, 'getUserBooks').mockResolvedValue([])
 
     const res = await request(app).get('/books')
 
@@ -168,7 +169,7 @@ describe('getBooks controller', () => {
   })
 
   it('Database error - unexpected failure', async () => {
-    vi.spyOn(bookService, 'getUserBooks').mockImplementation(() => {
+    vi.spyOn(bookReadService, 'getUserBooks').mockImplementation(() => {
       throw new DatabaseError('DB exploded')
     })
 
