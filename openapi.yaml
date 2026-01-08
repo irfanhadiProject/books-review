@@ -1,0 +1,312 @@
+openapi: 3.0.3
+
+info:
+  title: Book Collection API
+  description: |
+    Public HTTP API for managing a user's book collection and reviews.
+
+    This specification defines the **public response contract** between
+    Backend and Frontend. Domain service outputs are intentionally not
+    exposed directly.
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+
+tags:
+  - name: Auth
+    description: Session-based authentication
+  - name: UserBooks
+    description: User book collection and reviews
+
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login and create session
+      description: |
+        Authenticates user credentials and creates a session via cookie.
+        This endpoint does not return session identifiers explicitly.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout and destroy session
+      description: |
+        Invalidates the current user session.
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /user-books:
+    get:
+      tags: [UserBooks]
+      summary: Get user book collection
+      description: |
+        Returns a summary list of books in the user's collection.
+        This is a read model optimized for listing.
+      responses:
+        '200':
+          description: User book collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBookCollectionResponse'
+
+    post:
+      tags: [UserBooks]
+      summary: Add book to user collection
+      description: |
+        Adds a book to the user's collection.
+
+        The response returns only identifiers.
+        Derived states such as `reviewState` are intentionally excluded.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUserBookRequest'
+      responses:
+        '201':
+          description: Book added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUserBookResponse'
+
+  /user-books/{id}:
+    get:
+      tags: [UserBooks]
+      summary: Get user book detail
+      description: |
+        Returns the full read model of a user book,
+        including derived state such as `reviewState`.
+      parameters:
+        - $ref: '#/components/parameters/UserBookId'
+      responses:
+        '200':
+          description: User book detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBookDetailResponse'
+
+    patch:
+      tags: [UserBooks]
+      summary: Update book review
+      description: |
+        Updates the review summary for a user book.
+      parameters:
+        - $ref: '#/components/parameters/UserBookId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReviewRequest'
+      responses:
+        '200':
+          description: Review updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+    delete:
+      tags: [UserBooks]
+      summary: Remove book from collection
+      description: |
+        Removes a book from the user's collection.
+      parameters:
+        - $ref: '#/components/parameters/UserBookId'
+      responses:
+        '200':
+          description: Book removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+components:
+  parameters:
+    UserBookId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: UserBook identifier
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    AddUserBookRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+          nullable: true
+        isbn:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+
+    UpdateReviewRequest:
+      type: object
+      required: [summary]
+      properties:
+        summary:
+          type: string
+
+    SuccessResponse:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation successful
+
+    AddUserBookResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Book added successfully
+        data:
+          type: object
+          required: [userBookId, bookId]
+          properties:
+            userBookId:
+              type: string
+            bookId:
+              type: string
+
+    UserBookCollectionResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserBookSummary'
+        meta:
+          type: object
+          properties:
+            total:
+              type: integer
+              example: 12
+
+    UserBookDetailResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/UserBookDetail'
+
+    UserBookSummary:
+      type: object
+      required: [id, book, reviewState]
+      properties:
+        id:
+          type: string
+        book:
+          $ref: '#/components/schemas/BookSummary'
+        reviewState:
+          type: string
+          enum: [EMPTY, FILLED]
+
+    UserBookDetail:
+      type: object
+      required:
+        - id
+        - book
+        - reviewState
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        book:
+          $ref: '#/components/schemas/BookDetail'
+        summary:
+          type: string
+          nullable: true
+        reviewState:
+          type: string
+          enum: [EMPTY, FILLED]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BookSummary:
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          format: uri
+          nullable: true
+
+    BookDetail:
+      allOf:
+        - $ref: '#/components/schemas/BookSummary'
+        - type: object
+          properties:
+            isbn:
+              type: string
+              nullable: true

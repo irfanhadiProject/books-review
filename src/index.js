@@ -1,3 +1,6 @@
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+import path from 'path'
 import express from 'express'
 import session from 'express-session'
 import ejsLayouts from 'express-ejs-layouts'
@@ -11,14 +14,16 @@ import { loginGuard } from './middleware/authMiddleware.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 dotenv.config({
-  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env', // Memastikan pemilihan file .env yang benar
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
 })
+
+const openapiPath = path.resolve(process.cwd(), 'openapi.yaml')
+const openapiSpec = YAML.load(openapiPath)
 
 const app = express()
 const port = process.env.PORT
 
 app.set('view engine', 'ejs')
-// Middleware
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.use(ejsLayouts)
@@ -31,13 +36,21 @@ app.use(
   })
 )
 
-app.use(loginGuard)
-app.use(errorHandler)
+app.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(openapiSpec, {
+    explorer: true,
+  })
+)
 
-// Routes
+app.use(loginGuard)
+
 app.use('/', homeRoutes)
 app.use('/', authRoutes)
 app.use('/books', bookRoutes)
+
+app.use(errorHandler)
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
