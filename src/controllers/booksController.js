@@ -118,8 +118,11 @@ export async function addBook(req, res, next) {
     })
 
     return handleSuccess(
-      res, 
-      result, 
+      res,
+      {
+        userBookId: result.userBookId,
+        bookId: result.bookId
+      },  
       result.reviewState === 'EMPTY'
         ? 'Book added, but no review yet'
         : 'Book added successfully', 
