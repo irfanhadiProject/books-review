@@ -4,8 +4,8 @@ import express from 'express'
 
 import { addBook, getBooks } from '../../src/controllers/booksController.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
-import * as bookCollectionService from '../../src/services/bookCollection.service.js'
-import * as bookReadService from '../../src/services/bookRead.service.js'
+import * as bookCollectionService from '../../src/services/addBookToUserCollection.service.js'
+import * as bookReadService from '../../src/services/getUserBooks.service.js'
 
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'

@@ -1,7 +1,7 @@
 import db from '../../src/utils/db.js'
 import { describe, it, expect, beforeEach } from 'vitest'
 import { resetDb } from '../helpers/db.js'
-import { getUserBooks } from '../../src/services/bookRead.service.js'
+import { getUserBooks } from '../../src/services/getUserBooks.service.js'
 
 describe('getUserBooks', () => {
   beforeEach(async () => {
