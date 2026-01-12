@@ -25,11 +25,7 @@ export async function login(req, res, next) {
 
     return handleSuccess(
       res,
-      {
-        userId: user.userId,
-        username: user.username,
-        role: user.role
-      },
+      null,
       'Login successful'
     )
   } catch (err) {
