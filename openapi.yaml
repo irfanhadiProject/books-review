@@ -192,22 +192,22 @@ components:
 
     SuccessResponse:
       type: object
-      required: [success]
+      required: [status, message]
       properties:
-        success:
-          type: boolean
-          example: true
+        status:
+          type: string
+          example: success
         message:
           type: string
           example: Operation successful
 
     AddUserBookResponse:
       type: object
-      required: [success, data]
+      required: [status, message, data]
       properties:
-        success:
-          type: boolean
-          example: true
+        status:
+          type: string
+          example: success
         message:
           type: string
           example: Book added successfully
@@ -222,11 +222,11 @@ components:
 
     UserBookCollectionResponse:
       type: object
-      required: [success, data]
+      required: [status, data]
       properties:
-        success:
-          type: boolean
-          example: true
+        status:
+          type: string
+          example: success
         data:
           type: array
           items:
@@ -240,11 +240,11 @@ components:
 
     UserBookDetailResponse:
       type: object
-      required: [success, data]
+      required: [status, data]
       properties:
-        success:
-          type: boolean
-          example: true
+        status:
+          type: string
+          example: success
         data:
           $ref: '#/components/schemas/UserBookDetail'
 
