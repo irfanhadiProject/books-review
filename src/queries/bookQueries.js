@@ -3,16 +3,12 @@ import db from '../utils/db.js'
 export async function getAllBooksByUser(userId) {
   return db.query(
     `SELECT 
-      b.id,
+      ub.id AS user_book_id,
+      b.id AS book_id,
       b.title,
       b.author,
       b.cover, 
-      ub.setting,
-      ub.readability,
-      ub.words,
-      ub.summary,
-      ub.read_at, 
-      ub.id AS user_book_id
+      ub.summary 
      FROM user_books ub
      JOIN books b ON ub.book_id = b.id
      WHERE ub.user_id = $1

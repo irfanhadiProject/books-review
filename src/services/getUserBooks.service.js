@@ -52,6 +52,21 @@ import { getAllBooksByUser } from '../queries/bookQueries.js'
  * - It does not distinguish between "user has no books" and "user does not exist"
  */
 export async function getUserBooks(userId) {
-  const result = await getAllBooksByUser(userId)
-  return result.rows
+  const { rows } = await getAllBooksByUser(userId)
+
+  return {
+    data: rows.map(r => ({
+      id: r.user_book_id,
+      book: {
+        id: r.book_id,
+        title: r.title,
+        author: r.author,
+        coverUrl: r.cover
+      },
+      reviewState: r.summary ? 'FILLED' : 'EMPTY'
+    })),
+    meta: {
+      total: rows.length
+    }
+  }
 }

@@ -27,8 +27,13 @@ export async function getBooks(req, res, next) {
   }
 
   try {
-    const results = await getUserBooks(userId)
-    handleSuccess(res, results)
+    const { data, meta } = await getUserBooks(userId)
+
+    return res.status(200).json({
+      status: 'success',
+      data,
+      meta
+    })
   } catch (err) {
     handleError(next, mapDomainErrorToHttpError(err))
   }
