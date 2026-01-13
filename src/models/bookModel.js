@@ -43,7 +43,7 @@ export async function insertUserBook(client, {
   )
 }
 
-export async function updateUserBookReview(client, {
+export async function updateUserBookSummary(client, {
   userBookId,
   summary
 }) {
@@ -51,7 +51,7 @@ export async function updateUserBookReview(client, {
     `UPDATE user_books
         SET summary = $1
         WHERE id = $2`,
-    [ summary, userBookId ]
+    [ summary, userBookId]
   )
 }
 

@@ -10,7 +10,7 @@
 
 import db from '../utils/db.js'
 import { findUserBookByIdAndUser } from '../queries/bookQueries.js'
-import { updateUserBookReview } from '../models/bookModel.js'
+import { updateUserBookSummary } from '../models/bookModel.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
 
 export async function updateUserReview({
@@ -35,7 +35,7 @@ export async function updateUserReview({
     }
 
     // 2. update
-    const result = await updateUserBookReview(client, {
+    const result = await updateUserBookSummary(client, {
       userBookId,
       summary
     })
