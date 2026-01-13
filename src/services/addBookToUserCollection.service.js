@@ -1,9 +1,10 @@
 /**
- * Domain Service: Book Collection
+ * Domain Command Service: Add Book to User Collection
  * 
  * Responsibilities
- * - Enforce invariants of the user book relationship
- * - Provide atomic (transactional) operations
+ * - Coordinate creation of book and user_books relation
+ * - Enforce basic domain invariants for this use case
+ * - Guarantee no partial persistence state
  * 
  * This service does NOT:
  * - Know about HTTP
