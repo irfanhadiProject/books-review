@@ -44,20 +44,14 @@ export async function insertUserBook(client, {
 }
 
 export async function updateUserBookReview(client, {
-  setting,
-  readability,
-  words,
-  summary,
   userBookId,
+  summary
 }) {
   return client.query(
     `UPDATE user_books
-        SET setting = $1,
-            readability = $2,
-            words = $3,
-            summary = $4
-        WHERE id = $5`,
-    [setting, readability, words, summary, userBookId]
+        SET summary = $1
+        WHERE id = $2`,
+    [ summary, userBookId ]
   )
 }
 

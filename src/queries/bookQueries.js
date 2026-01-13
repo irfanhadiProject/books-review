@@ -80,3 +80,10 @@ export async function checkUserBook(userBookId, userId) {
     userId,
   ])
 }
+
+export async function findUserBookByIdAndUser(client, userBookId, userId) {
+  return client.query(
+    'SELECT id FROM user_books WHERE id = $1 AND user_id = $2',
+    [userBookId, userId]
+  )
+}
