@@ -3,7 +3,7 @@ dotenv.config()
 
 import { renderBooksPage } from '../utils/renderBooksPage.js'
 import {
-  updateUserBookReview,
+  updateUserBookSummary,
   deleteUserBook,
 } from '../models/bookModel.js'
 import {
@@ -14,6 +14,7 @@ import {
 } from '../queries/bookQueries.js'
 import { addBookToUserCollection } from '../services/addBookToUserCollection.service.js'
 import { getUserBooks } from '../services/getUserBooks.service.js'
+import { updateUserBookReview } from '../services/updateUserBookReview.service.js'
 import { handleError, handleSuccess } from '../helpers/responseHandler.js'
 import { AuthError } from '../http/errors/AuthError.js'
 import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'
@@ -139,33 +140,30 @@ export async function addBook(req, res, next) {
 }
 
 // Mengubah isi review buku
-export async function updateBookReview(req, res) {
-  const userBookId = req.params.id
-  const userId = req.session.userId
-  const { setting, readability, words, summary } = req.body
+export async function updateBookReview(req, res, next) {
+  const userId = req.session?.userId
+
+  if(!userId) {
+    return handleError(next, new AuthError('User not authenticated'))
+  }
 
   try {
-    // Pastikan data buku milik user tersebut
-    const check = await checkUserBook(userBookId, userId)
-
-    if (check.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ message: 'Book not found or access denied' })
-    }
+    const userBookId = req.params.id
+    const summary = req.body.summary
 
     await updateUserBookReview({
-      setting,
-      readability,
-      words,
-      summary,
       userBookId,
+      userId,
+      summary
     })
 
-    res.redirect('/books')
+    return handleSuccess(
+      res,
+      null,
+      'Operation successful'
+    )
   } catch (err) {
-    console.error('Error updating book:', err.message)
-    res.status(500).json({ message: 'Server error' })
+    return handleError(next, mapDomainErrorToHttpError(err))
   }
 }
 
