@@ -22,6 +22,7 @@ describe('getUserBooks', () => {
     userId, 
     title = 'Book A', 
     isbn = '111',
+    summary = null,
     readAt = null,
   }) {
     const book = await db.query(
@@ -33,32 +34,54 @@ describe('getUserBooks', () => {
 
     await db.query(
       `INSERT INTO user_books (user_id, book_id, summary, read_at)
-       VALUES ($1, $2, 'summary', $3)`,
-      [userId, book.rows[0].id, readAt]
+       VALUES ($1, $2, $3, $4)`,
+      [userId, book.rows[0].id, summary,readAt]
     )
   }
 
-  it('returns list of books for user', async () => {
+  it('returns books wrapped in data/meta structure', async () => {
     const userId = await seedUser()
     await seedBookForUser({ userId })
 
-    const books = await getUserBooks(userId)
+    const result = await getUserBooks(userId)
 
-    expect(Array.isArray(books)).toBe(true)
-    expect(books.length).toBe(1)
-
-    const book = books[0]
-    expect(book).toHaveProperty('id')
-    expect(book).toHaveProperty('title')
-    expect(book).toHaveProperty('user_book_id')
-    expect(book).toHaveProperty('summary')
+    expect(result).toHaveProperty('data')
+    expect(result).toHaveProperty('meta')
+    expect(Array.isArray(result.data)).toBe(true)
+    expect(result.meta.total).toBe(1)
   })
 
-  it('returns empty array if user has no books', async () => {
+  it('returns correct book shape', async () => {
     const userId = await seedUser()
-    const books = await getUserBooks(userId)
+    await seedBookForUser({ userId, summary: 'some review'})
 
-    expect(books).toEqual([])
+    const { data } = await getUserBooks(userId)
+    const item = data[0]
+
+    expect(item).toHaveProperty('id')
+    expect(item).toHaveProperty('book')
+    expect(item.book).toHaveProperty('id')
+    expect(item.book).toHaveProperty('title')
+    expect(item).toHaveProperty('reviewState')
+    expect(item.reviewState).toBe('FILLED')
+  })
+
+  it('returns EMPTY reviewState when summary is null', async () => {
+    const userId = await seedUser()
+    await seedBookForUser({ userId, summary: null})
+
+    const { data } = await getUserBooks(userId)
+
+    expect(data[0].reviewState).toBe('EMPTY')
+  })
+
+  it('returns empty data array for user with no books', async () => {
+    const userId = await seedUser()
+
+    const result = await getUserBooks(userId)
+
+    expect(result.data).toEqual([])
+    expect(result.meta.total).toBe(0)
   })
 
   it('returns books ordered by read_at desc', async () => {
@@ -81,21 +104,21 @@ describe('getUserBooks', () => {
       readAt: newDate
     })
 
-    const books = await getUserBooks(userId)
+    const { data } = await getUserBooks(userId)
 
-    expect(books.map(b => b.title)).toEqual(['New Book', 'Old Book'])
+    expect(data.map(d => d.book.title)).toEqual(['New Book', 'Old Book'])
   })
 
   it('orders books deterministically when read_at is equal', async () => {
     const userId = await seedUser()
     const sameDate = new Date('2024-01-01T10:00:00Z')
 
-    await seedBookForUser({ userId, title: 'Book 1', isbn:'1', readAt: sameDate})
-    await seedBookForUser({ userId, title: 'Book 2', isbn:'2', readAt: sameDate})
+    await seedBookForUser({ userId, title: 'Older', isbn:'1', readAt: sameDate})
+    await seedBookForUser({ userId, title: 'Newer', isbn:'2', readAt: sameDate})
 
-    const books = await getUserBooks(userId)
+    const { data } = await getUserBooks(userId)
 
-    expect(books.map(b => b.title)).toEqual(['Book 2', 'Book 1'])
+    expect(data.map(d => d.book.title)).toEqual(['Newer', 'Older'])
   })
 
   it('does not leak books from other users', async () => {
@@ -105,10 +128,10 @@ describe('getUserBooks', () => {
     await seedBookForUser({ userId: userA, title: 'Book A', isbn:'123'})
     await seedBookForUser({ userId: userB, title: 'Book B', isbn:'456'})
 
-    const books = await getUserBooks(userA)
+    const { data } = await getUserBooks(userA)
     
-    expect(books).toHaveLength(1)
-    expect(books[0].title).toBe('Book A')
-    expect(books.map(b => b.title)).not.toContain('Book B')
+    expect(data).toHaveLength(1)
+    expect(data[0].book.title).toBe('Book A')
+    expect(data.map(d => d.book.title)).not.toContain('Book B')
   })
 })
