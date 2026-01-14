@@ -143,7 +143,13 @@ export async function addBookToUserCollection(input) {
 
     // 6. trigger async side effect (cover fetch, best-effort)
     if (isbn) {
-      fetchCoverAsync({bookId, isbn})
+      try {
+        Promise.resolve(
+          fetchCoverAsync({bookId, isbn})
+        ).catch(() => {})
+      } catch (err) {
+        console.error('cover fetch failed', { bookId, isbn, err })
+      }
     }
 
     // 7. return ids 
