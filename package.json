@@ -9,6 +9,9 @@
     "lint:fix": "eslint . --fix",
     "test": "cross-env NODE_ENV=test dotenv -e .env.test -- vitest",
     "test:run": "cross-env NODE_ENV=test dotenv -e .env.test -- vitest run",
+    "migrate": "node-pg-migrate",
+    "migrate:dev": "cross-env NODE_ENV=development dotenv -e .env node-pg-migrate",
+    "migrate:test": "cross-env NODE_ENV=test dotenv -e .env.test node-pg-migrate",
     "start": "cross-env NODE_ENV=production node ./src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.js"
   },
@@ -24,6 +27,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",
     "method-override": "^3.0.0",
+    "node-pg-migrate": "^8.0.4",
     "nodemon": "^3.0.1",
     "pg": "^8.11.3",
     "sharp": "^0.34.1",
