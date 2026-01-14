@@ -1,5 +1,5 @@
 /**
- * Book Read Service
+ * Domain Query Service: Get User Books
  *
  * Characteristics:
  * - Read-only
