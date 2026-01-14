@@ -1,15 +1,18 @@
 import db from '../../src/utils/db.js'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { resetDb } from '../helpers/db.js'
 import { addBookToUserCollection } from '../../src/services/addBookToUserCollection.service.js'
 import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
+import * as coverFetcher from '../../src/utils/fetchCoverAsync.js'
 
 describe('addBookToUserCollection', () => {
   let userId
 
   beforeEach(async () => {
+    vi.restoreAllMocks()
     await resetDb()
+
     const res = await db.query(
       `INSERT INTO users(username, password_hash, is_active, role)
        VALUES ('test', 'hash', true, 'user') RETURNING id`
@@ -27,6 +30,7 @@ describe('addBookToUserCollection', () => {
 
     expect(result.bookId).toBeDefined()
     expect(result.userBookId).toBeDefined()
+    expect(result.reviewState).toBe('EMPTY')
 
     const books = await db.query('SELECT * FROM books')
     const userBooks = await db.query('SELECT * FROM user_books')
@@ -113,9 +117,10 @@ describe('addBookToUserCollection', () => {
     expect(books.rowCount).toBe(0)
   })
 
-  it('rolls back book insert if user_books fails', async () => {
+  it('does not duplicate existing book when user_books insertion fails', async () => {
     const book = await db.query(
-      'INSERT INTO books(title, isbn) VALUES (\'Temp\', \'123\') RETURNING id'
+      `INSERT INTO books(title, isbn) 
+       VALUES ('Temp', '123') RETURNING id`
     )
 
     await db.query(
@@ -132,7 +137,11 @@ describe('addBookToUserCollection', () => {
       })
     ).rejects.toThrow(UserAlreadyHasBookError)
 
-    const books = await db.query('SELECT * FROM books WHERE isbn=\'123\'')
+    const books = await db.query(`
+      SELECT * 
+      FROM books WHERE isbn='123'
+    `)
+
     expect(books.rowCount).toBe(1)
   })
 
@@ -159,11 +168,14 @@ describe('addBookToUserCollection', () => {
       addBookToUserCollection(payload2)
     ])
 
-    expect(result[0].status).toBe('fulfilled')
-    expect(result[1].status).toBe('fulfilled')
+    expect(result.every(r => r.status === 'fulfilled')).toBe(true)
 
-    const books = await db.query('SELECT * FROM books WHERE isbn=\'999\'')
-    const userBooks = await db.query('SELECT * FROM user_books')
+    const books = await db.query(`
+      SELECT * FROM books WHERE isbn='999'
+    `)
+    const userBooks = await db.query(`
+      SELECT * FROM user_books
+    `)
 
     expect(books.rowCount).toBe(1)
     expect(userBooks.rowCount).toBe(2)
@@ -188,11 +200,51 @@ describe('addBookToUserCollection', () => {
     expect(rejected.length).toBe(1)
     expect(rejected[0].reason).toBeInstanceOf(UserAlreadyHasBookError)
 
-    const books = await db.query('SELECT * FROM books WHERE isbn=\'888\'')
-    const userBooks = await db.query('SELECT * FROM user_books')
+    const books = await db.query(`
+      SELECT * FROM books WHERE isbn='888'
+      `)
+    const userBooks = await db.query(`
+      SELECT * FROM user_books
+    `)
 
     expect(books.rowCount).toBe(1)
     expect(userBooks.rowCount).toBe(1)
+  })
+
+  it('does not fail main operation when cover fetch fails', async () => {
+    vi.spyOn(coverFetcher, 'fetchCoverAsync').mockImplementation(() => {
+      throw new Error('cover service down')
+    })
+
+    const result = await addBookToUserCollection({
+      userId,
+      title: 'Cover Failure Book',
+      isbn: '777'
+    })
+
+    expect(result.bookId).toBeDefined()
+    expect(result.userBookId).toBeDefined()
+
+    const books = await db.query(`
+      SELECT * FROM books WHERE isbn = '777'
+    `)
+    const userBooks = await db.query(`
+      SELECT * FROM user_books
+    `)
+
+    expect(books.rowCount).toBe(1)
+    expect(userBooks.rowCount).toBe(1)
+  })
+
+  it('returns FILLED reviewState when summary is provided', async () => {
+    const result = await addBookToUserCollection({
+      userId,
+      title: 'Reviewed Book',
+      isbn: '666',
+      summary: 'Excellent book'
+    })
+
+    expect(result.reviewState).toBe('FILLED')
   })
 })
 
