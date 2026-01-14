@@ -1,0 +1,5 @@
+{
+  "migrations-dir": "migrations",
+  "schema": "public",
+  "table": "pg_migrations"
+}
