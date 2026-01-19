@@ -1,8 +1,6 @@
-import { loginUser } from '../services/auth.service.js'
-import { handleError, handleSuccess } from '../helpers/responseHandler.js'
-import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'
+import axios from 'axios'
 
-// Tampilkan halaman login
+// GET /login
 export function showLoginPage(req, res) {
   res.render('pages/login', {
     layout: 'layout',
@@ -14,22 +12,25 @@ export function showLoginPage(req, res) {
 }
 
 // POST /auth/login
-export async function login(req, res, next) {
+export async function handleLogin(req, res) {
   const { username, password } = req.body
 
   try {
-    const user = await loginUser({ username, password })
+   await axios.post(
+    'http://localhost:3000/api/auth/login',
+    { username, password },
+    {
+      withCredentials: true
+    }
+   )
 
-    req.session.userId = user.userId
-    req.session.role = user.role
-
-    return handleSuccess(
-      res,
-      null,
-      'Login successful'
-    )
+    res.redirect('/books')
   } catch (err) {
-    return handleError(next, mapDomainErrorToHttpError(err))
+    res.render('pages/login', {
+      layout: 'layout',
+      title: 'Login',
+      error: 'Invalid credentials'
+    })
   }
 }
 
