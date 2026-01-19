@@ -5,7 +5,7 @@ info:
   description: |
     Public HTTP API for managing a user's book collection and reviews.
 
-    This specification defines the **public response contract** between
+    This specification defines the **public API contract** between
     Backend and Frontend. Domain service outputs are intentionally not
     exposed directly.
   version: 1.0.0
@@ -26,6 +26,7 @@ paths:
       summary: Login and create session
       description: |
         Authenticates user credentials and creates a session via cookie.
+        Session data is transmitted using HTTP-only cookies.
         This endpoint does not return session identifiers explicitly.
       requestBody:
         required: true
@@ -40,6 +41,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /auth/logout:
     post:
@@ -54,6 +61,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
   /user-books:
     get:
@@ -69,6 +78,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBookCollectionResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
     post:
       tags: [UserBooks]
@@ -91,6 +102,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AddUserBookResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
 
   /user-books/{id}:
     get:
@@ -108,12 +123,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBookDetailResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 
     patch:
       tags: [UserBooks]
       summary: Update book review
       description: |
         Updates the review summary for a user book.
+        Only review-related fields are mutable
       parameters:
         - $ref: '#/components/parameters/UserBookId'
       requestBody:
@@ -129,6 +149,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
 
     delete:
       tags: [UserBooks]
@@ -144,6 +170,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 
 components:
   parameters:
@@ -158,14 +188,15 @@ components:
   schemas:
     LoginRequest:
       type: object
-      required: [email, password]
+      required: [username, password]
       properties:
-        email:
+        username:
           type: string
-          format: email
+          example: johndoe_99
         password:
           type: string
           format: password
+          example: secret123
 
     AddUserBookRequest:
       type: object
@@ -192,7 +223,7 @@ components:
 
     SuccessResponse:
       type: object
-      required: [status, message]
+      required: [status, message, data]
       properties:
         status:
           type: string
@@ -200,6 +231,26 @@ components:
         message:
           type: string
           example: Operation successful
+        data:
+          type: object
+          nullable: true
+          description: Optional response payload
+
+    ErrorResponse:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: Invalid request
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
 
     AddUserBookResponse:
       type: object
@@ -217,12 +268,13 @@ components:
           properties:
             userBookId:
               type: string
+              description: Identifier of the created UserBook resource
             bookId:
               type: string
 
     UserBookCollectionResponse:
       type: object
-      required: [status, data]
+      required: [status, data, meta]
       properties:
         status:
           type: string
@@ -254,11 +306,14 @@ components:
       properties:
         id:
           type: string
+          description: UserBook identifier
         book:
           $ref: '#/components/schemas/BookSummary'
         reviewState:
           type: string
           enum: [EMPTY, FILLED]
+          description: |
+            Derived read-model state indicating whether a review summary has been provided by the user
 
     UserBookDetail:
       type: object
@@ -271,6 +326,7 @@ components:
       properties:
         id:
           type: string
+          description: UserBook identifier
         book:
           $ref: '#/components/schemas/BookDetail'
         summary:
@@ -279,6 +335,8 @@ components:
         reviewState:
           type: string
           enum: [EMPTY, FILLED]
+          description: |
+            Derived read-model state indicating whether a review summary has been provided by the user.
         createdAt:
           type: string
           format: date-time
@@ -310,3 +368,46 @@ components:
             isbn:
               type: string
               nullable: true
+
+  responses:
+    UnauthorizedError:
+      description: Authentication required or session expired
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            message: Session expired, please login
+    
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            message: Data not found
+    
+    ValidationError:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            message: Invalid input
+            errors:
+              field: Validation error description
+    
+    InternalServerError:
+      description: Server not working properly
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            message: Server not working
