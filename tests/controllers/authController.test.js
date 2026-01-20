@@ -5,7 +5,7 @@ import session from 'express-session'
 
 import { login } from '../../src/controllers/web/auth.controller.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
-import * as authService from '../../src/services/auth.service.js'
+import * as authService from '../../src/services/login.service.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
 import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError.js'

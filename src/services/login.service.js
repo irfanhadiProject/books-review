@@ -1,5 +1,5 @@
 /**
- * Domain Service: Authentication / Login
+ * Domain Service: Login
  * 
  * Responsibilities:
  * - Enforce login invariants

@@ -1,4 +1,4 @@
-import { loginUser } from '../../services/auth.service.js'
+import { loginUser } from '../../services/login.service.js'
 import { mapDomainErrorToHttpError } from '../../utils/mapDomainErrorToHttpError.js'
 
 export async function login(req, res, next) {
