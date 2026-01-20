@@ -1,16 +1,16 @@
 import express from 'express'
 import {
-  getBooks,
+  getUserBookCollection,
   // getBookById,
-  addBook,
+  addUserBook,
   updateBookReview,
   // deleteUserBook,
-} from '../../controllers/booksController.js'
+} from '../../controllers/api/books.controller.js'
 
 const router = express.Router()
 
-router.get('/', getBooks)
-router.post('/', addBook)
+router.get('/', getUserBookCollection)
+router.post('/', addUserBook)
 // router.get('/:id', getBookById)
 router.patch('/:id', updateBookReview)
 // router.delete('/:id', deleteUserBook)

@@ -1,42 +1,47 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { renderBooksPage } from '../utils/renderBooksPage.js'
+import { renderBooksPage } from '../../utils/renderBooksPage.js'
 import {
   updateUserBookSummary,
   deleteUserBook,
-} from '../models/bookModel.js'
+} from '../../models/bookModel.js'
 import {
   getBookByUserBookId,
   searchBooksByTitle,
   filterBooksByGenre,
   checkUserBook,
-} from '../queries/bookQueries.js'
-import { addBookToUserCollection } from '../services/addBookToUserCollection.service.js'
-import { getUserBooks } from '../services/getUserBooks.service.js'
-import { updateUserBookReview } from '../services/updateUserBookReview.service.js'
-import { handleError, handleSuccess } from '../helpers/responseHandler.js'
-import { AuthError } from '../http/errors/AuthError.js'
-import { mapDomainErrorToHttpError } from '../utils/mapDomainErrorToHttpError.js'
+} from '../../queries/bookQueries.js'
 
-// List all user's books
-export async function getBooks(req, res, next) {
-  const userId = req.session?.userId
+import axios from 'axios'
 
-  if(!userId) {
-    return handleError(next, new AuthError('User not authenticated'))
-  }
+const API_BASE_URL = 'http://localhost:3000/api/v1'
 
+
+// GET /books
+export async function renderUserBooksPage(req, res) {
   try {
-    const { data, meta } = await getUserBooks(userId)
+    const response = await axios.get(
+      `${API_BASE_URL}/user-books`,
+      {
+        headers: {
+          cookie: req.headers.cookie
+        }
+      }
+    )
 
-    return res.status(200).json({
-      status: 'success',
-      data,
-      meta
+    return res.render('pages/books', {
+      layout: 'layout',
+      title: 'My Books',
+      books: response.data.data,
+      total: response.data.meta.total
     })
-  } catch (err) {
-    handleError(next, mapDomainErrorToHttpError(err))
+  } catch(err) {
+    if (err.response?.status === 401) {
+      return res.redirect('/login')
+    }
+
+    throw err
   }
 }
 
@@ -106,65 +111,63 @@ export async function filterByGenre(req, res) {
 }
 
 // Add book to database
-export async function addBook(req, res, next) {
+export async function submitAddBookForm(req, res) {
   const { title, author, isbn, summary } = req.body
-  const userId = req.session?.userId
-
-  if(!userId) {
-    return handleError(next, new AuthError('User not authenticated'))
-  }
 
   try {
-    const result = await addBookToUserCollection({
-      userId,
-      title,
-      author,
-      isbn,
-      summary
-    })
-
-    return handleSuccess(
-      res,
+    await axios.post(
+      `${API_BASE_URL}/user-books`,
+      { title, author, isbn, summary},
       {
-        userBookId: result.userBookId,
-        bookId: result.bookId
-      },  
-      result.reviewState === 'EMPTY'
-        ? 'Book added, but no review yet'
-        : 'Book added successfully', 
-      201
+        headers: {
+          cookie: req.headers.cookie
+        }
+      }
     )
+
+    return res.redirect('/books')
   } catch (err) {
-    return handleError(next, mapDomainErrorToHttpError(err))
+    if(err.response?.status === 401) {
+      return res.redirect('/login')
+    }
+
+    return res.render('pages/add-book', {
+      layout: 'layout',
+      title: 'Add Book',
+      error: 'Invalid input'
+    })
   }
 }
 
 // Mengubah isi review buku
-export async function updateBookReview(req, res, next) {
-  const userId = req.session?.userId
-
-  if(!userId) {
-    return handleError(next, new AuthError('User not authenticated'))
-  }
+export async function submitUpdateBookReviewForm(req, res) {
+  const { summary } = req.body
+  const userBookId = req.params.id
 
   try {
-    const userBookId = req.params.id
-    const summary = req.body.summary
-
-    await updateUserBookReview({
-      userBookId,
-      userId,
-      summary
-    })
-
-    return handleSuccess(
-      res,
-      null,
-      'Operation successful'
+    await axios.patch(
+      `${API_BASE_URL}/user-books/${userBookId}`,
+      { summary },
+      {
+        headers: {
+          cookie: req.headers.cookie
+        }
+      }
     )
+
+    return res.redirect('/books')
   } catch (err) {
-    return handleError(next, mapDomainErrorToHttpError(err))
+    if (err.response?.status === 401) {
+      return res.redirect('/login')
+    }
+
+    if (err.response?.status === 404) {
+      return res.status(404).render('pages/404')
+    }
+
+    return res.status(400).send('Failed to update review')
   }
+
 }
 
 // Menghapus buku dari database user_books

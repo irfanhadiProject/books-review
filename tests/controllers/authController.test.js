@@ -3,7 +3,7 @@ import request from 'supertest'
 import express from 'express'
 import session from 'express-session'
 
-import { login } from '../../src/controllers/authController.js'
+import { login } from '../../src/controllers/web/auth.controller.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
 import * as authService from '../../src/services/auth.service.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'

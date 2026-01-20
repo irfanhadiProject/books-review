@@ -2,7 +2,7 @@ import { describe, it, beforeEach, expect, vi } from 'vitest'
 import request from 'supertest'
 import express from 'express'
 
-import { addBook, getBooks } from '../../src/controllers/booksController.js'
+import { addBook, getBooks } from '../../src/controllers/web/books.controller.js'
 import { errorHandler } from '../../src/middleware/errorHandler.js'
 import * as bookCollectionService from '../../src/services/addBookToUserCollection.service.js'
 import * as bookReadService from '../../src/services/getUserBooks.service.js'
