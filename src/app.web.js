@@ -4,9 +4,9 @@ import ejsLayouts from 'express-ejs-layouts'
 import bodyParser from 'body-parser'
 import methodOverride from 'method-override'
 
-import homeRoutes from './routes/web/homeRoutes.js'
-import authRoutes from './routes/web/authRoutes.js'
-import bookRoutes from './routes/web/bookRoutes.js'
+import homeRoutes from './routes/web/home.routes.js'
+import authRoutes from './routes/web/auth.routes.js'
+import bookRoutes from './routes/web/book.routes.js'
 import { loginGuard } from './middleware/authMiddleware.js'
 
 const app = express()
