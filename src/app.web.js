@@ -7,7 +7,7 @@ import methodOverride from 'method-override'
 import homeRoutes from './routes/web/home.routes.js'
 import authRoutes from './routes/web/auth.routes.js'
 import bookRoutes from './routes/web/book.routes.js'
-import { loginGuard } from './middleware/authMiddleware.js'
+import { loginGuardWeb } from './middleware/loginGuard.web.js'
 
 const app = express()
 
@@ -26,7 +26,7 @@ app.use(
   })
 )
 
-app.use(loginGuard)
+app.use(loginGuardWeb)
 
 app.use('/', homeRoutes)
 app.use('/', authRoutes)

@@ -9,6 +9,8 @@ dotenv.config({
 
 const port = process.env.PORT || 3000
 
-apiApp.listen(port, () => {
+webApp.use('/api', apiApp)
+
+webApp.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
