@@ -11,11 +11,31 @@ export async function login(req, res, next) {
     req.session.role = user.role
 
     return res.status(200).json({
-      staus: 'success',
+      status: 'success',
       message: 'Login successful',
       data: {}
     })
   } catch (err) {
     next(mapDomainErrorToHttpError(err))
   }
+}
+
+export async function logout(req, res, next) {
+  if(!req.session.userId) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Session expired, please login'
+    })
+  }
+
+  req.session.destroy((err) => {
+    if (err) return next(err)
+
+    res.clearCookie('connect.sid')
+    return res.status(200).json({
+      status: 'success',
+      message: 'Logout successful',
+      data: {}
+    })
+  })
 }
