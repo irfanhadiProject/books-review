@@ -1,5 +1,4 @@
 import express from 'express'
-import session from 'express-session'
 import ejsLayouts from 'express-ejs-layouts'
 import bodyParser from 'body-parser'
 import methodOverride from 'method-override'
@@ -17,14 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.use(ejsLayouts)
 app.use(methodOverride('_method'))
-
-app.use(
-  session({
-    secret: 'secret-key',
-    resave: false,
-    saveUninitialized: true,
-  })
-)
 
 app.use(loginGuardWeb)
 

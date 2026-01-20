@@ -1,16 +1,23 @@
-import dotenv from 'dotenv'
+import './init.js'
+import express from 'express'
+import session from 'express-session'
 import apiApp from './app.api.js'
 import webApp from './app.web.js'
 
-
-dotenv.config({
-  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
-})
-
+const mainApp = express()
 const port = process.env.PORT || 3000
 
-webApp.use('/api', apiApp)
+mainApp.use(
+  session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: true,
+  })
+)
 
-webApp.listen(port, () => {
+mainApp.use('/api', apiApp)
+mainApp.use('/', webApp)
+
+mainApp.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
