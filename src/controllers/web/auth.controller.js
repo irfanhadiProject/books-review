@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const API_BASE_URL = 'http://localhost:3000/api/v1'
+
 // GET /login
 export function showLoginPage(req, res) {
   res.render('pages/login', {
@@ -16,19 +18,27 @@ export async function handleLogin(req, res) {
   const { username, password } = req.body
 
   try {
-   await axios.post(
-    'http://localhost:3000/api/auth/login',
+   const apiRes = await axios.post(
+    `${API_BASE_URL}/auth/login`,
     { username, password },
     {
       withCredentials: true
     }
    )
 
+   const cookies = apiRes.headers['set-cookie']
+
+   if (cookies) {
+    res.setHeader('set-cookie', cookies)
+  }
+
     res.redirect('/books')
   } catch (err) {
     res.render('pages/login', {
       layout: 'layout',
       title: 'Login',
+      showHeader: false,
+      showFooter: false,
       error: 'Invalid credentials'
     })
   }
