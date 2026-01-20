@@ -1,10 +1,9 @@
-export function loginGuard(req, res, next) {
+export function loginGuardWeb(req, res, next) {
   const openPaths = ['/', '/login', '/logout', '/signup']
   const protectedPrefix = ['/books']
 
-  if (openPaths.includes(req.path)) return next() // Akses route tanpa perlu login
+  if (openPaths.includes(req.path)) return next()
 
-  // Akses route lain hanya bisa setelah login
   if (protectedPrefix.some((prefix) => req.path.startsWith(prefix))) {
     return req.session && req.session.loggedIn
       ? next()
@@ -13,7 +12,7 @@ export function loginGuard(req, res, next) {
           layout: 'layout',
           showHeader: true,
           showFooter: true,
-        }) // Redirect ke login page jika belum login
+        })
   }
 
   if (req.method === 'GET') {
