@@ -104,6 +104,8 @@ paths:
                 $ref: '#/components/schemas/AddUserBookResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
         '422':
           $ref: '#/components/responses/ValidationError'
 
@@ -401,6 +403,16 @@ components:
             message: Invalid input
             errors:
               field: Validation error description
+    
+    ConflictError:
+      description: Resource conflict due to domain invariant violation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            message: User already has this book in collection
     
     InternalServerError:
       description: Server not working properly
