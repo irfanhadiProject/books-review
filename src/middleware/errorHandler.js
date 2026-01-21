@@ -7,35 +7,36 @@ import { ValidationError } from '../http/errors/ValidationError.js'
 export function errorHandler(err, req, res, next) {
   if (err instanceof AuthError) {
     return res.status(401).json({
-      error: 'AUTH_ERROR',
-      message: err.message
+      status: 'error',
+      message: err.message || 'Session expired, please login'
     })
   }
 
   if (err instanceof ValidationError) {
     return res.status(422).json({
-      error: 'VALIDATION_ERROR',
-      message: err.message
+      status: 'error',
+      message: 'Invalid input',
+      errors: err.details || {[err.name]: err.message}
     })
   }
 
   if (err instanceof ConflictError) {
     return res.status(409).json({
-      error: 'CONFLICT',
+      status: 'error',
       message: err.message
     })
   }
 
   if (err instanceof NotFoundError) {
     return res.status(404).json({
-      error: 'NOT_FOUND',
+      status: 'error',
       message: err.message,
     })
   }
 
   if (err instanceof DatabaseError) {
     return res.status(500).json({
-      error: 'DB_ERROR',
+      status: 'error',
       message: 'Internal server error'
     })
   }
@@ -43,7 +44,7 @@ export function errorHandler(err, req, res, next) {
   console.error('[UNHANDLED ERROR]', err)
 
   return res.status(500).json({
-    error: 'UNKNOWN_ERROR',
+    status: 'error',
     message: 'Unexpected error'
   })
 }
