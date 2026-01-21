@@ -12,7 +12,7 @@ import { UserInactiveError } from '../domain/errors/UserInactiveError.js'
 
 export function mapDomainErrorToHttpError(err) {
   if (err instanceof DomainValidationError) {
-    return new ValidationError(err.message)
+    return new ValidationError(err.message, err.details)
   }
 
   if (err instanceof UserAlreadyHasBookError) {

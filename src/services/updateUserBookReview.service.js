@@ -51,7 +51,7 @@ export async function updateUserBookReview({
 }) {
   if (summary !== undefined && summary !== null) {
     if (typeof summary !== 'string' || summary.trim() === '') {
-      throw new ValidationError('summary must be a non-empty string or null')
+      throw new ValidationError('Invalid input', { summary: 'summary must be a non-empty string or null' })
     }
   }
 

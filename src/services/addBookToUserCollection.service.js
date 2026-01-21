@@ -74,7 +74,7 @@ export async function addBookToUserCollection(input) {
   const {userId, title, author, isbn, summary} = input
   // 1. validate input
   if (!title || title.trim() === '') {
-    throw new ValidationError('title is required')
+    throw new ValidationError('Invalid input', {title: 'title is required' })
   }
 
   const client = await db.connect()
