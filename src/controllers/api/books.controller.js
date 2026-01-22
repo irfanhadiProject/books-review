@@ -1,4 +1,3 @@
-
 import { addBookToUserCollection } from '../../services/addBookToUserCollection.service.js'
 import { getUserBooks } from '../../services/getUserBooks.service.js'
 import { updateUserBookReview } from '../../services/updateUserBookReview.service.js'
@@ -11,7 +10,7 @@ export async function getUserBookCollection(req, res, next) {
   const userId = req.session?.userId
 
   if(!userId) {
-    return next(new AuthError('User not authenticated'))
+    return next(new AuthError('Session expired, please login'))
   }
 
   try {
@@ -33,7 +32,7 @@ export async function addUserBook(req, res, next) {
   const userId = req.session?.userId
 
   if(!userId) {
-    return next(new AuthError('User not authenticated'))
+    return next(new AuthError('Session expired, please login'))
   }
 
   try {
@@ -45,9 +44,13 @@ export async function addUserBook(req, res, next) {
       summary
     })
 
+    const reviewState = result.reviewState
+
     return res.status(201).json({
       status: 'success',
-      message: 'Book added successfully',
+      message: reviewState === 'FILLED' 
+        ? 'Book added successfully' 
+        : 'Book added, but no review yet' ,
       data: {
         userBookId: result.userBookId,
         bookId: result.bookId
@@ -63,7 +66,7 @@ export async function updateBookReview(req, res, next) {
   const userId = req.session?.userId
 
   if(!userId) {
-    return next(new AuthError('User not authenticated'))
+    return next(new AuthError('Session expired, please login'))
   }
 
   try {
