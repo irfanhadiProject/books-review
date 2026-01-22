@@ -3,14 +3,14 @@ import request from 'supertest'
 import express from 'express'
 import session from 'express-session'
 
-import { login } from '../../src/controllers/web/auth.controller.js'
-import { errorHandler } from '../../src/middleware/errorHandler.js'
-import * as authService from '../../src/services/login.service.js'
-import { ValidationError } from '../../src/domain/errors/ValidationError.js'
-import { UserNotFoundError } from '../../src/domain/errors/UserNotFoundError.js'
-import { InvalidPasswordError } from '../../src/domain/errors/InvalidPasswordError.js'
-import { UserInactiveError } from '../../src/domain/errors/UserInactiveError.js'
-import { DatabaseError } from '../../src/domain/errors/DatabaseError.js'
+import { login } from '../../../src/controllers/api/auth.controller.js'
+import { errorHandler } from '../../../src/middleware/errorHandler.js'
+import * as authService from '../../../src/services/login.service.js'
+import { ValidationError } from '../../../src/domain/errors/ValidationError.js'
+import { UserNotFoundError } from '../../../src/domain/errors/UserNotFoundError.js'
+import { InvalidPasswordError } from '../../../src/domain/errors/InvalidPasswordError.js'
+import { UserInactiveError } from '../../../src/domain/errors/UserInactiveError.js'
+import { DatabaseError } from '../../../src/domain/errors/DatabaseError.js'
 
 const app = express()
 
@@ -23,12 +23,12 @@ app.use(
   })
 )
 
-app.post('/auth/login', login)
+app.post('/api/v1/auth/login', login)
 app.use(errorHandler)
 
-describe('POST /auth/login - authController', () => {
+describe('POST /api/v1/auth/login - login', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('success - login sets session and returns authenticated user', async () => {
@@ -39,32 +39,36 @@ describe('POST /auth/login - authController', () => {
     })
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send({ username: 'testuser', password: 'password'})
 
     expect(res.status).toBe(200)
     expect(res.body.status).toBe('success')
-    expect(res.body.data).toEqual({
-      userId: 1,
-      username: 'testuser',
-      role: 'user'
-    })
+    expect(res.body.data).toEqual({})
     expect(res.body.message).toBe('Login successful')
     expect(res.headers['set-cookie']).toBeDefined()
   })
 
   it('validation error - missing username or password', async () => {
     vi.spyOn(authService, 'loginUser').mockImplementation(() => {
-      throw new ValidationError('username and password are required')
+      throw new ValidationError('Invalid input', 
+      { 
+        username: 'username is required',
+        password: 'password is required'
+      })
     })
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send({ username: '', password: ''})
 
     expect(res.status).toBe(422)
-    expect(res.body.error).toBe('VALIDATION_ERROR')
-    expect(res.body.message).toBe('username and password are required')
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Invalid input')
+    expect(res.body.errors).toEqual({
+      username: 'username is required',
+      password: 'password is required'
+    })
   })
 
   it('auth error - user not found', async () => {
@@ -73,11 +77,12 @@ describe('POST /auth/login - authController', () => {
     })
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send({ username: 'unknown', password: 'password'})
 
     expect(res.status).toBe(401)
-    expect(res.body.error).toBe('AUTH_ERROR')
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Invalid username or password')
   })
 
   it('auth error - invalid password', async () => {
@@ -86,11 +91,12 @@ describe('POST /auth/login - authController', () => {
     })
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send({ username: 'testuser', password:'wrong'})
     
     expect(res.status).toBe(401)
-    expect(res.body.error).toBe('AUTH_ERROR')
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Invalid username or password')
   })
 
   it('auth error - user inactive', async () => {
@@ -99,11 +105,12 @@ describe('POST /auth/login - authController', () => {
     })
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send({ username: 'inactive', password: 'password'})
 
     expect(res.status).toBe(401)
-    expect(res.body.error).toBe('AUTH_ERROR')
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Invalid username or password')
   })
 
   it('database error - unexpected DB failure', async () => {
@@ -112,11 +119,11 @@ describe('POST /auth/login - authController', () => {
     })
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send({ username: 'testuser', password: 'password'})
     
     expect(res.status).toBe(500)
-    expect(res.body.error).toBe('DB_ERROR')
+    expect(res.body.status).toBe('error')
     expect(res.body.message).toBe('Internal server error')
   })
 })
