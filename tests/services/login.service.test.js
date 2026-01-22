@@ -10,7 +10,6 @@ import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 
 describe('loginUser', () => {
   let activeUser
-  let inactiveUser
   const password = 'secret123'
 
   beforeEach(async () => {
@@ -25,7 +24,7 @@ describe('loginUser', () => {
        [hash]
     )
 
-    const inactive = await db.query(
+    await db.query(
       `INSERT INTO users (username, password_hash, is_active, role)
        VALUES ('inactive_user', $1, false, 'user')
        RETURNING id`,
@@ -33,7 +32,6 @@ describe('loginUser', () => {
     )
 
     activeUser = active.rows[0]
-    inactiveUser = inactive.rows[0]
   })
 
   it('authenticates active user with correct password', async () => {
