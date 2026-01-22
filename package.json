@@ -9,6 +9,7 @@
     "lint:fix": "eslint . --fix",
     "test": "cross-env NODE_ENV=test dotenv -e .env.test -- vitest",
     "test:run": "cross-env NODE_ENV=test dotenv -e .env.test -- vitest run",
+    "test:coverage": "cross-env NODE_ENV=test dotenv -e .env.test -- vitest run --coverage",
     "migrate": "node-pg-migrate",
     "migrate:dev": "cross-env NODE_ENV=development dotenv -e .env node-pg-migrate",
     "migrate:test": "cross-env NODE_ENV=test dotenv -e .env.test node-pg-migrate",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@eslint/json": "^0.14.0",
+    "@vitest/coverage-v8": "^4.0.17",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.2",
