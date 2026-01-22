@@ -1,3 +1,4 @@
+import { DatabaseError } from '../../http/errors/DatabaseError.js'
 import { loginUser } from '../../services/login.service.js'
 import { mapDomainErrorToHttpError } from '../../utils/mapDomainErrorToHttpError.js'
 
@@ -29,7 +30,7 @@ export async function logout(req, res, next) {
   }
 
   req.session.destroy((err) => {
-    if (err) return next(err)
+    if (err) return next(new DatabaseError(err.message))
 
     res.clearCookie('connect.sid')
     return res.status(200).json({
