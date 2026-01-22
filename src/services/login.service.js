@@ -44,6 +44,7 @@ import { mapToDomainError } from '../utils/mapToDomainError.js'
  * 
  * Errors (domain-level):
  * - UserNotFoundError
+ * - ValidationError
  * - InvalidPasswordError
  * - UserInactiveError
  * - DatabaseError
@@ -61,9 +62,18 @@ import { mapToDomainError } from '../utils/mapToDomainError.js'
 
 export async function loginUser(input) {
   const { username, password } = input
+  const errors = {}
 
-  if (!username || !password) {
-    throw new ValidationError('username and password are required')
+  if (!username || username.trim() === '') {
+    errors.username = 'username is required'
+  }
+
+  if (!password || password.trim() === '') {
+    errors.password = 'password is required'
+  }
+
+  if (Object.keys(errors).length > 0) {
+    throw new ValidationError('Invalid input', errors)
   }
 
   let client
