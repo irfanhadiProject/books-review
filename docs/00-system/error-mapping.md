@@ -4,7 +4,11 @@
 
 This document defines how domain-level errors are translated into transport-level errors for the Books Review system.
 
-Domain services emit only domain errors. Controller and middleware are responsible for mapping those errors to HTTP responses in a consistent and predictable manner.
+Domain services emit only domain errors. Controllers and middleware are responsible for mapping those errors to HTTP responses in a consistent and predictable manner.
+
+This mapping follows the public API contract defined in `openapi.yaml`
+and `API_CONTRACT.md`.
+
 
 ## Domain Error Taxonomy
  
@@ -45,26 +49,36 @@ For example:
 
 These concrete errors are internal to the domain layer and are not exposed as part of the external contract.
 
-### Authentication vs Authorization Mapping
+### Authentication vs Authorization Semantics
 
-In this system, authentication-related failures and authorization failures are intentionally mapped to the same transport-level error.
+Authentication and authorization are distinct and are intentionally
+mapped to different transport-level behaviors.
 
 Reasons:
-- All protected operations require a valid user session.
-- The system does not expose fine-grained authorization states to the client.
-- From the client perspective, both cases require re-authentication.
-- This avoids leaking resource existence or ownership information.
+- The API must not leak information about resource existence or ownership.
+- Clients must not distinguish between "not found" and "not accessible".
 
 As a result:
-- `AuthenticationError` and `AuthorizationError` are both translated to HTTP 401.
-- The distinction remains at the domain level but is intentionally collapsed at the transport layer.
+- Authentication Failures:
+  - Missing session
+  - Invalid session
+  - Expired session
+
+  Translated to **401 Unauthorized**
+
+- Authorization Failures:
+  - User is authenticated
+  - Resource exists
+  - Resource is not owned or accessible by the user
+
+  Translated to **404 Not Found**
 
 ## HTTP Mapping
 
 | Domain Error            | HTTP Status | Notes |
 |------------------------|-------------|-------|
-| **AuthenticationError**    | 401         | Session missing, expired, invalid, or access not permitted |
-| **AuthorizationError**     | 401         | Intentionally collapsed with AuthenticationError |
+| **AuthenticationError**    | 401         | Session missing, invalid, or expired |
+| **AuthorizationError**     | 404         | Resource exists but is not accessible |
 | **ResourceNotFoundError**  | 404         | Resource does not exist |
 | **ConflictError**          | 409         | Domain invariant violation |
 | **ValidationError**        | 422         | Semantically invalid input |
@@ -74,6 +88,7 @@ As a result:
 
 - FE must rely on HTTP status codes, not error message strings.
 - Error messages returned by the API are not guaranteed to be stable.
+- `404` must be treated as a terminal "not available" state.
 - Empty results (e.g. no user books) are not treated as errors.
 - FE is responsible for deciding presentation behavior (redirects, messaging, UI states).
 
