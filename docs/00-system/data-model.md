@@ -27,7 +27,7 @@ Notes:
 
 ### Book
 
-Represents a logical book entity.
+Represents a supporting entity describing a book.
 
 Fields: 
 - id (opaque identifier)
@@ -37,11 +37,15 @@ Fields:
 - coverUrl (optional)
 
 Notes: 
-- A book may exist without any associated review.
-- ISBN is optional and not guaranteed to be unique at the domain level.
-- Persistence layer may enforce best-effort deduplication when ISBN is present.
-- Cover URL is non-critical metadata.
-- Book entities are review-agnostic and contain no user-specific state.
+- Book is not an aggregate root.
+- Book entities are immutable within this domain after creation.
+- No domain operation mutates Book state after creation.
+- ISBN is optional:
+  - When present, it acts as a strong identity hint.
+  - When absent, no identity guarantee is provided.
+- Deduplication behavior is best-effort and handled at the persistence layer.
+- Cover URL is non-critical metadata and may be populated asynchronously.
+- Book entities contain no user-specific or review-related state.
 
 ### UserBook
 
@@ -57,12 +61,12 @@ Fields:
 - readAt (optional)
 
 Notes:
-- This is the aggregate root for user-book interactions.
-- Review data belongs to UserBook, not to Book.
-- A user cannot have more than one UserBook for the same Book.
-- Logical identity is defined bu the (userId, bookId) pair.
+- UserBook is the solo aggregate root in this domain.
+- All write operations must originate from UserBook creation or mutation.
+- Review data belongs exclusively to UserBook.
+- A User cannot have more than one UserBook for the same book.
+- Domain identity is defined by the (userId, bookId) pair.
 - The id field is a technical identifier and does not define domain identity.
-- UserBooks governs invariants related to review ownership and lifecycle.
 - Review content cannot exist without an owning UserBook.
 
 ## Relationships
@@ -73,6 +77,7 @@ Notes:
 
 Constraints:
 - (userId, bookId) must be unique.
+- Creation of Book without a corresponding UserBook is forbidden.
 
 ## Derived / Computed Fields
 
