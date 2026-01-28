@@ -6,8 +6,7 @@ This document defines how domain-level errors are translated into transport-leve
 
 Domain services emit only domain errors. Controllers and middleware are responsible for mapping those errors to HTTP responses in a consistent and predictable manner.
 
-This mapping follows the public API contract defined in `openapi.yaml`
-and `API_CONTRACT.md`.
+This mapping follows the public API contract defined in `openapi.yaml` and `API_CONTRACT.md`.
 
 
 ## Domain Error Taxonomy
@@ -75,14 +74,14 @@ As a result:
 
 ## HTTP Mapping
 
-| Domain Error            | HTTP Status | Notes |
-|------------------------|-------------|-------|
-| **AuthenticationError**    | 401         | Session missing, invalid, or expired |
+| Domain Error               | HTTP Status | Notes                                 |
+|----------------------------|-------------|---------------------------------------|
+| **AuthenticationError**    | 401         | Session missing, invalid, or expired  |
 | **AuthorizationError**     | 404         | Resource exists but is not accessible |
-| **ResourceNotFoundError**  | 404         | Resource does not exist |
-| **ConflictError**          | 409         | Domain invariant violation |
-| **ValidationError**        | 422         | Semantically invalid input |
-| **DatabaseError**          | 500         | Unexpected server failure |
+| **ResourceNotFoundError**  | 404         | Resource does not exist               |
+| **ConflictError**          | 409         | Domain invariant violation            |
+| **ValidationError**        | 422         | Semantically invalid input            |
+| **DatabaseError**          | 500         | Unexpected server failure             |
 
 ## FE Handling Expectations
 
