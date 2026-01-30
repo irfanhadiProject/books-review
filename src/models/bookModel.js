@@ -35,9 +35,11 @@ export async function insertUserBook(client, {
       readability, 
       words, 
       summary, 
-      read_at
+      read_at,
+      created_at,
+      updated_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
+    VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW(), NOW()) 
     RETURNING id`,
     [userId, bookId, setting, readability, words, summary]
   )
@@ -49,7 +51,8 @@ export async function updateUserBookSummary(client, {
 }) {
   return client.query(
     `UPDATE user_books
-        SET summary = $1
+        SET summary = $1,
+            updated_at = NOW()
         WHERE id = $2`,
     [ summary, userBookId]
   )
