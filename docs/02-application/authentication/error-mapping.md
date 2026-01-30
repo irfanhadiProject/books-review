@@ -4,7 +4,7 @@
 
 This document defines how domain-level errors produced by the Authentication system are translated into transport-level errors.
 
-Unlike resource-oriented domains (e.g. Books Review), Authentication acts as a system entry point and is responsible for establishing user identity. As such, its error semantics differ by design.
+Authentication acts as a system entry point responsible for credential verification and session establishment. Its error semantics are intentionally constrained to prevent identity disclosure and to comply with the public API contract.
 
 This mapping follows the public API contract defined in `openapi.yaml` and `API_CONTRACT.md`.
 
@@ -19,10 +19,6 @@ The following domain errors may be produced by authentication domain services:
 - **ValidationError**
 
   Thrown when authentication input data is syntactically or semantically invalid (e.g. missing fields, malformed email).
-
-- **ConflictError**
-
-  Thrown when an authentication-related invariant is violated (e.g. attempting to register an already-registered identity).
 
 - **DatabaseError**
 
@@ -39,7 +35,7 @@ For example:
 - `UserInactiveError`
 - `SessionExpiredError`
 
-All of the above are treated as AuthenticationError at the transport level. These concrete errors are internal to the authentication domain and are not exposed as part of the external contract.
+All of the above are treated as **AuthenticationError** at the transport level. These concrete errors are internal to the authentication domain and are not exposed as part of the external contract.
 
 ### Authentication Semantics (Authentication Domain)
 
@@ -61,7 +57,6 @@ All such failures are treated uniformly.
 |----------------------------|-------------|----------------------------------------|
 | **AuthenticationError**    | 401         | Invalid credentials or identity state  |
 | **ValidationError**        | 422         | Invalid authentication input           |
-| **ConflictError**          | 409         | Identity already exists                |
 | **DatabaseError**          | 500         | Unexpected server failure              |
 
 ## Relationship to Other Domains
