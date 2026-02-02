@@ -1,7 +1,7 @@
 import express from 'express'
 import {
   renderUserBooksPage,
-  getBookById,
+  // getBookById,
   searchBooks,
   filterByGenre,
   // sortBooks,
@@ -17,7 +17,7 @@ router.get('/search-book', searchBooks)
 router.get('/filter-by', filterByGenre)
 // router.get('/sort-by', sortBooks);
 router.post('/add-book', submitAddBookForm)
-router.get('/:id', getBookById)
+// router.get('/:id', getBookById)
 router.patch('/:id', submitUpdateBookReviewForm)
 router.delete('/:id', deleteBook)
 

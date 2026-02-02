@@ -17,21 +17,22 @@ export async function getAllBooksByUser(userId) {
   )
 }
 
-export async function getBookByUserBookId(userBookId, userId) {
+export async function queryUserBookDetailByUser(userId, userBookId) {
   return db.query(
     `SELECT
-        books.title,
-        books.author,
-        books.isbn,
-        books.genre,
-        books.cover,
-        user_books.setting,
-        user_books.readability,
-        user_books.words,
-        user_books.summary
-        FROM user_books
-        JOIN books ON user_books.book_id = books.id
-        WHERE user_books.id = $1 AND user_books.user_id = $2`,
+        ub.id AS user_book_id,
+        ub.summary AS summary,
+        ub.created_at AS created_at,
+        ub.updated_at AS updated_at,
+
+        b.id AS book_id,
+        b.title AS title,
+        b.author AS author,
+        b.cover AS cover
+     FROM user_books ub
+     JOIN books b ON ub.book_id = b.id
+     WHERE ub.id = $1 
+       AND ub.user_id = $2`,
     [userBookId, userId]
   )
 }

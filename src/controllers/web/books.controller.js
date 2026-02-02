@@ -7,7 +7,7 @@ import {
   deleteUserBook,
 } from '../../models/bookModel.js'
 import {
-  getBookByUserBookId,
+  // getBookByUserBookId,
   searchBooksByTitle,
   filterBooksByGenre,
   checkUserBook,
@@ -46,25 +46,25 @@ export async function renderUserBooksPage(req, res) {
 }
 
 // Mendapatkan data buku dengan id
-export async function getBookById(req, res) {
-  const userBookId = req.params.id
-  const userId = req.session.userId
+// export async function getBookById(req, res) {
+//   const userBookId = req.params.id
+//   const userId = req.session.userId
 
-  try {
-    const result = await getBookByUserBookId(userBookId, userId)
+//   try {
+//     const result = await getBookByUserBookId(userBookId, userId)
 
-    if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ message: 'Book not found or access denied' })
-    }
+//     if (result.rows.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ message: 'Book not found or access denied' })
+//     }
 
-    res.json(result.rows[0])
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Server error' })
-  }
-}
+//     res.json(result.rows[0])
+//   } catch (err) {
+//     console.error(err)
+//     res.status(500).json({ message: 'Server error' })
+//   }
+// }
 
 // Mendapatkan data buku berdasarkan judul melalui fitur search
 export async function searchBooks(req, res) {
