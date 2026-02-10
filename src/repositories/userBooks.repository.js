@@ -9,7 +9,10 @@
  */
 
 import db from '../utils/db.js'
-import { findUserBookByIdAndUser } from '../queries/bookQueries.js'
+import { 
+  findUserBookByIdAndUser, 
+  queryUserBookDetailByUser 
+} from '../queries/bookQueries.js'
 import { updateUserBookSummary } from '../models/bookModel.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
 
@@ -52,4 +55,13 @@ export async function updateUserReview({
   } finally {
     client.release()
   }
+}
+
+export async function findUserBookDetailByUser(userId, userBookId) {
+  const { rows } = await queryUserBookDetailByUser(
+    userId,
+    userBookId
+  )
+
+  return rows[0] ?? null
 }

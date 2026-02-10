@@ -4,6 +4,7 @@ import { updateUserBookReview } from '../../services/updateUserBookReview.servic
 
 import { AuthError } from '../../http/errors/AuthError.js'
 import { mapDomainErrorToHttpError } from '../../utils/mapDomainErrorToHttpError.js'
+import { getUserBookDetail } from '../../services/getUserBookDetail.service.js'
 
 // GET /user-books
 export async function getUserBookCollection(req, res, next) {
@@ -83,6 +84,28 @@ export async function updateBookReview(req, res, next) {
       status: 'success',
       message: 'Operation successful',
       data: {}
+    })
+  } catch (err) {
+    next(mapDomainErrorToHttpError(err))
+  }
+}
+
+// GET /user-books/{id}
+export async function getUserBookDetailHandler(req, res, next) {
+  const userId = req.session?.userId
+
+  if(!userId) {
+    return next(new AuthError('Session expired, please login'))
+  }
+
+  try {
+    const userBookId = req.params.id
+
+    const data = await getUserBookDetail(userId, userBookId)
+
+    return res.status(200).json({
+      status: 'success',
+      data
     })
   } catch (err) {
     next(mapDomainErrorToHttpError(err))
