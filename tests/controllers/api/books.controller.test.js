@@ -2,11 +2,12 @@ import { describe, it, beforeEach, expect, vi } from 'vitest'
 import request from 'supertest'
 import express from 'express'
 
-import { getUserBookCollection, addUserBook, updateBookReview } from '../../../src/controllers/api/books.controller.js'
+import { getUserBookCollection, addUserBook, updateBookReview, getUserBookDetailHandler } from '../../../src/controllers/api/books.controller.js'
 import { errorHandler } from '../../../src/middleware/errorHandler.js'
 import * as addBookToUserCollectionService from '../../../src/services/addBookToUserCollection.service.js'
 import * as getUserBooksService from '../../../src/services/getUserBooks.service.js'
 import * as updateUserBookReviewService from '../../../src/services/updateUserBookReview.service.js'
+import * as getUserBookDetailService from '../../../src/services/getUserBookDetail.service.js'
 
 import { ValidationError } from '../../../src/domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../../../src/domain/errors/UserAlreadyHasBookError.js'
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.get('/api/v1/user-books', getUserBookCollection)
 app.post('/api/v1/user-books', addUserBook)
 app.patch('/api/v1/user-books/:id', updateBookReview)
+app.get('/api/v1/user-books/:id', getUserBookDetailHandler)
 app.use(errorHandler)
 
 // App without session (unauthenticated)
@@ -31,6 +33,7 @@ appNoSession.use(express.json())
 appNoSession.get('/api/v1/user-books', getUserBookCollection)
 appNoSession.post('/api/v1/user-books', addUserBook)
 appNoSession.patch('/api/v1/user-books/:id', updateBookReview)
+appNoSession.get('/api/v1/user-books/:id', getUserBookDetailHandler)
 appNoSession.use(errorHandler)
 
 describe('POST /api/v1/user-books - addUserBook', () => {
@@ -221,7 +224,7 @@ describe('GET /api/v1/user-books - getUserBookCollection', () => {
   })
 })
 
-describe('PATCH /api/v1/user-books/{id} - updateBookReview', () => {
+describe('PATCH /api/v1/user-books/:id - updateBookReview', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
   })
@@ -277,4 +280,62 @@ describe('PATCH /api/v1/user-books/{id} - updateBookReview', () => {
   })
 })
 
+describe('GET /api/v1/user-books/:id - getUserBookDetail', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('success - returns user book detail', async () => {
+    vi.spyOn(getUserBookDetailService, 'getUserBookDetail').mockResolvedValue({
+      id: 1,
+      book: {
+        id: 10,
+        title: 'Book A',
+        author: 'Author A',
+        coverUrl: 'urlA'
+      },
+      summary: 'This summary',
+      reviewState: 'EMPTY',
+      createdAt: 'now',
+      updatedAt: 'now'
+    })
+
+    const res = await request(app).get('/api/v1/user-books/1')
+
+    expect(res.status).toBe(200)
+    expect(res.body.status).toBe('success')
+    expect(res.body.data).toBeDefined()
+    expect(getUserBookDetailService.getUserBookDetail).toHaveBeenCalledWith(1, '1')
+  })
+
+  it('Auth error - user not logged in', async () => {
+    const res = await request(appNoSession).get('/api/v1/user-books/10')
+
+    expect(res.status).toBe(401)
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Session expired, please login')
+  })
+
+  it('Not Found error - book not found', async () => {
+    vi.spyOn(getUserBookDetailService, 'getUserBookDetail').mockImplementation(() => { throw new UserBookNotFoundError('Book not found in your collection') })
+
+    const res = await request(app).get('/api/v1/user-books/999')
+
+    expect(res.status).toBe(404)
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Book not found in your collection')
+  })
+
+  it('Database error - unexpected failure', async () => {
+    vi.spyOn(getUserBookDetailService, 'getUserBookDetail').mockImplementation(() => {
+      throw new DatabaseError('DB exploded')
+    })
+
+    const res = await request(app).get('/api/v1/user-books/1')
+
+    expect(res.status).toBe(500)
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Internal server error')
+  })
+})
 
