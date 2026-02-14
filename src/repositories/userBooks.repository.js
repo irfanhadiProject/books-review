@@ -13,12 +13,12 @@ import {
   findUserBookByIdAndUser, 
   queryUserBookDetailByUser 
 } from '../queries/bookQueries.js'
-import { updateUserBookSummary } from '../models/bookModel.js'
+import { deleteUserBookByIdAndUser, updateUserBookSummary } from '../models/bookModel.js'
 import { DatabaseError } from '../domain/errors/DatabaseError.js'
 
 export async function updateUserReview({
-  userBookId,
   userId,
+  userBookId,
   summary
 }) {
   const client = await db.connect()
@@ -64,4 +64,21 @@ export async function findUserBookDetailByUser(userId, userBookId) {
   )
 
   return rows[0] ?? null
+}
+
+export async function deleteUserBookRelation(userId, userBookId) {
+  const client = await db.connect()
+
+  try {
+    const result = await deleteUserBookByIdAndUser(
+      client, {
+        userId,
+        userBookId
+      }
+    )
+
+    return result.rowCount > 0
+  } finally {
+    client.release()
+  }
 }

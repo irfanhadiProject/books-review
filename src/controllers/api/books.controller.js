@@ -1,10 +1,11 @@
 import { addBookToUserCollection } from '../../services/addBookToUserCollection.service.js'
 import { getUserBooks } from '../../services/getUserBooks.service.js'
 import { updateUserBookReview } from '../../services/updateUserBookReview.service.js'
+import { getUserBookDetail } from '../../services/getUserBookDetail.service.js'
+import { deleteUserBook } from '../../services/deleteUserBook.service.js'
 
 import { AuthError } from '../../http/errors/AuthError.js'
 import { mapDomainErrorToHttpError } from '../../utils/mapDomainErrorToHttpError.js'
-import { getUserBookDetail } from '../../services/getUserBookDetail.service.js'
 
 // GET /user-books
 export async function getUserBookCollection(req, res, next) {
@@ -106,6 +107,28 @@ export async function getUserBookDetailHandler(req, res, next) {
     return res.status(200).json({
       status: 'success',
       data
+    })
+  } catch (err) {
+    next(mapDomainErrorToHttpError(err))
+  }
+}
+
+export async function deleteUserBookHandler(req, res, next) {
+  const userId = req.session?.userId
+
+  if (!userId) {
+    return next(new AuthError('Session expired, please login'))
+  }
+
+  try {
+    const userBookId = req.params.id
+
+    await deleteUserBook(userId, userBookId)
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Operation successful',
+      data: {}
     })
   } catch (err) {
     next(mapDomainErrorToHttpError(err))

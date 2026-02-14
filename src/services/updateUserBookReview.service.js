@@ -56,8 +56,8 @@ export async function updateUserBookReview({
   }
 
   const result = await updateUserReview({
-    userBookId,
     userId,
+    userBookId,
     summary
   })
   

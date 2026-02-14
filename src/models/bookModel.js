@@ -58,6 +58,11 @@ export async function updateUserBookSummary(client, {
   )
 }
 
-export async function deleteUserBook(client, userBookId) {
-  return client.query('DELETE FROM user_books WHERE id = $1', [userBookId])
+export async function deleteUserBookByIdAndUser(client, {
+  userId, 
+  userBookId
+}) {
+  return client.query(
+    `DELETE FROM user_books 
+     WHERE id = $1 AND user_id = $2`, [userBookId, userId])
 }
