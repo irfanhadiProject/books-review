@@ -2,12 +2,19 @@ import { describe, it, beforeEach, expect, vi } from 'vitest'
 import request from 'supertest'
 import express from 'express'
 
-import { getUserBookCollection, addUserBook, updateBookReview, getUserBookDetailHandler } from '../../../src/controllers/api/books.controller.js'
+import { 
+  getUserBookCollection, 
+  addUserBook, 
+  updateBookReview, 
+  getUserBookDetailHandler, 
+  deleteUserBookHandler 
+} from '../../../src/controllers/api/books.controller.js'
 import { errorHandler } from '../../../src/middleware/errorHandler.js'
 import * as addBookToUserCollectionService from '../../../src/services/addBookToUserCollection.service.js'
 import * as getUserBooksService from '../../../src/services/getUserBooks.service.js'
 import * as updateUserBookReviewService from '../../../src/services/updateUserBookReview.service.js'
 import * as getUserBookDetailService from '../../../src/services/getUserBookDetail.service.js'
+import * as deleteUserBookService from '../../../src/services/deleteUserBook.service.js'
 
 import { ValidationError } from '../../../src/domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../../../src/domain/errors/UserAlreadyHasBookError.js'
@@ -25,6 +32,7 @@ app.get('/api/v1/user-books', getUserBookCollection)
 app.post('/api/v1/user-books', addUserBook)
 app.patch('/api/v1/user-books/:id', updateBookReview)
 app.get('/api/v1/user-books/:id', getUserBookDetailHandler)
+app.delete('/api/v1/user-books/:id', deleteUserBookHandler)
 app.use(errorHandler)
 
 // App without session (unauthenticated)
@@ -34,6 +42,7 @@ appNoSession.get('/api/v1/user-books', getUserBookCollection)
 appNoSession.post('/api/v1/user-books', addUserBook)
 appNoSession.patch('/api/v1/user-books/:id', updateBookReview)
 appNoSession.get('/api/v1/user-books/:id', getUserBookDetailHandler)
+appNoSession.delete('/api/v1/user-books/:id', deleteUserBookHandler)
 appNoSession.use(errorHandler)
 
 describe('POST /api/v1/user-books - addUserBook', () => {
@@ -332,6 +341,57 @@ describe('GET /api/v1/user-books/:id - getUserBookDetail', () => {
     })
 
     const res = await request(app).get('/api/v1/user-books/1')
+
+    expect(res.status).toBe(500)
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Internal server error')
+  })
+})
+
+describe('DELETE /api/v1/user-books/:id - deleteUserBook', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('success - should return 200 when user book is deleted', async () => {
+    vi.spyOn(deleteUserBookService, 'deleteUserBook').mockResolvedValue(undefined)
+
+    const res = await request(app)
+      .delete('/api/v1/user-books/10')
+    
+    expect(res.status).toBe(200)
+    expect(res.body.status).toBe('success')
+    expect(res.body.message).toBe('Operation successful')
+  })
+
+  it('Auth error - should return 401 when user is not logged in', async () => {
+    const res = await request(appNoSession)
+      .delete('/api/v1/user-books/10')
+
+    expect(res.status).toBe(401)
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Session expired, please login')
+  })
+
+  it('Not Found error - should return 404 when book entry does not exist or wrong owner', async () => {
+    vi.spyOn(deleteUserBookService, 'deleteUserBook').mockImplementation(() => {
+      throw new UserBookNotFoundError('Book not found in your collection')
+    })
+
+    const res = await request(app)
+      .delete('/api/v1/user-books/10')
+    
+    expect(res.status).toBe(404)
+    expect(res.body.status).toBe('error')
+    expect(res.body.message).toBe('Book not found in your collection')
+  })
+
+  it('Database error - unexpected failure', async () => {
+    vi.spyOn(deleteUserBookService, 'deleteUserBook').mockImplementation(() => {
+      throw new DatabaseError('DB exploded')
+    })
+
+    const res = await request(app).delete('/api/v1/user-books/10')
 
     expect(res.status).toBe(500)
     expect(res.body.status).toBe('error')
