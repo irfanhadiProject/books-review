@@ -1,8 +1,8 @@
-import { addBookToUserCollection } from '../../services/bff/addBookToUserCollection.service.js'
-import { getUserBooks } from '../../services/bff/getUserBooks.service.js'
-import { updateUserBookReview } from '../../services/bff/updateUserBookReview.service.js'
-import { getUserBookDetail } from '../../services/bff/getUserBookDetail.service.js'
-import { deleteUserBook } from '../../services/bff/deleteUserBook.service.js'
+import { addBookToUserCollection } from '../../services/addBookToUserCollection.service.js'
+import { getUserBooks } from '../../services/getUserBooks.service.js'
+import { updateUserBookReview } from '../../services/updateUserBookReview.service.js'
+import { getUserBookDetail } from '../../services/getUserBookDetail.service.js'
+import { deleteUserBook } from '../../services/deleteUserBook.service.js'
 
 import { AuthError } from '../../http/errors/AuthError.js'
 import { mapDomainErrorToHttpError } from '../../utils/mapDomainErrorToHttpError.js'

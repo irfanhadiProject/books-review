@@ -8,7 +8,7 @@
  * - User ID treated as opaque identifier
  */
 
-import { getAllBooksByUser } from '../../queries/bookQueries.js'
+import { getAllBooksByUser } from '../queries/bookQueries.js'
 
 /**
  * getUserBooks

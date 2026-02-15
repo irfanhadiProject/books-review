@@ -12,16 +12,16 @@
  * - Know about views or redirects
  */
 
-import db from '../../utils/db.js'
+import db from '../utils/db.js'
 import {
   findBookByISBN,
   insertNewBook,
   insertUserBook
-} from '../../models/bookModel.js'
-import { fetchCoverAsync } from '../../utils/fetchCoverAsync.js'
-import { ValidationError } from '../../domain/errors/ValidationError.js'
-import { DatabaseError } from '../../domain/errors/DatabaseError.js'
-import { mapToDomainError } from '../../utils/mapToDomainError.js'
+} from '../models/bookModel.js'
+import { fetchCoverAsync } from '../utils/fetchCoverAsync.js'
+import { ValidationError } from '../domain/errors/ValidationError.js'
+import { DatabaseError } from '../domain/errors/DatabaseError.js'
+import { mapToDomainError } from '../utils/mapToDomainError.js'
 
 /**
  * addBookToUserCollection

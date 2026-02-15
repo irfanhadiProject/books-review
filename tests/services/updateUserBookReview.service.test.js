@@ -1,7 +1,7 @@
 import db from '../../src/utils/db.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { resetDb } from '../helpers/db.js'
-import { updateUserBookReview } from '../../src/services/bff/updateUserBookReview.service.js'
+import { updateUserBookReview } from '../../src/services/updateUserBookReview.service.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import { UserBookNotFoundError } from '../../src/domain/errors/UserBookNotFoundError.js'
 

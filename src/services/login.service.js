@@ -11,14 +11,14 @@
  * - Perform view or navigation logic 
  */
 
-import db from '../../utils/db.js'
+import db from '../utils/db.js'
 import bcrypt from 'bcrypt'
-import { findUserByUsername } from '../../models/authModel.js'
-import { ValidationError } from '../../domain/errors/ValidationError.js'
-import { UserNotFoundError } from '../../domain/errors/UserNotFoundError.js'
-import { UserInactiveError } from '../../domain/errors/UserInactiveError.js'
-import { InvalidPasswordError } from '../../domain/errors/InvalidPasswordError.js'
-import { mapToDomainError } from '../../utils/mapToDomainError.js'
+import { findUserByUsername } from '../models/authModel.js'
+import { ValidationError } from '../domain/errors/ValidationError.js'
+import { UserNotFoundError } from '../domain/errors/UserNotFoundError.js'
+import { UserInactiveError } from '../domain/errors/UserInactiveError.js'
+import { InvalidPasswordError } from '../domain/errors/InvalidPasswordError.js'
+import { mapToDomainError } from '../utils/mapToDomainError.js'
 
 /**
  * loginUser

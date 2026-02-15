@@ -10,8 +10,8 @@
  * - Coordinate persistence changes atomically
  */
 
-import { UserBookNotFoundError } from '../../domain/errors/UserBookNotFoundError.js'
-import { deleteUserBookRelation } from '../../repositories/userBooks.repository.js'
+import { UserBookNotFoundError } from '../domain/errors/UserBookNotFoundError.js'
+import { deleteUserBookRelation } from '../repositories/userBooks.repository.js'
 
 /**
  * 

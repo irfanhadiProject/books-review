@@ -9,8 +9,8 @@
  * - User ID treated as opaque identifier
  */
 
-import { findUserBookDetailByUser } from '../../repositories/userBooks.repository.js'
-import { UserBookNotFoundError } from '../../domain/errors/UserBookNotFoundError.js'
+import { findUserBookDetailByUser } from '../repositories/userBooks.repository.js'
+import { UserBookNotFoundError } from '../domain/errors/UserBookNotFoundError.js'
 
 /**
  * getUserBookDetail

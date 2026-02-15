@@ -1,7 +1,7 @@
 import db from '../../src/utils/db.js'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { resetDb } from '../helpers/db.js'
-import { addBookToUserCollection } from '../../src/services/bff/addBookToUserCollection.service.js'
+import { addBookToUserCollection } from '../../src/services/addBookToUserCollection.service.js'
 import { UserAlreadyHasBookError } from '../../src/domain/errors/UserAlreadyHasBookError.js'
 import { ValidationError } from '../../src/domain/errors/ValidationError.js'
 import * as coverFetcher from '../../src/utils/fetchCoverAsync.js'
