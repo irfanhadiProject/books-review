@@ -10,9 +10,9 @@
  * - Coordinate persistence changes atomically
  */
 
-import { updateUserReview } from '../repositories/userBooks.repository.js'
-import { ValidationError } from '../domain/errors/ValidationError.js'
-import { UserBookNotFoundError } from '../domain/errors/UserBookNotFoundError.js'
+import { updateUserReview } from '../../repositories/userBooks.repository.js'
+import { ValidationError } from '../../domain/errors/ValidationError.js'
+import { UserBookNotFoundError } from '../../domain/errors/UserBookNotFoundError.js'
 
 /**
  * updateUserBookReview
