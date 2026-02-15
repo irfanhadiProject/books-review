@@ -10,11 +10,11 @@ import {
   deleteUserBookHandler 
 } from '../../../src/controllers/api/books.controller.js'
 import { errorHandler } from '../../../src/middleware/errorHandler.js'
-import * as addBookToUserCollectionService from '../../../src/services/addBookToUserCollection.service.js'
-import * as getUserBooksService from '../../../src/services/getUserBooks.service.js'
-import * as updateUserBookReviewService from '../../../src/services/updateUserBookReview.service.js'
-import * as getUserBookDetailService from '../../../src/services/getUserBookDetail.service.js'
-import * as deleteUserBookService from '../../../src/services/deleteUserBook.service.js'
+import * as addBookToUserCollectionService from '../../../src/services/domain/addBookToUserCollection.service.js'
+import * as getUserBooksService from '../../../src/services/domain/getUserBooks.service.js'
+import * as updateUserBookReviewService from '../../../src/services/domain/updateUserBookReview.service.js'
+import * as getUserBookDetailService from '../../../src/services/domain/getUserBookDetail.service.js'
+import * as deleteUserBookService from '../../../src/services/domain/deleteUserBook.service.js'
 
 import { ValidationError } from '../../../src/domain/errors/ValidationError.js'
 import { UserAlreadyHasBookError } from '../../../src/domain/errors/UserAlreadyHasBookError.js'

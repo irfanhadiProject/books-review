@@ -1,7 +1,7 @@
 import db from '../../src/utils/db.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { resetDb } from '../helpers/db.js'
-import { deleteUserBook } from '../../src/services/deleteUserBook.service.js'
+import { deleteUserBook } from '../../src/services/domain/deleteUserBook.service.js'
 import { UserBookNotFoundError } from '../../src/domain/errors/UserBookNotFoundError.js'
 
 describe('deleteUserBook', () => {
