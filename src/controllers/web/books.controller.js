@@ -1,47 +1,23 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
+import * as userBooksService from '../../services/bff/userBooks.service.js'
 import { renderBooksPage } from '../../utils/renderBooksPage.js'
-import {
-  updateUserBookSummary,
-  deleteUserBook,
-} from '../../models/bookModel.js'
-import {
-  // getBookByUserBookId,
-  searchBooksByTitle,
-  filterBooksByGenre,
-  checkUserBook,
-} from '../../queries/bookQueries.js'
-
-import axios from 'axios'
-
-const API_BASE_URL = 'http://localhost:3000/api/v1'
-
 
 // GET /books
 export async function renderUserBooksPage(req, res) {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/user-books`,
-      {
-        headers: {
-          cookie: req.headers.cookie
-        }
-      }
-    )
+    const { books } = await userBooksService.getUserBooks(req.headers.cookie)
 
-    return res.render('pages/books', {
-      layout: 'layout',
-      title: 'My Books',
-      books: response.data.data,
-      total: response.data.meta.total
-    })
-  } catch(err) {
-    if (err.response?.status === 401) {
+    return res.render('pages/books',
+      renderBooksPage({
+        user: req.user?.username,
+        books
+      })
+    )
+  } catch(error) {
+    if (error.status === 401) {
       return res.redirect('/login')
     }
 
-    throw err
+    throw error
   }
 }
 
@@ -67,71 +43,66 @@ export async function renderUserBooksPage(req, res) {
 // }
 
 // Mendapatkan data buku berdasarkan judul melalui fitur search
-export async function searchBooks(req, res) {
-  const title = req.query.search
-  const userId = req.session.userId
-  const username = req.session.username
+// export async function searchBooks(req, res) {
+//   const title = req.query.search
+//   const userId = req.session.userId
+//   const username = req.session.username
 
-  try {
-    const result = await searchBooksByTitle(userId, title)
+//   try {
+//     const result = await searchBooksByTitle(userId, title)
 
-    res.render(
-      'pages/books',
-      renderBooksPage({
-        user: username,
-        booksData: result.rows,
-      })
-    )
-  } catch (err) {
-    console.error('Error executing query', err.stack)
-    res.status(500).send('Internal Server Error')
-  }
-}
+//     res.render(
+//       'pages/books',
+//       renderBooksPage({
+//         user: username,
+//         booksData: result.rows,
+//       })
+//     )
+//   } catch (err) {
+//     console.error('Error executing query', err.stack)
+//     res.status(500).send('Internal Server Error')
+//   }
+// }
 
 // Mendapatkan data buku berdasarkan genre melalui fitur filter genre
-export async function filterByGenre(req, res) {
-  const genre = req.query.genre
-  const userId = req.session.userId
-  const username = req.session.username
+// export async function filterByGenre(req, res) {
+//   const genre = req.query.genre
+//   const userId = req.session.userId
+//   const username = req.session.username
 
-  try {
-    const result = await filterBooksByGenre(userId, genre)
+//   try {
+//     const result = await filterBooksByGenre(userId, genre)
 
-    res.render(
-      'pages/books',
-      renderBooksPage({
-        user: username,
-        booksData: result.rows,
-      })
-    )
-  } catch (err) {
-    console.error('Error executing query', err.stack)
-    res.status(500).send('Internal Server Error')
-  }
-}
+//     res.render(
+//       'pages/books',
+//       renderBooksPage({
+//         user: username,
+//         booksData: result.rows,
+//       })
+//     )
+//   } catch (err) {
+//     console.error('Error executing query', err.stack)
+//     res.status(500).send('Internal Server Error')
+//   }
+// }
 
-// Add book to database
+// POST /books
 export async function submitAddBookForm(req, res) {
   const { title, author, isbn, summary } = req.body
 
   try {
-    await axios.post(
-      `${API_BASE_URL}/user-books`,
+    await userBooksService.createUserBook(
       { title, author, isbn, summary},
-      {
-        headers: {
-          cookie: req.headers.cookie
-        }
-      }
+      req.headers.cookie
     )
 
     return res.redirect('/books')
-  } catch (err) {
-    if(err.response?.status === 401) {
+  } catch (error) {
+    if(error.status === 401) {
       return res.redirect('/login')
     }
 
-    return res.render('pages/add-book', {
+    return res.render('pages/books', {
       layout: 'layout',
       title: 'Add Book',
       error: 'Invalid input'
@@ -145,24 +116,20 @@ export async function submitUpdateBookReviewForm(req, res) {
   const userBookId = req.params.id
 
   try {
-    await axios.patch(
-      `${API_BASE_URL}/user-books/${userBookId}`,
+    await userBooksService.updateUserBook(
+      userBookId,
       { summary },
-      {
-        headers: {
-          cookie: req.headers.cookie
-        }
-      }
+      req.headers.cookie
     )
 
     return res.redirect('/books')
-  } catch (err) {
-    if (err.response?.status === 401) {
+  } catch (error) {
+    if (error.status === 401) {
       return res.redirect('/login')
     }
 
-    if (err.response?.status === 404) {
-      return res.status(404).render('pages/404')
+    if (error.status === 404) {
+      return res.status(404).render('pages/not-found')
     }
 
     return res.status(400).send('Failed to update review')
@@ -170,16 +137,27 @@ export async function submitUpdateBookReviewForm(req, res) {
 
 }
 
-// Menghapus buku dari database user_books
+// DELETE /books/:id
 export async function deleteBook(req, res) {
   const userBookId = req.params.id
 
   try {
-    await deleteUserBook(userBookId)
-    res.status(200).send('Book deleted')
-  } catch (err) {
-    console.error('Error deleting book:', err.message)
-    res.status(500).send('Error deleting book')
+    await userBooksService.deleteUserBook(
+      userBookId,
+      req.headers.cookie
+    )
+
+    return res.status(200).send('Book deleted')
+  } catch (error) {
+    if (error.status === 401) {
+      return res.redirect('/login')
+    }
+
+    if (error.status === 404) {
+      return res.status(404).render('pages/not-found')
+    }
+
+    return res.status(500).send('Error deleting book')
   }
 }
 
