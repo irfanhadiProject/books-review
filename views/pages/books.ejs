@@ -118,58 +118,58 @@
   </div>
 </div>
 
-<% if (booksData && booksData.length > 0) { %>
+<% if (books && books.length > 0) { %>
 <div class="book-list">
-  <% booksData.map( bookData=> { %>
+  <% books.map( book => { %>
   <article class="book-card">
     <span class="book-card__read-at">
-      <%= new Date(bookData.read_at).toDateString() %>
+      <%= new Date(book.read_at).toDateString() %>
     </span>
     <div class="book-card__buttons">
       <button
         class="book-card__edit-btn"
-        data-id="<%= bookData.user_book_id %>"
+        data-id="<%= book.user_book_id %>"
       >
         Edit
       </button>
       <button
         class="book-card__delete-btn"
-        data-id="<%= bookData.user_book_id %>"
+        data-id="<%= book.user_book_id %>"
       >
         Delete
       </button>
     </div>
-    <h2 class="book-card__title"><%= bookData.title %></h2>
-    <p class="book-card__genre"><%= bookData.genre %></p>
-    <p class="book-card__author"><%= bookData.author %></p>
+    <h2 class="book-card__title"><%= book.title %></h2>
+    <p class="book-card__genre"><%= book.genre %></p>
+    <p class="book-card__author"><%= book.author %></p>
     <img
       alt="book cover"
       class="book-card__cover"
-      src="<%= bookData.cover %>"
+      src="<%= book.cover %>"
     />
 
     <div class="book-card__gap-right"></div>
 
     <div class="book-card__setting">
       <h3>Setting</h3>
-      <p><%= bookData.setting %></p>
+      <p><%= book.setting %></p>
     </div>
 
     <div class="book-card__spacer-side"></div>
 
     <div class="book-card__readability">
       <h3>Readability</h3>
-      <p><%= bookData.readability %></p>
+      <p><%= book.readability %></p>
     </div>
 
     <div class="book-card__keywords">
       <h3>In a few words</h3>
-      <p><%= bookData.words %></p>
+      <p><%= book.keywords %></p>
     </div>
 
     <div class="book-card__summary">
       <h3>Summary</h3>
-      <p><%= bookData.summary %></p>
+      <p><%= book.summary %></p>
     </div>
   </article>
   <% }) %>
