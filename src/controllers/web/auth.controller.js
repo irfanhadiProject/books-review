@@ -1,6 +1,4 @@
-import axios from 'axios'
-
-const API_BASE_URL = 'http://localhost:3000/api/v1'
+import * as authService from '../../services/bff/auth.service.js'
 
 // GET /login
 export function showLoginPage(req, res) {
@@ -18,19 +16,13 @@ export async function handleLogin(req, res) {
   const { username, password } = req.body
 
   try {
-   const apiRes = await axios.post(
-    `${API_BASE_URL}/auth/login`,
-    { username, password },
-    {
-      withCredentials: true
-    }
-   )
+   const apiRes = await authService.login({username, password})
 
-   const cookies = apiRes.headers['set-cookie']
+   const apiCookies = apiRes.headers['set-cookie']
 
-   if (cookies) {
-    res.setHeader('set-cookie', cookies)
-  }
+   if(apiCookies) {
+    res.setHeader('Set-Cookie', apiCookies)
+   }
 
     res.redirect('/books')
   } catch (err) {
@@ -41,6 +33,7 @@ export async function handleLogin(req, res) {
       showFooter: false,
       error: 'Invalid credentials'
     })
+    console.log(err)
   }
 }
 
