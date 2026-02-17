@@ -1,3 +1,4 @@
+import session from 'express-session'
 import express from 'express'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
@@ -13,6 +14,13 @@ const app = express()
 
 const openapiPath = path.resolve(process.cwd(), 'openapi.yaml')
 const openapiSpec = YAML.load(openapiPath)
+
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true}
+}))
 
 app.use(bodyParser.json())
 
