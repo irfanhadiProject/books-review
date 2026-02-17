@@ -2,8 +2,8 @@ import express from 'express'
 import {
   renderUserBooksPage,
   // getBookById,
-  searchBooks,
-  filterByGenre,
+  // searchBooks,
+  // filterByGenre,
   // sortBooks,
   submitAddBookForm,
   submitUpdateBookReviewForm,
@@ -13,10 +13,10 @@ import {
 const router = express.Router()
 
 router.get('/', renderUserBooksPage)
-router.get('/search-book', searchBooks)
-router.get('/filter-by', filterByGenre)
+// router.get('/search-book', searchBooks)
+// router.get('/filter-by', filterByGenre)
 // router.get('/sort-by', sortBooks);
-router.post('/add-book', submitAddBookForm)
+router.post('/', submitAddBookForm)
 // router.get('/:id', getBookById)
 router.patch('/:id', submitUpdateBookReviewForm)
 router.delete('/:id', deleteBook)

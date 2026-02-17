@@ -5,7 +5,7 @@ export function renderBooksPage(options = {}) {
 
     // modal config
     formTitle: options.formTitle || 'Add Book',
-    formAction: options.formAction || '/books/add-book',
+    formAction: options.formAction || '/books',
     submitText: options.submitText || 'Add',
     book: options.book ? mapBookToFormModel(options.book) : null,
 
