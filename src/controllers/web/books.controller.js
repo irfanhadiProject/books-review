@@ -8,7 +8,7 @@ export async function renderUserBooksPage(req, res) {
 
     return res.render('pages/books',
       renderBooksPage({
-        user: req.user?.username,
+        user: res.locals.user?.username,
         books
       })
     )
