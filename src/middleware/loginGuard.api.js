@@ -1,5 +1,5 @@
 export function loginGuardApi(req, res, next) {
-  if (req.session && req.session.loggedIn) {
+  if (req.session && req.session.userId) {
     return next()
   }
 
