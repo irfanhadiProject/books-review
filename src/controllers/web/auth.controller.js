@@ -11,7 +11,7 @@ export function showLoginPage(req, res) {
   })
 }
 
-// POST /auth/login
+// POST /login
 export async function handleLogin(req, res) {
   const { username, password } = req.body
 
@@ -89,8 +89,13 @@ export async function handleSignUp(req, res) {
 }
 
 // Tangani Logout
-export function handleLogout(req, res) {
-  req.session.destroy(() => {
-    res.redirect('/login')
-  })
+export async function handleLogout(req, res) {
+  try {
+    await authService.logout(req.headers.cookie)
+  } catch (err) {
+    console.error('API logout failed, but proceeding to clear local cookie')
+  }
+
+  res.clearCookie('connect.sid')
+  res.redirect('/login')
 }

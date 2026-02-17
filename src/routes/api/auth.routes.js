@@ -1,13 +1,13 @@
 import express from 'express'
 import { 
   login, 
-  // logout 
+  logout 
 } from '../../controllers/api/auth.controller.js'
 
 const router = express.Router()
 
 router.post('/login', login)
-// router.post('/logout', logout)
+router.post('/logout', logout)
 router.get('/me', (req, res) => {
   if (req.session.userId) {
     return res.status(200).json({
