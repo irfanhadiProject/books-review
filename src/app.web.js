@@ -7,6 +7,7 @@ import homeRoutes from './routes/web/home.routes.js'
 import authRoutes from './routes/web/auth.routes.js'
 import bookRoutes from './routes/web/book.routes.js'
 import { loginGuardWeb } from './middleware/loginGuard.web.js'
+import { userFetcher } from './middleware/userFetcher.js'
 
 const app = express()
 
@@ -17,10 +18,11 @@ app.use(express.static('public'))
 app.use(ejsLayouts)
 app.use(methodOverride('_method'))
 
-app.use(loginGuardWeb)
-
+app.use(userFetcher)
 app.use('/', homeRoutes)
 app.use('/', authRoutes)
+
+app.use(loginGuardWeb)
 app.use('/books', bookRoutes)
 
 export default app
