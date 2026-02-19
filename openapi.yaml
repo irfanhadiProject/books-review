@@ -212,7 +212,19 @@ components:
         isbn:
           type: string
           nullable: true
+        genre:
+          type: string
+          nullable: true
         summary:
+          type: string
+          nullable: true
+        setting:
+          type: string
+          nullable: true
+        readability:
+          type: string
+          nullable: true
+        words:
           type: string
           nullable: true
 
@@ -222,6 +234,16 @@ components:
       properties:
         summary:
           type: string
+          nullable: true
+        setting:
+          type: string
+          nullable: true
+        readability: 
+          type: string
+          nullable: true
+        words:
+          type: string
+          nullable: true
 
     SuccessResponse:
       type: object
@@ -339,6 +361,15 @@ components:
           enum: [EMPTY, FILLED]
           description: |
             Derived read-model state indicating whether a review summary has been provided by the user.
+        setting:
+          type: string
+          nullable: true
+        readability:
+          type: string
+          nullable: true
+        words:
+          type: string
+          nullable: true
         createdAt:
           type: string
           format: date-time
@@ -355,6 +386,9 @@ components:
         title:
           type: string
         author:
+          type: string
+          nullable: true
+        genre:
           type: string
           nullable: true
         coverUrl:
