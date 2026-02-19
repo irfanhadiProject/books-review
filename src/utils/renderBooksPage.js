@@ -19,18 +19,18 @@ export function renderBooksPage(options = {}) {
   }
 }
 
-function mapBookToViewModel(book) {
+function mapBookToViewModel(bookApiData) {
   return {
-    id: book.user_book_id,
-    readAt: book.read_at,
-    title: book.title,
-    genre: book.genre,
-    author: book.author,
-    cover: book.cover,
-    setting: book.setting,
-    readability: book.readability,
-    keywords: book.words,
-    summary: book.summary
+    id: bookApiData.id,
+    title: bookApiData.book.title,
+    author: bookApiData.book.author,
+    cover: bookApiData.book.coverUrl,
+    readAt: bookApiData.read_at,
+    genre: bookApiData.genre,
+    setting: bookApiData.setting,
+    readability: bookApiData.readability,
+    keywords: bookApiData.words,
+    summary: bookApiData.summary
   }
 }
 

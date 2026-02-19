@@ -123,18 +123,18 @@
   <% books.map( book => { %>
   <article class="book-card">
     <span class="book-card__read-at">
-      <%= new Date(book.read_at).toDateString() %>
+      <%= new Date(book.readAt).toDateString() %>
     </span>
     <div class="book-card__buttons">
       <button
         class="book-card__edit-btn"
-        data-id="<%= book.user_book_id %>"
+        data-id="<%= book.id %>"
       >
         Edit
       </button>
       <button
         class="book-card__delete-btn"
-        data-id="<%= book.user_book_id %>"
+        data-id="<%= book.id %>"
       >
         Delete
       </button>
