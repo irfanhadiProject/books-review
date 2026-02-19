@@ -8,10 +8,10 @@ info:
     This specification defines the **public API contract** between
     Backend and Frontend. Domain service outputs are intentionally not
     exposed directly.
-  version: 1.0.0
+  version: 2.0.0
 
 servers:
-  - url: /api/v1
+  - url: /api/v2
 
 tags:
   - name: Auth
