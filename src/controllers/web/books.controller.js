@@ -4,7 +4,7 @@ dotenv.config()
 import { renderBooksPage } from '../../utils/renderBooksPage.js'
 import {
   updateUserBookSummary,
-  deleteUserBook,
+  // deleteUserBook,
 } from '../../models/bookModel.js'
 import {
   // getBookByUserBookId,
@@ -30,12 +30,14 @@ export async function renderUserBooksPage(req, res) {
       }
     )
 
-    return res.render('pages/books', {
+    return res.render('pages/books', renderBooksPage({
       layout: 'layout',
       title: 'My Books',
+      user: req.session.username,
       books: response.data.data,
       total: response.data.meta.total
     })
+  )
   } catch(err) {
     if (err.response?.status === 401) {
       return res.redirect('/login')

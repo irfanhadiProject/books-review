@@ -9,7 +9,9 @@ export async function login(req, res, next) {
     const user = await loginUser({ username, password })
 
     req.session.userId = user.userId
+    req.session.username = user.username
     req.session.role = user.role
+    req.session.loggedIn = true
 
     return res.status(200).json({
       status: 'success',

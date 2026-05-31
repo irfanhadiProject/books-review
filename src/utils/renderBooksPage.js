@@ -1,7 +1,7 @@
 export function renderBooksPage(options = {}) {
   return {
-    layout: 'layout',
-    title: 'Books Review',
+    layout: options.layout || 'layout',
+    title: options.title || 'Books Review',
     formTitle: options.formTitle || 'Add Book',
     formAction: options.formAction || '/books/add-book',
     submitText: options.submitText || 'Add',
