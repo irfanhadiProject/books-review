@@ -16,14 +16,15 @@ Represents an authenticated account in the system.
 
 Fields:
 - id (opaque identifier)
-- email
+- username (unique identifier for humans)
+- role (define access levels)
 - status (active | inactive)
 
 Notes:
-- User identity is managed by the authentication subsystem.
-- This domain does not manage user lifecycle.
-- User identifiers are treated as opaque and stable.
-- No domain behavior mutates User state directly.
+- User credentials (password hashes) are managed and stored within this domain's persistence layer.
+- User identifiers are treated as opaque and stable once created.
+- This domain manages user status (`is_active`) and authorization (`role`) to control domain-specific operations.
+- Technical metadata such as account creation timestamps are handled at the database level.
 
 ### Book
 
@@ -33,6 +34,7 @@ Fields:
 - id (opaque identifier)
 - title
 - author
+- genre (optional)
 - isbn (optional)
 - coverUrl (optional)
 
@@ -55,10 +57,13 @@ Fields:
 - id (opaque identifier)
 - userId
 - bookId
+- setting (optional)
+- readability (optional)
+- words (optional)
 - summary (optional)
-- createdAt
-- updatedAt
-- readAt (optional)
+- readAt (timestamp)
+- createdAt (timestamp)
+- updatedAt (timestamp)
 
 Notes:
 - UserBook is the solo aggregate root in this domain.

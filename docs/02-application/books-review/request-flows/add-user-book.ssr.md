@@ -21,7 +21,11 @@ Request payload:
 - title (required)
 - author (optional)
 - isbn (optional)
+- genre (optional)
 - summary (optional)
+- setting (optional)
+- readability (optional)
+- words (optional)
 
 ## Application Flow
 
@@ -45,6 +49,14 @@ Request payload:
 5. Send response.
     - No redirects or view rendering are defined here.
     - Presentation decision are handled by the caller.
+
+## Output Mapping
+
+The application flow captures the following domain output:
+
+- `bookId`: Used for generating links to the book detail page.
+- `userBookId`: Used for referencing the specific collection entry.
+- `reviewState`: Used to determine if the user should be prompted to complete their review (e.g., via a flash message if state is 'EMPTY')
 
 ## Domain Delegation
 

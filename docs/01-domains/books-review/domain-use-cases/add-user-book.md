@@ -18,7 +18,11 @@ This use case establishes ownership and review state. It does not manage or norm
 - title (required)
 - author (optional)
 - isbn (optional)
+- genre (optional)
 - summary (optional)
+- setting (optional)
+- readability (optional)
+- words (optional)
 
 ## Preconditions
 
@@ -49,7 +53,17 @@ This use case establishes ownership and review state. It does not manage or norm
     - If ISBN is present, optional enrichment (e.g. cover fetching) may be triggered.
     - Enrichment failures do not affect domain success.
 
-## Postconditions (on success)
+## Output
+
+```json
+{
+  "bookId": "string | number",
+  "userBookId": "string | number",
+  "reviewState": "EMPTY | FILLED"
+}
+```
+
+## Postconditions
 
 - A UserBook aggregate exists.
 - The UserBook is associated with exactly one Book.
@@ -67,7 +81,13 @@ This use case establishes ownership and review state. It does not manage or norm
 Authentication and authorization errors are not raised by this use case.
 They are enforced before invocation.
 
-## Invariants Enforced
+## Idempotency and Retry Semantics
+
+- This operation is not idempotent.
+- Repeating the command after success may result in a uniqueness conflict or duplicate entries is ISBN is absent.
+- Retrying after a transient failure is safe if ISBN is provided.
+
+## Domain Rules Applied
 
 - A user can own a book only once.
 - No partial persistence state is allowed.

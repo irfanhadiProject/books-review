@@ -21,10 +21,13 @@ This flow does not define domain rules, persistence behavior, or invariants.
 ## Input
 
 Request parameters:
-- userBookId (required)
+- `userBookId` (required)
 
 Request payload:
-- summary (optional, string or null)
+- `summary` (optional, string or null)
+- `setting` (optional, string or null)
+- `readability` (optional, string or null)
+- `words` (optional, string or null)
 
 Context:
 - `userId` (derived from authenticated session)

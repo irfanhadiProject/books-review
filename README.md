@@ -1,10 +1,10 @@
-# 📚 Books Review
+# Books Review
 
 A simple web-based books review site that allows users to add and view books review. Created as a personal project to learn full-stack web development.
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Frontend**: HTML, CSS, EJS (Embedded JavaScript Templates)
 - **Backend**: Node.js, Express.js
@@ -12,7 +12,7 @@ A simple web-based books review site that allows users to add and view books rev
 
 ---
 
-## ✨ Features
+## Features
 
 - View list of books and reviews
 - Add new reviews
@@ -21,7 +21,7 @@ A simple web-based books review site that allows users to add and view books rev
 
 ---
 
-## 🚀 Run Locally
+## Run Locally
 
 1. **Clone repo:**
 
@@ -72,30 +72,32 @@ A simple web-based books review site that allows users to add and view books rev
    ```
 
 7. **Folder structure:**
-   - books-review/
-   - ├── public/ # Static files accessible by the browser
-   - │ ├── assets/ # Static assets like images, book covers, logos, etc.
-   - │ ├── js/ # Client-side JavaScript files
-   - │ └── style/ # CSS stylesheets for styling the frontend
-   - │
-   - ├── views/ # EJS templates rendered by the server
-   - │ ├── pages/ # Main page templates (e.g., home, book details, etc.)
-   - │ └── partials/ # Reusable components (e.g., header, footer, navbar)
-   - │
-   - ├── controllers/ # Handles business logic for each route
-   - │ └── bookController.js # Example controller for book-related logic
-   - │
-   - ├── middleware/ # Custom Express middleware (e.g., logging, auth)
-   - │ └── authMiddleware.js # Example middleware for request logging
-   - │
-   - ├── models/ # Data models or schemas
-   - │ └── bookModel.js # Example model representing a book
-   - │
-   - ├── routes/ # Route definitions that connect URLs to controllers
-   - │ └── bookRoutes.js # Example routes for book-related endpoints
-   - │
-   - ├── utils/ # Utility/helper functions used across the app
-   - │ └── imageUtils.js # Example utility to format dates
-   - │
-   - ├── index.js # Main entry point of the Express server
-   - └── package.json # Project metadata and dependencies
+   ```
+   books-review/
+   ├── public/   # Static files accessible by the browser
+   │ ├── assets/ # Static assets like images, book covers, logos, etc.
+   │ ├── js/     # Client-side JavaScript files
+   │ └── style/  # CSS stylesheets for styling the frontend
+   │
+   ├── views/      # EJS templates rendered by the server
+   │ ├── pages/    # Main page templates (e.g., home, book details, etc.)
+   │ └── partials/ # Reusable components (e.g., header, footer, navbar)
+   │
+   ├── controllers/        # Handles business logic for each route
+   │ └── bookController.js # Example controller for book-related logic
+   │
+   ├── middleware/         # Custom Express middleware (e.g., logging, auth)
+   │ └── authMiddleware.js # Example middleware for request logging
+   │
+   ├── models/             # Data models or schemas
+   │ └── bookModel.js      # Example model representing a book
+   │ 
+   ├── routes/             # Route definitions that connect URLs to controllers
+   │ └── bookRoutes.js     # Example routes for book-related endpoints
+   │
+   ├── utils/              # Utility/helper functions used across the app
+   │ └── imageUtils.js     # Example utility to format dates
+   │
+   ├── index.js            # Main entry point of the Express server
+   └── package.json        # Project metadata and dependencies
+   ```

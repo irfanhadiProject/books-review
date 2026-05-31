@@ -7,10 +7,19 @@ Remove an existing UserBook relationship owned by a user.
 This use case represents a destructive command that deletes ownership
 and review state for a book. It does not delete the underlying Book entity.
 
+## Actor
+
+- Authenticated User (identified by userId)
+
 ## Input
 
 - userId (opaque identifier)
 - userBookId (identifier)
+
+## Preconditions
+
+- userId is present and valid.
+- userBookId is provided.
 
 ## Core Domain Behavior
 
@@ -31,6 +40,13 @@ and review state for a book. It does not delete the underlying Book entity.
 - No other UserBook records are modified.
 - Domain state is consistent.
 
+## Domain Errors
+
+| Condition                                    | Domain Error                |
+|----------------------------------------------|-----------------------------|
+| UserBook not found or belong to another user | UserBookNotFoundError       |
+| Unexpected persistence failure               | DatabaseError               |
+
 ## Idempotency and Retry Semantics
 
 - This operation is not idempotent.
@@ -44,9 +60,9 @@ and review state for a book. It does not delete the underlying Book entity.
 - No partial persistence state is allowed.
 - Authorization is ownership-based.
 
-## Notes
+## Explicitly Out of Scope
 
-- This use case does not distinguish between:
-  - a non-existing UserBook
-  - a UserBook not owned by the user
-- Transport, authentication, and error mapping concerns are handled elsewhere.
+- HTTP status codes.
+- Physical cleanup of orphan Book entities.
+- Logging or auditing of deletion events.
+- UI redirection after deletion.

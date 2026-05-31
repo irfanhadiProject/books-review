@@ -6,6 +6,10 @@ Verify user credentials and produce an authentication decision.
 
 This use case represents a pure authentication operation. It does not create sessions, cookies, or tokens.
 
+## Actor
+
+- Anonymous User (attempting to identify themselves)
+
 ## Input
 
 - username (string)
@@ -46,6 +50,16 @@ This use case represents a pure authentication operation. It does not create ses
 - No domain state is mutated.
 - Authentication decision is deterministic.
 
+## Domain Errors
+
+| Condition                           | Domain Error                |
+|-------------------------------------|-----------------------------|
+| Empty username or password          | ValidationError             |
+| Password is not match               | InvalidPasswordError        |
+| User account is not exist           | UserNotFoundError           |
+| User account is not active          | UserInactiveError           |
+| Unexpected lookup failure           | DatabaseError               |
+
 ## Idempotency
 
 - Fully idempotent.
@@ -56,7 +70,9 @@ This use case represents a pure authentication operation. It does not create ses
 - Only active users may authenticate.
 - Password verification is cryptographically secure.
 
-## Notes
+## Explicitly Out of Scope
 
-- This use case does not manage sessions or tokens.
-- Transport and session handling are delegated upward.
+- Token issuance and session storage.
+- Rate limiting or brute-force protection.
+- Cookie management or HTTP header implementation.
+- Password reset or recovery flows.
